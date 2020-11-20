@@ -1,5 +1,7 @@
+import { useContext } from "react";
 import { useState } from "react";
-import { getURL } from "../const";
+import { CURRENT_VIEW, getURL } from "../const";
+import AppContext from "../context/AppContext";
 import "../styles/startForm.css";
 
 const DEFAULT_HOUR = 2;
@@ -8,31 +10,24 @@ const MEMBER_POST_URL = getURL("/members");
 export default function StartForm() {
   const [period, setPeriod] = useState(DEFAULT_HOUR);
   const [memberName, setMemberName] = useState("");
+  const { currentViewDispatch } = useContext(AppContext);
 
   const onSubmit = (e) => {
+    e.preventDefault();
     (async () => {
-      e.preventDefault();
       const members = memberName.trim().split(",");
-      const method = "POST";
-      const body = JSON.stringify(members);
-      const mode = "no-cors";
-      const headers = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      };
-      const res = await fetch(MEMBER_POST_URL, {
-        method,
-        headers,
-        body,
-        mode,
+      await fetch(MEMBER_POST_URL, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(members),
       }).catch((err) => {
         console.log(err);
       });
-      const data = await res.json().catch((err) => {
-        console.log(err);
-      });
-      console.log(data);
     })();
+    currentViewDispatch(CURRENT_VIEW.RANDOM_GENERATE);
   };
 
   const onChangePeriod = (e) => {
