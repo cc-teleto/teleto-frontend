@@ -1,25 +1,38 @@
 import { useState } from "react";
+import { getURL } from "../const";
 import "../styles/startForm.css";
 
 const DEFAULT_HOUR = 2;
-const MEMBER_POST_URL = "https://ttnxcty7yc.execute-api.us-east-2.amazonaws.com/stage/members";
+const MEMBER_POST_URL = getURL("/members");
 
 export default function StartForm() {
   const [period, setPeriod] = useState(DEFAULT_HOUR);
   const [memberName, setMemberName] = useState("");
 
-  const onSubmit = async e => {
-    e.preventDefault();
-    const members = memberName.trim().split(",");
-    const method = "POST";
-    const body = JSON.stringify(members);
-    const headers = {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }
-    const res = await fetch(MEMBER_POST_URL, { method, headers, body })
-    const data = await res.json();
-    console.log(data);
+  const onSubmit = (e) => {
+    (async () => {
+      e.preventDefault();
+      const members = memberName.trim().split(",");
+      const method = "POST";
+      const body = JSON.stringify(members);
+      const mode = "no-cors";
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      };
+      const res = await fetch(MEMBER_POST_URL, {
+        method,
+        headers,
+        body,
+        mode,
+      }).catch((err) => {
+        console.log(err);
+      });
+      const data = await res.json().catch((err) => {
+        console.log(err);
+      });
+      console.log(data);
+    })();
   };
 
   const onChangePeriod = (e) => {
