@@ -1,7 +1,7 @@
 {
   "name": "teleto-frontend",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "0.1.0",
+  "private": true,
   "repository": "git@github.com:cc-teleto/teleto-frontend.git",
   "author": "orchid69 <lake.john719@gmail.com>",
   "contributors": [
@@ -10,21 +10,46 @@
     "orchid69 <lake.john719@gmail.com>",
     "krkettle <catrarazou@gmail.com>"
   ],
-  "license": "MIT",
-  "devDependencies": {
-    "@types/react": "^16.9.56",
-    "@types/react-dom": "^16.9.9",
-    "@typescript-eslint/eslint-plugin": "^4.8.1",
-    "@typescript-eslint/parser": "^4.8.1",
-    "eslint": "^7.13.0",
-    "eslint-config-prettier": "^6.15.0",
-    "prettier": "^2.1.2"
-  },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
     "axios": "^0.21.0",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react-dom": "^17.0.1",
+    "react-scripts": "4.0.0",
+    "web-vitals": "^0.2.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "precommit": "pretty-quick --staged"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^6.15.0",
+    "prettier": "^2.2.0",
+    "pretty-quick": "^3.1.0"
   }
 }
