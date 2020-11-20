@@ -1,3 +1,3 @@
 export const  CURRENT_VIEW = {
-  HOME: "HOME",
+  START_FORM: "START_FORM",
 }
