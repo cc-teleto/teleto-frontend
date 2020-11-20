@@ -13,11 +13,23 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x]
+        node-version: [12.x]
 
     steps:
+      - name: Checkout source code.
       - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Cache node modules.
+        uses: actions/checkout@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-build-${{ hashFiles("**/package-lock.json")}}
+          restore-keys: ${{ runner.OS }}-build-
+            ${{ runner.OS }}
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
