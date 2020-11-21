@@ -8,7 +8,7 @@ import Message from "./Message";
 
 export default function App(props) {
   const [currentView, setCurrentView] = useState(props.currentView);
-  const [period, setPeriod] = useState("");
+  const [period, setPeriod] = useState(2);
   return (
     <AppContext.Provider
       value={{
@@ -19,7 +19,7 @@ export default function App(props) {
       }}
     >
       <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-        <Message />
+        <Message period={period*60}/>
         <Logo />
         <Main />
       </Box>

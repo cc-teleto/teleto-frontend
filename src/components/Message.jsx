@@ -1,18 +1,31 @@
 import { Box } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import { useState } from "react";
+import { useEffect } from "react";
 
 export default function Message(props) {
-  const [remainTime, setRemainTime] = useState("");
+  const [timeLeft, setTimeLeft] = useState(props.period);
+  let alertMsg = "";
+  let periodMsg = "";
+  if (props.period > 0) {
+    periodMsg = `残り時間: ${timeLeft}分`;
+  }
 
-  let alert = <div></div>;
+  useEffect(() => {
+    if (!timeLeft) return;
+    const intervalId = setInterval(() => {
+      setTimeLeft(timeLeft - 1);
+    }, 1000*60);
+    return () => clearInterval(intervalId);
+  }, [timeLeft]);
+
   if (props.severity && props.message) {
-    alert = <Alert severity={props.severity}>{props.message}</Alert>;
+    alertMsg = <Alert severity={props.severity}>{props.message}</Alert>;
   }
   return (
     <Box display="flex" flexWrap="nowrap">
-      <Box flexGrow={1}>{alert}</Box>
-      <Box>{remainTime}</Box>
+      <Box flexGrow={1}>{alertMsg}</Box>
+      <Box>{periodMsg}</Box>
     </Box>
   );
 }
