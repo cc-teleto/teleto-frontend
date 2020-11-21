@@ -4,9 +4,10 @@ import AppContext from "../context/AppContext";
 import RandomGenerate from "./RandomGenerate";
 import StartForm from "./StartForm";
 
+const topicFetchURL = getURL("/topics");
+const memberFetchURL = getURL("/members");
+
 export default function Main() {
-  const topicFetchURL = getURL("/topics");
-  const memberFetchURL = getURL("/members");
   const { currentView } = useContext(AppContext);
   if (currentView === CURRENT_VIEW.START_FORM) {
     return <StartForm />;
