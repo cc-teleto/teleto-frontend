@@ -1,4 +1,4 @@
-import { Button } from "@material-ui/core";
+import { Box, Button } from "@material-ui/core";
 import { useEffect } from "react";
 import { useState } from "react";
 
@@ -31,12 +31,12 @@ export default function RandomGenerate(props) {
   };
 
   return (
-    <div>
+    <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
       <p>{props.title}</p>
       <p>{content}</p>
       <Button variant="contained" onClick={onClick}>
         {props.buttonTitle}
       </Button>
-    </div>
+    </Box>
   );
 }

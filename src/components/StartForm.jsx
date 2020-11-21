@@ -1,4 +1,4 @@
-import { Button, MenuItem } from "@material-ui/core";
+import { Box, Button, MenuItem } from "@material-ui/core";
 import { useContext } from "react";
 import { useState } from "react";
 import { CURRENT_VIEW, getURL } from "../const";
@@ -37,7 +37,6 @@ const postMemberNames = async (memberNames) => {
     console.log(err);
   });
 };
-
 export default function StartForm(props) {
   const [memberNames, setMemberNames] = useState(props.memberNames);
   const { period, setPeriod, setCurrentView } = useContext(AppContext);
@@ -48,7 +47,7 @@ export default function StartForm(props) {
   };
   const memberNamesField = {
     id: "memberNames",
-    name: "参加者一覧(カンマ区切り)",
+    name: "参加者一覧",
     state: memberNames,
   };
 
@@ -59,8 +58,13 @@ export default function StartForm(props) {
   };
 
   return (
-    <main>
-      <form id="start-form" onSubmit={onSubmit}>
+    <form id="start-form" onSubmit={onSubmit}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
         <StartFormSelect
           field={periodField}
           dispatch={setPeriod}
@@ -70,8 +74,8 @@ export default function StartForm(props) {
         <Button variant="contained" type="submit">
           開始
         </Button>
-      </form>
-    </main>
+      </Box>
+    </form>
   );
 }
 

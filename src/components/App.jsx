@@ -3,6 +3,7 @@ import AppContext from "../context/AppContext";
 import { CURRENT_VIEW } from "../const";
 import Main from "./Main";
 import { useState } from "react";
+import { Box } from "@material-ui/core";
 
 export default function App(props) {
   const [currentView, setCurrentView] = useState(props.currentView);
@@ -16,10 +17,10 @@ export default function App(props) {
         setPeriod,
       }}
     >
-      <div>
+      <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
         <Logo />
         <Main />
-      </div>
+      </Box>
     </AppContext.Provider>
   );
 }

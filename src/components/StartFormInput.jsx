@@ -16,11 +16,17 @@ export default function StartFormInput(props) {
   return (
     <div>
       <FormControl className={classes.formControl}>
-        <TextField
+      <TextField
           id={props.field.id}
-          label={props.field.name}
+          style={{ margin: 8 }}
+          placeholder={props.field.name}
+          helperText=",(カンマ区切り)で入力してください"
+          fullWidth
+          margin="normal"
+          InputLabelProps={{
+            shrink: true,
+          }}
           variant="outlined"
-          size="small"
           value={props.field.state}
           onChange={onChange}
         />
