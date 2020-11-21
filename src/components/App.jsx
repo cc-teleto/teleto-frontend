@@ -8,7 +8,7 @@ import Message from "./Message";
 
 export default function App(props) {
   const [currentView, setCurrentView] = useState(props.currentView);
-  const [period, setPeriod] = useState(2);
+  const [period, setPeriod] = useState(0);
   return (
     <AppContext.Provider
       value={{
