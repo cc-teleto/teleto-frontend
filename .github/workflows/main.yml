@@ -1,0 +1,42 @@
+name: FrontEnd-main CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - name: Checkout source code.
+        uses: actions/checkout@v2
+
+      - name: Cache node modules.
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/cache
+            !~/cache/exclude
+            **/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        env:
+          AWS_ACCESS_KEY_ID: "${{ secrets.TELETO_FRONTEND_AWS_S3_ID }}"
+          AWS_SECRET_ACCESS_KEY: "${{ secrets.TELETO_FRONTEND_AWS_S3_KEY }}"
+        run: |
+          aws s3 cp \
+            --recursive \
+            --region us-east-2 \
+            build s3://teleto-page
