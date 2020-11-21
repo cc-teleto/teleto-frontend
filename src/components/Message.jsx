@@ -4,12 +4,16 @@ import { useState } from "react";
 import { useEffect } from "react";
 
 export default function Message(props) {
-  const [timeLeft, setTimeLeft] = useState(props.period);
+  const [timeLeft, setTimeLeft] = useState();
   let alertMsg = "";
   let periodMsg = "";
-  if (props.period > 0) {
+  if (timeLeft > 0) {
     periodMsg = `残り時間: ${timeLeft}分`;
   }
+
+  useEffect(() => {
+    setTimeLeft(props.period);
+  }, [props.period])
 
   useEffect(() => {
     if (!timeLeft) return;

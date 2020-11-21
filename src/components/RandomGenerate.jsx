@@ -14,7 +14,7 @@ const fetchContent = async (fetchURL, setContent) => {
       },
     });
     const data = await res.json();
-    setContent(data);
+    // setContent(data);
   } catch (err) {
     console.log(err);
   }

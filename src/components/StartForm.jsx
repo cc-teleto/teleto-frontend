@@ -39,11 +39,12 @@ const postMemberNames = async (memberNames) => {
 };
 export default function StartForm(props) {
   const [memberNames, setMemberNames] = useState(props.memberNames);
-  const { period, setPeriod, setCurrentView } = useContext(AppContext);
-  const periodField = {
+  const [periodInput, setPeriodInput] = useState("");
+  const { setPeriod, setCurrentView } = useContext(AppContext);
+  const periodInputField = {
     id: "period",
     name: "開催時間",
-    state: period,
+    state: periodInput,
   };
   const memberNamesField = {
     id: "memberNames",
@@ -54,6 +55,7 @@ export default function StartForm(props) {
   const onSubmit = (e) => {
     e.preventDefault();
     const res = postMemberNames(memberNames);
+    setPeriod(periodInput);
     setCurrentView(CURRENT_VIEW.RANDOM_GENERATE);
   };
 
@@ -66,8 +68,8 @@ export default function StartForm(props) {
         alignItems="center"
       >
         <StartFormSelect
-          field={periodField}
-          dispatch={setPeriod}
+          field={periodInputField}
+          dispatch={setPeriodInput}
           selectList={periodSelectList}
         />
         <StartFormInput field={memberNamesField} dispatch={setMemberNames} />
