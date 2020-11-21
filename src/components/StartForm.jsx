@@ -1,4 +1,4 @@
-import { MenuItem } from "@material-ui/core";
+import { Button, MenuItem } from "@material-ui/core";
 import { useContext } from "react";
 import { useState } from "react";
 import { CURRENT_VIEW, getURL } from "../const";
@@ -61,7 +61,7 @@ export default function StartForm(props) {
           selectList={periodSelectList}
         />
         <StartFormInput field={memberNamesField} dispatch={setMemberNames} />
-        <button type="submit">開始</button>
+        <Button variant="contained" type="submit">開始</Button>
       </form>
     </main>
   );

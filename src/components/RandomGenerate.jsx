@@ -1,3 +1,4 @@
+import { Button } from "@material-ui/core";
 import { useState } from "react";
 
 export default function RandomGenerate(props) {
@@ -25,7 +26,7 @@ export default function RandomGenerate(props) {
     <div>
       <p>{props.title}</p>
       <p>{content}</p>
-      <button onClick={onClick}>{props.buttonTitle}</button>
+      <Button variant="contained" onClick={onClick}>{props.buttonTitle}</Button>
     </div>
   );
 }
