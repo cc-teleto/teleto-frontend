@@ -4,6 +4,7 @@ import { CURRENT_VIEW } from "../const";
 import Main from "./Main";
 import { useState } from "react";
 import { Box } from "@material-ui/core";
+import Message from "./Message";
 
 export default function App(props) {
   const [currentView, setCurrentView] = useState(props.currentView);
@@ -18,6 +19,7 @@ export default function App(props) {
       }}
     >
       <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+        <Message />
         <Logo />
         <Main />
       </Box>
