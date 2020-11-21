@@ -1,9 +1,9 @@
-name: FrontEnd-dev CI
+name: FrontEnd-main CI
 
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   build:
@@ -40,4 +40,4 @@ jobs:
           aws s3 cp \
             --recursive \
             --region us-east-2 \
-            build s3://teleto-page-dev
+            build s3://teleto-page
