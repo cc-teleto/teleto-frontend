@@ -17,6 +17,11 @@ jobs:
       - name: Checkout source code.
         uses: actions/checkout@v2
 
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
       - name: Cache node modules.
         uses: actions/cache@v2
         with:
@@ -24,13 +29,15 @@ jobs:
             ~/cache
             !~/cache/exclude
             **/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
       - name: Install Dependencies
-        run: npm install
+        run: yarn install
 
       - name: Build
-        run: npm run build
+        run: yarn build
 
       - name: Deploy
         env:
