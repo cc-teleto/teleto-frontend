@@ -6,7 +6,7 @@ import AppContext from "../context/AppContext";
 export default function Logo() {
   const { currentViewDispatch } = useContext(AppContext);
   const onClick = () => {
-    currentViewDispatch(CURRENT_VIEW.HOME)
+    currentViewDispatch(CURRENT_VIEW.START_FORM)
   }
   return (
     <img className="logo" src={logoImage} alt="logo" onClick={onClick} />
