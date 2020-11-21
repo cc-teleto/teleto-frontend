@@ -53,23 +53,14 @@ export default function StartForm(props) {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const res = postMemberNames(memberNames);
+    // const res = postMemberNames(memberNames);
     setCurrentView(CURRENT_VIEW.RANDOM_GENERATE);
   };
 
   return (
     <form id="start-form" onSubmit={onSubmit}>
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <StartFormSelect
-          field={periodField}
-          dispatch={setPeriod}
-          selectList={periodSelectList}
-        />
+      <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+        <StartFormSelect field={periodField} dispatch={setPeriod} selectList={periodSelectList} />
         <StartFormInput field={memberNamesField} dispatch={setMemberNames} />
         <Button variant="contained" type="submit">
           開始
