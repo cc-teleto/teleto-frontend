@@ -53,8 +53,7 @@ export default function StartForm(props) {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    // const res = postMemberNames(memberNames);
-    postMemberNames(memberNames);
+    const res = postMemberNames(memberNames);
     setCurrentView(CURRENT_VIEW.RANDOM_GENERATE);
   };
 
