@@ -2,7 +2,6 @@ import { Box, Button } from "@material-ui/core";
 import { useEffect } from "react";
 import { useState } from "react";
 
-
 // 表示内容をfetchURLから取得し、stateを更新する
 const fetchContent = async (fetchURL, setContent) => {
   try {
@@ -31,7 +30,12 @@ export default function RandomGenerate(props) {
   };
 
   return (
-    <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+    >
       <p>{props.title}</p>
       <p>{content}</p>
       <Button variant="contained" onClick={onClick}>

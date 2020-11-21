@@ -18,8 +18,13 @@ export default function App(props) {
         setPeriod,
       }}
     >
-      <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-        <Message period={period*60}/>
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Message period={period * 60} />
         <Logo />
         <Main />
       </Box>

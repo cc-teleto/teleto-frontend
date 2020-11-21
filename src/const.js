@@ -7,6 +7,6 @@ export const  CURRENT_VIEW = {
 
 export const API_URL = "https://ttnxcty7yc.execute-api.us-east-2.amazonaws.com/";
 export const STAGE = "stage";
-export const getURL = (p) => {
-  return path.join(API_URL, STAGE, p)
+export const getURL = (...args) => {
+  return path.join(API_URL, STAGE, ...args)
 }

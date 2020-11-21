@@ -4,16 +4,16 @@ import AppContext from "../context/AppContext";
 import RandomGenerate from "./RandomGenerate";
 import StartForm from "./StartForm";
 
-const topicFetchURL = getURL("/topics");
-const memberFetchURL = getURL("/members");
 
 export default function Main() {
-  const { currentView } = useContext(AppContext);
+  const { groupHash, currentView } = useContext(AppContext);
+  const topicFetchURL = getURL("/topics", `/?random=true&grouphash=${groupHash}`);
+  const memberFetchURL = getURL("/members", `/?random=true&grouphash=${groupHash}`);
   if (currentView === CURRENT_VIEW.START_FORM) {
     return <StartForm />;
   } else {
     return (
-      <div>
+      <>
         <RandomGenerate
           title="話題"
           buttonTitle="話題切替"
@@ -24,7 +24,7 @@ export default function Main() {
           buttonTitle="話者切替"
           fetchURL={memberFetchURL}
         />
-      </div>
-    );
+      </>
+    )
   }
 }
