@@ -1,4 +1,4 @@
-import { MenuItem, TextField } from "@material-ui/core";
+import { MenuItem } from "@material-ui/core";
 import { useContext } from "react";
 import { useState } from "react";
 import { CURRENT_VIEW, getURL } from "../const";
@@ -19,39 +19,37 @@ for (let hour of _.range(0, 5, 0.5)) {
   );
 }
 
-export default function StartForm() {
-  const [period, setPeriod] = useState("");
-  const [member, setMember] = useState("");
+export default function StartForm(props) {
+  const [memberNames, setMemberNames] = useState(props.memberNames);
+  const { period, setPeriod, setCurrentView } = useContext(AppContext);
   const periodField = {
     id: "period",
     name: "開催時間",
     state: period,
   };
-
-  // const { currentViewDispatch } = useContext(AppContext);
+  const memberNamesField = {
+    id: "memberNames",
+    name: "参加者一覧(カンマ区切り)",
+    state: memberNames
+  }
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(period);
-    // (async () => {
-    //   const members = memberName.trim().split(",");
-    //   await fetch(MEMBER_POST_URL, {
-    //     method: "POST",
-    //     headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(members),
-    //   }).catch((err) => {
-    //     console.log(err);
-    //   });
-    // })();
-    // currentViewDispatch(CURRENT_VIEW.RANDOM_GENERATE);
-  };
-
-  const onChangeMember = (e) => {
-    console.log(e.target.value);
-    setMember(e.target.value);
+    (async () => {
+      const body = memberNames.trim();
+      await fetch(MEMBER_POST_URL, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        mode: "cors",
+        body: JSON.stringify(body),
+      }).catch((err) => {
+        console.log(err);
+      });
+    })();
+    setCurrentView(CURRENT_VIEW.RANDOM_GENERATE);
   };
 
   return (
@@ -62,9 +60,13 @@ export default function StartForm() {
           dispatch={setPeriod}
           selectList={periodSelectList}
         />
-        <StartFormInput />
+        <StartFormInput field={memberNamesField} dispatch={setMemberNames} />
         <button type="submit">開始</button>
       </form>
     </main>
   );
 }
+
+StartForm.defaultProps = {
+  memberNames: "",
+};

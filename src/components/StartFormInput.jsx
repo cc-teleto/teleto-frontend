@@ -1,5 +1,4 @@
 import { FormControl, makeStyles, TextField } from "@material-ui/core";
-import { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -8,26 +7,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function StartFormInput() {
+export default function StartFormInput(props) {
   const classes = useStyles();
-  const [field, setField] = useState("");
 
   const onChange = (e) => {
-    console.log(e.target.value);
+    props.dispatch(e.target.value)
   }
   return (
     <div>
       <FormControl className={classes.formControl}>
         <TextField
-          id="filled-basic"
-          label="field"
+          id={props.field.id}
+          label={props.field.name}
           variant="outlined"
           size="small"
-          value={field}
-          color="secondary"
+          value={props.field.state}
           onChange={onChange}
         />
       </FormControl>
     </div>
   );
+}
+
+StartFormInput.defaultProps = {
+  field: {
+    id: "",
+    name: "",
+    state: "",
+  },
+  dispatch: () => {},
 }
