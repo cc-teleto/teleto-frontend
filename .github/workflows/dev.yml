@@ -30,3 +30,13 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Deploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TELETO_FRONTEND_AWS_S3_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TELETO_FRONTEND_AWS_S3_KEY }}
+        run: |
+          aws s3 cp \
+            --recursive \
+            --region us-east-2
+            build s3://teleto-page-dev
