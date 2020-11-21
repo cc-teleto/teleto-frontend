@@ -38,5 +38,5 @@ jobs:
         run: |
           aws s3 cp \
             --recursive \
-            --region us-east-2
+            --region us-east-2 \
             build s3://teleto-page-dev
