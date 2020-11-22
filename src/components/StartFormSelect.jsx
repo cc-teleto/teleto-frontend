@@ -26,14 +26,14 @@ export default function StartFormSelect(props) {
   return (
     <div>
       <FormControl className={classes.formControl}>
-        <InputLabel name={`${props.field.name}-label`}>{props.field.title}</InputLabel>
+        <InputLabel name={`${props.name}-label`}>{props.title}</InputLabel>
         <Select
-          labelId={`${props.field.name}-label`}
-          name={props.field.name}
+          labelId={`${props.name}-label`}
+          name={props.name}
           open={open}
           onClose={handleClose}
           onOpen={handleOpen}
-          value={props.field.state}
+          value={props.value}
           onChange={props.dispatch}
         >
           {props.selectList}

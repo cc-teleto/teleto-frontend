@@ -1,6 +1,5 @@
 import { Box, Button, MenuItem } from "@material-ui/core";
 import { useContext } from "react";
-import { useState } from "react";
 import { CURRENT_VIEW, getURL } from "../const";
 import AppContext from "../context/AppContext";
 import StartFormSelect from "./StartFormSelect";
@@ -23,8 +22,7 @@ for (let hour of _.range(0, MAX_PERIOD, PERIOD_INTERVAL)) {
 }
 
 // 参加者のリストをAPIに送信する
-const postMemberNames = async (memberNames) => {
-  const body = memberNames.trim();
+const postMembers = async (members) => {
   await fetch(MEMBER_POST_URL, {
     method: "POST",
     headers: {
@@ -32,42 +30,55 @@ const postMemberNames = async (memberNames) => {
       "Content-Type": "application/json",
     },
     mode: "cors",
-    body: JSON.stringify(body),
+    body: JSON.stringify(members),
   }).catch((err) => {
     console.log(err);
   });
 };
-export default function StartForm(props) {
-  const [memberNames, setMemberNames] = useState(props.memberNames);
-  const [periodInput, setPeriodInput] = useState("");
-  const { setPeriod, setCurrentView } = useContext(AppContext);
-  const periodInputField = {
-    name: "period",
-    title: "開催時間",
-    state: periodInput,
+
+export default function StartForm() {
+  const {
+    setPeriod,
+    setCurrentView,
+    members,
+    setMembers,
+    periodInput,
+    setPeriodInput,
+  } = useContext(AppContext);
+
+  const addMember = () => {
+    setMembers({
+      type: "add",
+    });
   };
-  const memberNamesField = {
-    name: "memberNames",
-    title: "参加者一覧",
-    state: memberNames,
+
+  const deleteMember = (e) => {
+    setMembers({
+      type: "delete",
+      key: e.currentTarget.name
+    });
   };
 
   const onChange = (e) => {
-    switch (e.target.name) {
-      case "period":
+    switch (true) {
+      case /period/.test(e.target.name):
         setPeriodInput(e.target.value);
         break;
-      case "memberNames":
-        setMemberNames(e.target.value);
-        break; 
+      case /member[0-9]+/.test(e.target.name):
+        setMembers({
+          type: "update",
+          key: e.target.name,
+          value: e.target.value,
+        });
+        break;
       default:
         console.log(e.target.name, "is not found");
     }
-  }
+  };
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const res = postMemberNames(memberNames);
+    const res = postMembers(Object.values(members.members));
     setPeriod(periodInput);
     setCurrentView(CURRENT_VIEW.RANDOM_GENERATE);
   };
@@ -81,19 +92,28 @@ export default function StartForm(props) {
         alignItems="center"
       >
         <StartFormSelect
-          field={periodInputField}
+          name="period"
+          title="開催時間"
+          value={periodInput}
           dispatch={onChange}
           selectList={periodSelectList}
         />
-        <StartFormInput field={memberNamesField} dispatch={onChange} />
-        <Button variant="contained" type="submit">
-          開始
-        </Button>
+        <StartFormInput
+          name="members"
+          title="参加者名"
+          value={members}
+          changeDispatch={onChange}
+          deleteDispatch={deleteMember}
+        />
+        <Box display="flex" width="100%" justifyContent="space-between">
+          <Button variant="contained" onClick={addMember}>
+            参加者追加
+          </Button>
+          <Button variant="contained" type="submit">
+            開始
+          </Button>
+        </Box>
       </Box>
     </form>
   );
 }
-
-StartForm.defaultProps = {
-  memberNames: "",
-};
