@@ -106,7 +106,7 @@ export default function StartForm() {
           deleteDispatch={deleteMember}
         />
         <Box display="flex" width="100%" justifyContent="space-between">
-          <Button variant="contained" onClick={addMember}>
+          <Button variant="contained" onClick={addMember} accessKey="a">
             参加者追加
           </Button>
           <Button variant="contained" type="submit">
