@@ -21,20 +21,6 @@ for (let hour of _.range(0, MAX_PERIOD, PERIOD_INTERVAL)) {
   );
 }
 
-// 参加者のリストをAPIに送信する
-const postMembers = async (members) => {
-  await fetch(MEMBER_POST_URL, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    mode: "cors",
-    body: JSON.stringify(members),
-  }).catch((err) => {
-    console.log(err);
-  });
-};
 
 export default function StartForm() {
   const {
@@ -44,7 +30,35 @@ export default function StartForm() {
     setMembers,
     periodInput,
     setPeriodInput,
+    setGroupHash
   } = useContext(AppContext);
+
+  // 参加者のリストをAPIに送信する
+const postMembers = async (members) => {
+  try {
+    const body = {
+      members: []
+    }
+    for (const member of members) {
+      body.members.push({
+        name: member
+      })
+    }
+    const res = await fetch(MEMBER_POST_URL, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      mode: "cors",
+      body: JSON.stringify(body),
+    })
+    const data = await res.json();
+    setGroupHash(data.grouphash)
+  } catch(err) {
+    console.log(err);
+  }
+};
 
   const addMember = () => {
     setMembers({
@@ -78,7 +92,7 @@ export default function StartForm() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const res = postMembers(Object.values(members.members));
+    postMembers(Object.values(members.members));
     setPeriod(periodInput);
     setCurrentView(CURRENT_VIEW.RANDOM_GENERATE);
   };
@@ -106,7 +120,7 @@ export default function StartForm() {
           deleteDispatch={deleteMember}
         />
         <Box display="flex" width="100%" justifyContent="space-between">
-          <Button variant="contained" onClick={addMember} accessKey="a">
+          <Button variant="contained" onClick={addMember} >
             参加者追加
           </Button>
           <Button variant="contained" type="submit">

@@ -30,6 +30,7 @@ export default function App(props) {
   const [period, setPeriod] = useState("");
   const [periodInput, setPeriodInput] = useState("");
   const [members, setMembers] = useReducer(membersReducer, props.members);
+  const [groupHash, setGroupHash] = useState("");
   return (
     <AppContext.Provider
       value={{
@@ -41,6 +42,8 @@ export default function App(props) {
         setMembers,
         periodInput,
         setPeriodInput,
+        groupHash,
+        setGroupHash,
       }}
     >
       <Box

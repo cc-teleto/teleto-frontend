@@ -13,7 +13,9 @@ const fetchContent = async (fetchURL, setContent) => {
       },
     });
     const data = await res.json();
-    // setContent(data);
+    if (data) {
+      setContent(Object.values(data));
+    }
   } catch (err) {
     console.log(err);
   }
@@ -26,7 +28,7 @@ export default function RandomGenerate(props) {
   }, [props.fetchURL]);
 
   const onClick = async () => {
-    fetchContent(content, props.fetchURL);
+    fetchContent(props.fetchURL, setContent);
   };
 
   return (
