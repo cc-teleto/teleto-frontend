@@ -16,7 +16,7 @@ const periodSelectList = [];
 for (let hour of _.range(0, MAX_PERIOD, PERIOD_INTERVAL)) {
   hour = hour + PERIOD_INTERVAL;
   periodSelectList.push(
-    <MenuItem value={hour} key={hour}>
+    <MenuItem name={"period"} value={hour} key={hour}>
       {hour}時間
     </MenuItem>
   );
@@ -42,15 +42,28 @@ export default function StartForm(props) {
   const [periodInput, setPeriodInput] = useState("");
   const { setPeriod, setCurrentView } = useContext(AppContext);
   const periodInputField = {
-    id: "period",
-    name: "開催時間",
+    name: "period",
+    title: "開催時間",
     state: periodInput,
   };
   const memberNamesField = {
-    id: "memberNames",
-    name: "参加者一覧",
+    name: "memberNames",
+    title: "参加者一覧",
     state: memberNames,
   };
+
+  const onChange = (e) => {
+    switch (e.target.name) {
+      case "period":
+        setPeriodInput(e.target.value);
+        break;
+      case "memberNames":
+        setMemberNames(e.target.value);
+        break; 
+      default:
+        console.log(e.target.name, "is not found");
+    }
+  }
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -69,10 +82,10 @@ export default function StartForm(props) {
       >
         <StartFormSelect
           field={periodInputField}
-          dispatch={setPeriodInput}
+          dispatch={onChange}
           selectList={periodSelectList}
         />
-        <StartFormInput field={memberNamesField} dispatch={setMemberNames} />
+        <StartFormInput field={memberNamesField} dispatch={onChange} />
         <Button variant="contained" type="submit">
           開始
         </Button>

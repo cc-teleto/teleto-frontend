@@ -15,10 +15,6 @@ export default function StartFormSelect(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
-  const handleChange = (event) => {
-    props.dispatch(event.target.value);
-  };
-
   const handleClose = () => {
     setOpen(false);
   };
@@ -30,15 +26,15 @@ export default function StartFormSelect(props) {
   return (
     <div>
       <FormControl className={classes.formControl}>
-        <InputLabel id={`${props.field.id}-label`}>{props.field.name}</InputLabel>
+        <InputLabel name={`${props.field.name}-label`}>{props.field.title}</InputLabel>
         <Select
-          labelId={`${props.field.id}-label`}
-          id={props.field.id}
+          labelId={`${props.field.name}-label`}
+          name={props.field.name}
           open={open}
           onClose={handleClose}
           onOpen={handleOpen}
           value={props.field.state}
-          onChange={handleChange}
+          onChange={props.dispatch}
         >
           {props.selectList}
         </Select>
@@ -49,8 +45,8 @@ export default function StartFormSelect(props) {
 
 StartFormSelect.defaultProps = {
   field: {
-    id: "",
     name: "",
+    title: "",
     state: "",
   },
   dispatch: () => {},
