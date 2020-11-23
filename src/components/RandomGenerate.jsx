@@ -1,5 +1,5 @@
 import { Box, Button } from "@material-ui/core";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useState } from "react";
 
 // 表示内容をfetchURLから取得し、stateを更新する
@@ -23,8 +23,18 @@ const fetchContent = async (fetchURL, setContent) => {
 
 export default function RandomGenerate(props) {
   const [content, setContent] = useState("");
+  const isFirstRender = useRef(false);
+
   useEffect(() => {
-    fetchContent(props.fetchURL, setContent);
+    isFirstRender.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+    } else {
+      fetchContent(props.fetchURL, setContent);
+    }
   }, [props.fetchURL]);
 
   const onClick = async () => {
@@ -32,12 +42,7 @@ export default function RandomGenerate(props) {
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-    >
+    <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
       <p>{props.title}</p>
       <p>{content}</p>
       <Button variant="contained" onClick={onClick}>
