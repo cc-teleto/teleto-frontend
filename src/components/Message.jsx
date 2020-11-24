@@ -16,15 +16,17 @@ export default function Message(props) {
   }, [period]);
 
   useEffect(() => {
+    let intervalId;
     if (timeLeft > 0) {
-      setInterval(() => {
+      intervalId = setInterval(() => {
         setTimeLeft(timeLeft - 1);
       }, 1000 * 60);
     }
     if (timeLeft === 0 && currentView === CURRENT_VIEW.RANDOM_GENERATE) {
-      setAlertMsg("終了時刻となりました");
+      setAlertMsg("終了");
+      alert("終了時刻となりました");
     }
-    return () => clearInterval();
+    return () => clearInterval(intervalId);
   }, [timeLeft, currentView]);
 
   if (severity && message) {

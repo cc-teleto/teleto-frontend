@@ -5,7 +5,6 @@ import fetch from "node-fetch";
 
 export default function RandomGenerate(props) {
   const [content, setContent] = useState("");
-  // const isFirstRender = useRef(false);
   const { title, buttonTitle, fetchURL } = props;
 
   // 表示内容をfetchURLから取得し、stateを更新する
@@ -22,10 +21,6 @@ export default function RandomGenerate(props) {
       setContent(Object.values(data));
     }
   };
-
-  // useEffect(() => {
-  //   isFirstRender.current = true;
-  // }, []);
 
   useEffect(() => {
     if (fetchURL) {
