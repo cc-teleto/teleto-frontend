@@ -35,8 +35,6 @@ export default function Main() {
           fetchURL={memberFetchURL}
         />
         <MembersList
-          title="話者"
-          buttonTitle="話者切替"
           fetchURL={allMemberFetchURL}
         />
       </>
