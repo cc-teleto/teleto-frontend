@@ -15,7 +15,6 @@ export default function App() {
   };
   const [currentView, setCurrentView] = useState(CURRENT_VIEW.START_FORM);
   const [period, setPeriod] = useState(-1);
-  const [periodInput, setPeriodInput] = useState("");
   const [members, setMembers] = useState(initialMembers);
   const [groupHash, setGroupHash] = useState("");
 
@@ -28,8 +27,6 @@ export default function App() {
         setPeriod,
         members,
         setMembers,
-        periodInput,
-        setPeriodInput,
         groupHash,
         setGroupHash,
       }}

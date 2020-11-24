@@ -1,28 +1,13 @@
-import _ from "lodash";
-import React, { useContext, useReducer } from "react";
-import { Box, Button, MenuItem } from "@material-ui/core";
+import React, { useContext, useReducer, useState } from "react";
+import { Box, Button } from "@material-ui/core";
 import fetch from "node-fetch";
 import { CURRENT_VIEW, getURL } from "../const";
 import AppContext from "../context/AppContext";
 import StartFormSelect from "./StartFormSelect";
 import StartFormInput from "./StartFormInput";
 
+const DEFAULT_PERIOD = 2;
 const MEMBER_POST_URL = getURL("/members");
-const MAX_PERIOD = 3;
-const PERIOD_INTERVAL = 0.5;
-
-// 開催時間の選択リストを作成する
-const periodSelectList = _.range(
-  PERIOD_INTERVAL,
-  MAX_PERIOD + PERIOD_INTERVAL,
-  PERIOD_INTERVAL
-).map((hour) => {
-  return (
-    <MenuItem name="period" value={hour} key={hour}>
-      {hour}時間
-    </MenuItem>
-  );
-});
 
 // 参加者入力を保持するためのReducer
 const membersInputReducer = (state, action) => {
@@ -54,10 +39,10 @@ export default function StartForm() {
     setPeriod,
     setCurrentView,
     members,
-    periodInput,
-    setPeriodInput,
+    setMembers,
     setGroupHash,
   } = useContext(AppContext);
+  const [periodInput, setPeriodInput] = useState(DEFAULT_PERIOD);
   const [membersInput, setMembersInput] = useReducer(
     membersInputReducer,
     members
@@ -89,19 +74,10 @@ export default function StartForm() {
     setGroupHash(data.grouphash);
   };
 
-  const onChange = (e) => {
-    switch (true) {
-      case /period/.test(e.target.name):
-        setPeriodInput(e.target.value);
-        break;
-      default:
-        throw new Error(e.target.name, "is not found");
-    }
-  };
-
   const onSubmit = (e) => {
     e.preventDefault();
-    postMembers(Object.values(members.members));
+    postMembers(Object.values(membersInput.members));
+    setMembers(membersInput);
     setPeriod(periodInput);
     setCurrentView(CURRENT_VIEW.RANDOM_GENERATE);
   };
@@ -115,11 +91,9 @@ export default function StartForm() {
         alignItems="center"
       >
         <StartFormSelect
-          name="period"
           title="開催時間"
-          value={periodInput}
-          dispatch={onChange}
-          selectList={periodSelectList}
+          periodInput={periodInput}
+          onChange={(e) => setPeriodInput(e.target.value)}
         />
         <StartFormInput
           title="参加者名"

@@ -1,8 +1,24 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
+import _ from "lodash";
 import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
+import { Select, InputLabel, FormControl, MenuItem } from "@material-ui/core/";
+
+const MAX_PERIOD = 3;
+const PERIOD_INTERVAL = 0.5;
+
+// 開催時間の選択リストを作成する
+const periodSelectList = _.range(
+  PERIOD_INTERVAL,
+  MAX_PERIOD + PERIOD_INTERVAL,
+  PERIOD_INTERVAL
+).map((hour) => {
+  return (
+    <MenuItem name="period" value={hour} key={hour}>
+      {hour}時間
+    </MenuItem>
+  );
+});
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -14,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
 export default function StartFormSelect(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const { title, periodInput, onChange } = props;
 
   const handleClose = () => {
     setOpen(false);
@@ -26,29 +43,24 @@ export default function StartFormSelect(props) {
   return (
     <div>
       <FormControl className={classes.formControl}>
-        <InputLabel name={`${props.name}-label`}>{props.title}</InputLabel>
+        <InputLabel name="period-label">{title}</InputLabel>
         <Select
-          labelId={`${props.name}-label`}
-          name={props.name}
+          labelId="period-label"
           open={open}
           onClose={handleClose}
           onOpen={handleOpen}
-          value={props.value}
-          onChange={props.dispatch}
+          value={periodInput}
+          onChange={onChange}
         >
-          {props.selectList}
+          {periodSelectList}
         </Select>
       </FormControl>
     </div>
   );
 }
 
-StartFormSelect.defaultProps = {
-  field: {
-    name: "",
-    title: "",
-    state: "",
-  },
-  dispatch: () => {},
-  selectList: [],
-}
+StartFormSelect.propTypes = {
+  title: PropTypes.string.isRequired,
+  periodInput: PropTypes.number.isRequired,
+  onChange: PropTypes.func.isRequired,
+};

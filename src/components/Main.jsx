@@ -11,7 +11,7 @@ export default function Main() {
   const [memberFetchURL, setMemberFetchURL] = useState();
 
   useEffect(() => {
-    if (!groupHash) {
+    if (groupHash) {
       setTopicFetchURL(
         getURL("/topics", `/?random=true&grouphash=${groupHash}`)
       );
