@@ -1,35 +1,36 @@
+import React, { useState, useReducer } from "react";
+import { Box } from "@material-ui/core";
 import Logo from "./Logo";
 import AppContext from "../context/AppContext";
 import { CURRENT_VIEW } from "../const";
 import Main from "./Main";
-import { useState } from "react";
-import { Box } from "@material-ui/core";
 import Message from "./Message";
-import { useReducer } from "react";
 
 // 参加者を保持するためのReducer
 const membersReducer = (state, action) => {
+  const newState = { ...state };
   switch (action.type) {
     case "add":
-      state.maxId++;
-      state.members[`member${state.maxId}`] = "";
-      return Object.assign({}, state);
+      newState.maxId = state.maxId + 1;
+      newState.members[`member${state.maxId}`] = "";
+      break;
     case "update":
-      state.members[action.key] = action.value;
-      return Object.assign({}, state);
+      newState.members[action.key] = action.value;
+      break;
     case "delete":
-      delete state.members[action.key];
-      return Object.assign({}, state);
+      delete newState.members[action.key];
+      break;
     default:
-      console.log(action.type, "is not found");
+      throw new Error(action.type, "is not found");
   }
+  return newState;
 };
 
-export default function App(props) {
-  const [currentView, setCurrentView] = useState(props.currentView);
+export default function App() {
+  const [currentView, setCurrentView] = useState(CURRENT_VIEW.START_FORM);
   const [period, setPeriod] = useState(-1);
   const [periodInput, setPeriodInput] = useState("");
-  const [members, setMembers] = useReducer(membersReducer, props.members);
+  const [members, setMembers] = useReducer(membersReducer, {});
   const [groupHash, setGroupHash] = useState("");
   return (
     <AppContext.Provider
@@ -59,12 +60,3 @@ export default function App(props) {
     </AppContext.Provider>
   );
 }
-
-App.defaultProps = {
-  currentView: CURRENT_VIEW.START_FORM,
-  period: "",
-  members: {
-    maxId: 1,
-    members: { member1: "" },
-  },
-};
