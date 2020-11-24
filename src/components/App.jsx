@@ -27,7 +27,7 @@ const membersReducer = (state, action) => {
 
 export default function App(props) {
   const [currentView, setCurrentView] = useState(props.currentView);
-  const [period, setPeriod] = useState("");
+  const [period, setPeriod] = useState(-1);
   const [periodInput, setPeriodInput] = useState("");
   const [members, setMembers] = useReducer(membersReducer, props.members);
   const [groupHash, setGroupHash] = useState("");
