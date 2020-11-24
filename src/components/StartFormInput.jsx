@@ -1,13 +1,13 @@
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import {
   FormControl,
   makeStyles,
   TextField,
   IconButton,
-  Box
+  Box,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { useEffect } from "react";
-import { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -19,34 +19,58 @@ const useStyles = makeStyles((theme) => ({
 export default function StartFormInput(props) {
   const classes = useStyles();
   const [memberElements, setMemberElements] = useState();
+  const { title, membersInput, setMembersInput } = props;
+
+  const onChange = (e) => {
+    const newMembersInput = { ...membersInput };
+    newMembersInput[e.target.id] = e.target.value;
+    setMembersInput({
+      type: "update",
+      key: e.target.id,
+      value: e.target.value,
+    });
+  };
+
+  const deleteMembersInput = (e) => {
+    setMembersInput({
+      type: "delete",
+      key: e.currentTarget.id,
+    });
+  };
 
   useEffect(() => {
     setMemberElements(
-      Object.entries(props.value.members).map((kv) => {
+      Object.entries(membersInput.members).map(([key, value]) => {
         return (
-          <Box key={`${kv[0]}-box`} display="flex" width="100%">
+          <Box key={`${key}-box`} display="flex" width="100%">
             <TextField
-              name={kv[0]}
+              id={key}
               style={{ margin: 8 }}
-              placeholder={props.title}
+              placeholder={title}
               fullWidth
               margin="normal"
               InputLabelProps={{
                 shrink: true,
               }}
               variant="outlined"
-              value={kv[1]}
-              onChange={props.changeDispatch}
+              value={value}
+              onChange={onChange}
               size="small"
             />
-            <IconButton name={kv[0]} aria-label="delete" color="secondary" onClick={props.deleteDispatch}>
+            <IconButton
+              id={key}
+              aria-label="delete"
+              color="secondary"
+              onClick={deleteMembersInput}
+            >
               <DeleteIcon />
             </IconButton>
           </Box>
         );
       })
     );
-  }, [props.value, props.name, props.title, props.changeDispatch, props.deleteDispatch]);
+    return () => {};
+  }, [title, membersInput]);
 
   return (
     <div>
@@ -56,12 +80,11 @@ export default function StartFormInput(props) {
     </div>
   );
 }
-
-StartFormInput.defaultProps = {
-  field: {
-    name: "",
-    title: "",
-    state: "",
-  },
-  dispatch: () => {},
+StartFormInput.propTypes = {
+  title: PropTypes.string.isRequired,
+  membersInput: PropTypes.shape({
+    maxId: PropTypes.number.isRequired,
+    members: PropTypes.shape({}),
+  }).isRequired,
+  setMembersInput: PropTypes.func.isRequired,
 };
