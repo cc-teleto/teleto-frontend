@@ -1,10 +1,15 @@
 import { Box, Button } from "@material-ui/core";
-import { useEffect, useRef } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import fetch from "node-fetch";
 
-// 表示内容をfetchURLから取得し、stateを更新する
-const fetchContent = async (fetchURL, setContent) => {
-  try {
+export default function RandomGenerate(props) {
+  const [content, setContent] = useState("");
+  // const isFirstRender = useRef(false);
+  const { title, buttonTitle, fetchURL } = props;
+
+  // 表示内容をfetchURLから取得し、stateを更新する
+  const fetchContent = async () => {
     const res = await fetch(fetchURL, {
       method: "GET",
       headers: {
@@ -16,38 +21,36 @@ const fetchContent = async (fetchURL, setContent) => {
     if (data) {
       setContent(Object.values(data));
     }
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-export default function RandomGenerate(props) {
-  const [content, setContent] = useState("");
-  const isFirstRender = useRef(false);
-
-  useEffect(() => {
-    isFirstRender.current = true;
-  }, []);
-
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-    } else {
-      fetchContent(props.fetchURL, setContent);
-    }
-  }, [props.fetchURL]);
-
-  const onClick = async () => {
-    fetchContent(props.fetchURL, setContent);
   };
 
+  // useEffect(() => {
+  //   isFirstRender.current = true;
+  // }, []);
+
+  useEffect(() => {
+    if (fetchURL) {
+      fetchContent();
+    }
+  }, [fetchURL]);
+
   return (
-    <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-      <p>{props.title}</p>
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <p>{title}</p>
       <p>{content}</p>
-      <Button variant="contained" onClick={onClick}>
-        {props.buttonTitle}
+      <Button variant="contained" onClick={async () => fetchContent()}>
+        {buttonTitle}
       </Button>
     </Box>
   );
 }
+
+RandomGenerate.propTypes = {
+  title: PropTypes.string.isRequired,
+  buttonTitle: PropTypes.string.isRequired,
+  fetchURL: PropTypes.string.isRequired,
+};

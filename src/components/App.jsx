@@ -37,7 +37,7 @@ export default function App() {
         justifyContent="center"
         alignItems="center"
       >
-        <Message period={period * 60} />
+        <Message period={period * 60} severity="" message="" />
         <Logo />
         <Main />
       </Box>

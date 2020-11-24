@@ -7,8 +7,8 @@ import StartForm from "./StartForm";
 
 export default function Main() {
   const { groupHash, currentView } = useContext(AppContext);
-  const [topicFetchURL, setTopicFetchURL] = useState();
-  const [memberFetchURL, setMemberFetchURL] = useState();
+  const [topicFetchURL, setTopicFetchURL] = useState("");
+  const [memberFetchURL, setMemberFetchURL] = useState("");
 
   useEffect(() => {
     if (groupHash) {

@@ -1,49 +1,45 @@
+import React, { useContext, useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { Box } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-import { useContext } from "react";
-import { useState } from "react";
-import { useEffect } from "react";
 import { CURRENT_VIEW } from "../const";
 import AppContext from "../context/AppContext";
 
 export default function Message(props) {
   const [timeLeft, setTimeLeft] = useState(-1);
+  const [alertMsg, setAlertMsg] = useState("");
   const { currentView } = useContext(AppContext);
-  let alertMsg = "";
-  let periodMsg = "";
-  if (timeLeft > 0) {
-    periodMsg = `残り時間: ${timeLeft}分`;
-  }
+  const { period, severity, message } = props;
 
   useEffect(() => {
-    setTimeLeft(props.period);
-  }, [props.period]);
+    setTimeLeft(period);
+  }, [period]);
 
   useEffect(() => {
     if (timeLeft > 0) {
-      const intervalId = setInterval(() => {
+      setInterval(() => {
         setTimeLeft(timeLeft - 1);
       }, 1000 * 60);
-      return () => clearInterval(intervalId);
     }
     if (timeLeft === 0 && currentView === CURRENT_VIEW.RANDOM_GENERATE) {
-      alert("終了時刻となりました");
-      return;
+      setAlertMsg("終了時刻となりました");
     }
+    return () => clearInterval();
   }, [timeLeft, currentView]);
 
-  if (props.severity && props.message) {
-    alertMsg = <Alert severity={props.severity}>{props.message}</Alert>;
+  if (severity && message) {
+    setAlertMsg(<Alert severity={severity}>{message}</Alert>);
   }
   return (
     <Box display="flex" flexWrap="nowrap" width="50%">
       <Box width="100%">{alertMsg}</Box>
-      <Box flexShrink={0}>{periodMsg}</Box>
+      <Box flexShrink={0}>{timeLeft > 0 ? `残り時間: ${timeLeft}分` : ""}</Box>
     </Box>
   );
 }
 
-Message.defaultProps = {
-  severity: "",
-  message: "",
+Message.propTypes = {
+  severity: PropTypes.string.isRequired,
+  message: PropTypes.string.isRequired,
+  period: PropTypes.number.isRequired,
 };
