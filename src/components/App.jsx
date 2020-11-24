@@ -30,7 +30,7 @@ export default function App() {
   const [currentView, setCurrentView] = useState(CURRENT_VIEW.START_FORM);
   const [period, setPeriod] = useState(-1);
   const [periodInput, setPeriodInput] = useState("");
-  const [members, setMembers] = useReducer(membersReducer, {});
+  const [members, setMembers] = useReducer(membersReducer, { members: [] });
   const [groupHash, setGroupHash] = useState("");
   return (
     <AppContext.Provider
