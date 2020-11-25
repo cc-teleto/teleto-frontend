@@ -42,9 +42,7 @@ export default function Main() {
           buttonTitle="話者切替"
           fetchURL={memberFetchURL}
         />
-        <MembersList
-          fetchURL={allMemberFetchURL}
-        />
+        <MembersList fetchURL={allMemberFetchURL} />
       </>
     );
   }
