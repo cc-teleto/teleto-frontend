@@ -1,3 +1,4 @@
+import _ from "lodash";
 import React, { useContext, useReducer, useState } from "react";
 import { Box, Button } from "@material-ui/core";
 import fetch from "node-fetch";
@@ -8,6 +9,18 @@ import StartFormInput from "./StartFormInput";
 
 const DEFAULT_PERIOD = 2;
 const MEMBER_POST_URL = getURL("/members");
+
+const MAX_PERIOD = 3;
+const PERIOD_INTERVAL = 0.5;
+
+// 開催時間の選択リストを作成する
+const periodSelectMap = _.range(
+  PERIOD_INTERVAL,
+  MAX_PERIOD + PERIOD_INTERVAL,
+  PERIOD_INTERVAL
+).map((hour) => {
+  return { name: `${hour}時間`, value: hour };
+});
 
 // 参加者入力を保持するためのReducer
 const membersInputReducer = (state, action) => {
@@ -94,6 +107,7 @@ export default function StartForm() {
           title="開催時間"
           periodInput={periodInput}
           onChange={(e) => setPeriodInput(e.target.value)}
+          selectMap={periodSelectMap}
         />
         <StartFormInput
           title="参加者名"
