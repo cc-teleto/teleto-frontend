@@ -1,10 +1,10 @@
 import { Box, Button } from "@material-ui/core";
-import { useEffect, useRef } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import TextLoop from "react-text-loop";
 
 export default function RandomGenerateTopic(props) {
-  const isFirstRender = useRef(false);
+  const { fetchURL } = props;
   const [interval, setInterval] = useState(100);
   const dummyTopics = [
     "リンゴについてどう思いますか",
@@ -19,7 +19,21 @@ export default function RandomGenerateTopic(props) {
   ];
   const [topicsLoop, setTopicsLoop] = useState(dummyTopics);
 
-  const fetchContent = async (fetchURL) => {
+  const stopText = (text) => {
+    setTimeout(() => {
+      setTopicsLoop(text);
+    }, 1300);
+    setTimeout(() => {
+      setInterval(0);
+    }, 1500);
+  };
+
+  const startText = () => {
+    setTopicsLoop(dummyTopics);
+    setInterval(100);
+  };
+
+  const fetchContent = async () => {
     try {
       const res = await fetch(fetchURL, {
         method: "GET",
@@ -37,40 +51,35 @@ export default function RandomGenerateTopic(props) {
     }
   };
 
-  const stopText = (text) => {
-    setTimeout(() => {
-      setTopicsLoop(text);
-    }, 1300);
-    setTimeout(() => {
-      setInterval(0);
-    }, 1500);
-  };
-
   useEffect(() => {
-    isFirstRender.current = true;
-  }, []);
-
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-    } else {
-      fetchContent(props.fetchURL);
+    if (fetchURL) {
+      startText();
+      fetchContent();
     }
-  }, [props.fetchURL]);
-
-  const onClick = async () => {
-    setTopicsLoop(dummyTopics);
-    setInterval(100);
-    fetchContent(props.fetchURL);
-  };
+  }, [fetchURL]);
 
   return (
-    <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+    >
       <p>話題</p>
-      <TextLoop interval={interval} children={topicsLoop} />
-      <Button variant="contained" onClick={onClick}>
+      <TextLoop interval={interval}>{topicsLoop}</TextLoop>
+      <Button
+        variant="contained"
+        onClick={async () => {
+          startText();
+          fetchContent();
+        }}
+      >
         話題切替
       </Button>
     </Box>
   );
 }
+
+RandomGenerateTopic.propTypes = {
+  fetchURL: PropTypes.string.isRequired,
+};

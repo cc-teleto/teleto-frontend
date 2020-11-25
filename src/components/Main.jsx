@@ -16,9 +16,15 @@ export default function Main() {
 
   useEffect(() => {
     if (groupHash) {
-      setTopicFetchURL(getURL("/topics", `/?random=true&grouphash=${groupHash}`));
-      setMemberFetchURL(getURL("/members", `/?random=true&grouphash=${groupHash}`));
-      setAllMemberFetchURL(getURL("/members", `/?random=false&grouphash=${groupHash}`));
+      setTopicFetchURL(
+        getURL("/topics", `/?random=true&grouphash=${groupHash}`)
+      );
+      setMemberFetchURL(
+        getURL("/members", `/?random=true&grouphash=${groupHash}`)
+      );
+      setAllMemberFetchURL(
+        getURL("/members", `/?random=false&grouphash=${groupHash}`)
+      );
     }
   }, [groupHash]);
 

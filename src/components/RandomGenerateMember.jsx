@@ -1,16 +1,32 @@
 import { Box, Button } from "@material-ui/core";
-import { useEffect, useRef } from "react";
-import { useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import PropTypes from "prop-types";
 import TextLoop from "react-text-loop";
 import AppContext from "../context/AppContext";
 
 export default function RandomGenerateMember(props) {
-  const isFirstRender = useRef(false);
+  const { fetchURL } = props;
   const { members } = useContext(AppContext);
-  const [membersLoop, setMembersLoop] = useState(Object.values(members.members));
+  const [membersLoop, setMembersLoop] = useState(
+    Object.values(members.members)
+  );
   const [interval, setInterval] = useState(100);
 
-  const fetchContent = async (fetchURL) => {
+  const stopText = (text) => {
+    setTimeout(() => {
+      setMembersLoop(text);
+    }, 1300);
+    setTimeout(() => {
+      setInterval(0);
+    }, 1500);
+  };
+
+  const startText = () => {
+    setMembersLoop(Object.values(members.members));
+    setInterval(100);
+  };
+
+  const fetchContent = async () => {
     try {
       const res = await fetch(fetchURL, {
         method: "GET",
@@ -28,40 +44,35 @@ export default function RandomGenerateMember(props) {
     }
   };
 
-  const stopText = (text) => {
-    setTimeout(() => {
-      setMembersLoop(text);
-    }, 1300);
-    setTimeout(() => {
-      setInterval(0);
-    }, 1500);
-  };
-
   useEffect(() => {
-    isFirstRender.current = true;
-  }, []);
-
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-    } else {
-      fetchContent(props.fetchURL);
+    if (fetchURL) {
+      startText();
+      fetchContent();
     }
-  }, [props.fetchURL]);
-
-  const onClick = async () => {
-    setMembersLoop(Object.values(members.members));
-    setInterval(100);
-    fetchContent(props.fetchURL);
-  };
+  }, [fetchURL]);
 
   return (
-    <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+    >
       <p>話者</p>
-      <TextLoop interval={interval} children={membersLoop} />
-      <Button variant="contained" onClick={onClick}>
+      <TextLoop interval={interval}>{membersLoop}</TextLoop>
+      <Button
+        variant="contained"
+        onClick={async () => {
+          startText();
+          fetchContent();
+        }}
+      >
         話者切替
       </Button>
     </Box>
   );
 }
+
+RandomGenerateMember.propTypes = {
+  fetchURL: PropTypes.string.isRequired,
+};
