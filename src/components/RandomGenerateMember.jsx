@@ -1,7 +1,8 @@
-import { Box, Button } from "@material-ui/core";
 import React, { useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import TextLoop from "react-text-loop";
+import { Grid, Button } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 import AppContext from "../context/AppContext";
 
 export default function RandomGenerateMember(props) {
@@ -52,24 +53,35 @@ export default function RandomGenerateMember(props) {
   }, [fetchURL]);
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
+    <Grid
+      container
+      item
+      direction="column"
+      justify="center"
       alignItems="center"
+      spacing={3}
+      xs={12}
     >
-      <p>話者</p>
-      <TextLoop interval={interval}>{membersLoop}</TextLoop>
-      <Button
-        variant="contained"
-        onClick={async () => {
-          startText();
-          fetchContent();
-        }}
-      >
-        話者切替
-      </Button>
-    </Box>
+      <Grid item xs={12}>
+        <Typography variant="h3" align="center">
+          <TextLoop interval={interval}>{membersLoop}</TextLoop>さん！
+        </Typography>
+      </Grid>
+
+      <Grid item xs={12} align="center">
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ fontSize: "20px" }}
+          onClick={async () => {
+            startText();
+            fetchContent();
+          }}
+        >
+          話す人をチェンジ
+        </Button>
+      </Grid>
+    </Grid>
   );
 }
 

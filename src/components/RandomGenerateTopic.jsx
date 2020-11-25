@@ -1,7 +1,8 @@
-import { Box, Button } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import TextLoop from "react-text-loop";
+import { Grid, Button } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 
 export default function RandomGenerateTopic(props) {
   const { fetchURL } = props;
@@ -59,24 +60,35 @@ export default function RandomGenerateTopic(props) {
   }, [fetchURL]);
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
+    <Grid
+      container
+      item
+      direction="column"
+      justify="center"
       alignItems="center"
+      spacing={3}
+      xs={12}
     >
-      <p>話題</p>
-      <TextLoop interval={interval}>{topicsLoop}</TextLoop>
-      <Button
-        variant="contained"
-        onClick={async () => {
-          startText();
-          fetchContent();
-        }}
-      >
-        話題切替
-      </Button>
-    </Box>
+      <Grid item xs={12}>
+        <Typography variant="h3" align="center">
+          <TextLoop interval={interval}>{topicsLoop}</TextLoop>
+        </Typography>
+      </Grid>
+
+      <Grid item xs={12} align="center">
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ fontSize: "20px" }}
+          onClick={async () => {
+            startText();
+            fetchContent();
+          }}
+        >
+          話題をチェンジ
+        </Button>
+      </Grid>
+    </Grid>
   );
 }
 

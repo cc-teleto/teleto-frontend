@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import Logo from "./Logo";
 import AppContext from "../context/AppContext";
 import { CURRENT_VIEW } from "../const";
@@ -31,16 +31,17 @@ export default function App() {
         setGroupHash,
       }}
     >
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
+      <Grid
+        container
+        direction="column"
+        justify="center"
         alignItems="center"
+        spacing={1}
       >
         <Message period={period * 60} severity="" message="" />
         <Logo />
         <Main />
-      </Box>
+      </Grid>
     </AppContext.Provider>
   );
 }

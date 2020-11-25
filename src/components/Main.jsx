@@ -1,12 +1,20 @@
 import React, { useEffect, useState, useContext } from "react";
+import {
+  Grid,
+  createMuiTheme,
+  responsiveFontSizes,
+  ThemeProvider,
+} from "@material-ui/core";
 
 import { CURRENT_VIEW, getURL } from "../const";
 import AppContext from "../context/AppContext";
 import RandomGenerateTopic from "./RandomGenerateTopic";
 import RandomGenerateMember from "./RandomGenerateMember";
 import MembersList from "./MembersList";
-
 import StartForm from "./StartForm";
+
+let theme = createMuiTheme();
+theme = responsiveFontSizes(theme);
 
 export default function Main() {
   const { groupHash, currentView } = useContext(AppContext);
@@ -33,11 +41,21 @@ export default function Main() {
   }
   if (currentView === CURRENT_VIEW.RANDOM_GENERATE) {
     return (
-      <>
-        <RandomGenerateTopic fetchURL={topicFetchURL} />
-        <RandomGenerateMember fetchURL={memberFetchURL} />
+      <ThemeProvider theme={theme}>
+        <Grid
+          container
+          item
+          xs={12}
+          direction="column"
+          justify="center"
+          alignItems="stretch"
+          spacing={5}
+        >
+          <RandomGenerateMember fetchURL={memberFetchURL} />
+          <RandomGenerateTopic fetchURL={topicFetchURL} />
+        </Grid>
         <MembersList fetchURL={allMemberFetchURL} />
-      </>
+      </ThemeProvider>
     );
   }
   return null;
