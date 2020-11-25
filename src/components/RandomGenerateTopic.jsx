@@ -1,11 +1,49 @@
-import { Box, Button } from "@material-ui/core";
+import { Button, Box, Typography } from "@material-ui/core";
+import ChatIcon from "@material-ui/icons/Chat";
+import {
+  createMuiTheme,
+  responsiveFontSizes,
+  ThemeProvider,
+  makeStyles,
+} from "@material-ui/core/styles";
+
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import TextLoop from "react-text-loop";
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    [theme.breakpoints.only("xs")]: {
+      "& .textLoopDone": {
+        "& > div": {
+          width: "auto !important",
+          height: "auto !important",
+          "& > div": {
+            position: "static !important",
+            whiteSpace: "normal !important",
+          },
+        },
+      },
+      "& > div": {
+        "& > div": {
+          "& > div": {
+            whiteSpace: "normal !important",
+          },
+        },
+      },
+    },
+  },
+}));
+
 export default function RandomGenerateTopic(props) {
+  const classes = useStyles();
+  let theme = createMuiTheme();
+  theme = responsiveFontSizes(theme);
+
   const { fetchURL } = props;
   const [interval, setInterval] = useState(100);
+  const [isAniDone, setIsAniDone] = useState(false);
+
   const dummyTopics = [
     "リンゴについてどう思いますか",
     "もし空を飛べるとしたら、何をしますか",
@@ -14,7 +52,7 @@ export default function RandomGenerateTopic(props) {
     "生姜さんのいい点を一つ教えてください",
     "鈴木さんを動物に例えると何だと思いますか",
     "好きなものをちくわを使ってでプレゼンしてください",
-    "メンバーの中で一番ホルンが上手な人は誰だと思いますか",
+    "メンバーの中でホルンが上手そうな人は誰だと思いますか",
     "うどんとそばのどちらに興味がありますか",
   ];
   const [topicsLoop, setTopicsLoop] = useState(dummyTopics);
@@ -26,9 +64,13 @@ export default function RandomGenerateTopic(props) {
     setTimeout(() => {
       setInterval(0);
     }, 1500);
+    setTimeout(() => {
+      setIsAniDone(true);
+    }, 2000);
   };
 
   const startText = () => {
+    setIsAniDone(false);
     setTopicsLoop(dummyTopics);
     setInterval(100);
   };
@@ -50,16 +92,16 @@ export default function RandomGenerateTopic(props) {
           array[1]
         )}`;
         content = (
-          <p>
+          <>
             {array[0]}
             <a href={twitterLink} target="_blank" rel="noreferrer">
               {array[1]}
             </a>
             {array[2]}
-          </p>
+          </>
         );
       } else {
-        content = <p>{data.value}</p>;
+        content = data.value;
       }
       if (content) {
         stopText(content);
@@ -82,21 +124,47 @@ export default function RandomGenerateTopic(props) {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
+      m={3}
     >
-      <p>話題</p>
-      <TextLoop interval={interval}>{topicsLoop}</TextLoop>
-      <Button
-        variant="contained"
-        onClick={async () => {
-          startText();
-          fetchContent();
-        }}
-        style={{
-          backgroundColor: "#9fe4e2",
-        }}
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        m={3}
       >
-        話題切替
-      </Button>
+        <ThemeProvider theme={theme}>
+          <Typography variant="h4" align="center" className={classes.root}>
+            <TextLoop
+              interval={interval}
+              className={isAniDone ? "textLoopDone" : ""}
+            >
+              {topicsLoop}
+            </TextLoop>
+          </Typography>
+        </ThemeProvider>
+      </Box>
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Button
+          variant="contained"
+          startIcon={<ChatIcon />}
+          onClick={async () => {
+            startText();
+            fetchContent();
+          }}
+          style={{
+            backgroundColor: "#9fe4e2",
+            fontSize: "15px",
+          }}
+        >
+          話題をチェンジ
+        </Button>
+      </Box>
     </Box>
   );
 }

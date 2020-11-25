@@ -2,8 +2,9 @@ import React, { useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Box } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-import { CURRENT_VIEW } from "../const";
+
 import AppContext from "../context/AppContext";
+import { CURRENT_VIEW } from "../const";
 
 export default function Message(props) {
   const [timeLeft, setTimeLeft] = useState(-1);

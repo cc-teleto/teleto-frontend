@@ -1,9 +1,25 @@
-import { TextField, IconButton, Box, Button } from "@material-ui/core";
+import {
+  TextField,
+  IconButton,
+  Box,
+  Button,
+  Typography,
+} from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { makeStyles } from "@material-ui/core/styles";
+
 import React, { useState, useEffect, useRef, useContext } from "react";
 import PropTypes from "prop-types";
 import { getURL } from "../const";
 import AppContext from "../context/AppContext";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    "& .MuiTextField-root": {
+      marginRight: theme.spacing(1),
+    },
+  },
+}));
 
 const fetchDeleteMember = async (fetchURL) => {
   let data = "";
@@ -47,9 +63,10 @@ const fetchAddMember = async (fetchURL, addMem) => {
 };
 
 export default function MembersList(props) {
+  const classes = useStyles();
   const [list, setList] = useState([]);
   const [addMem, setAddMem] = useState({ value: "" });
-  const { groupHash } = useContext(AppContext);
+  const { groupHash, mobileOpen, setMobileOpen } = useContext(AppContext);
   const isFirstRender = useRef(false);
   const items = [];
   const { fetchURL } = props;
@@ -69,6 +86,10 @@ export default function MembersList(props) {
       console.log(err);
     }
     return data;
+  };
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
   };
 
   useEffect(() => {
@@ -133,17 +154,20 @@ export default function MembersList(props) {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      border={1}
       style={{ margin: 10, padding: 10 }}
     >
+      <Box display="flex" flexDirection="column" width="100%">
+        <Typography variant="h5" align="left">
+          参加者リスト
+        </Typography>
+      </Box>
       {items}
-      <Box key="addBox" display="flex" width="100%">
+      <Box key="addBox" display="flex" width="100%" className={classes.root}>
         <TextField
           name="add"
-          style={{ margin: 0 }}
+          mr={3}
           placeholder="参加者名"
           fullWidth
-          margin="normal"
           InputLabelProps={{
             shrink: true,
           }}
@@ -151,9 +175,11 @@ export default function MembersList(props) {
           value={addMem.value}
           onChange={handleChange}
           size="small"
+          margin="none"
         />
         <Button
           variant="contained"
+          size="small"
           onClick={() => {
             addMember();
           }}
@@ -162,6 +188,17 @@ export default function MembersList(props) {
           }}
         >
           追加
+        </Button>
+      </Box>
+      <Box display="flex" flexDirection="column" m={3}>
+        <Button
+          onClick={handleDrawerToggle}
+          style={{
+            backgroundColor: "#9fe4e2",
+          }}
+          variant="contained"
+        >
+          もどる
         </Button>
       </Box>
     </Box>

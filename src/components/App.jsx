@@ -24,6 +24,7 @@ export default function App() {
   const [members, setMembers] = useState(initialMembers);
   const [groupHash, setGroupHash] = useState("");
   const [category, setCategory] = useState(DEFAULT_CATEGORY);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
 
   return (
     <AppContext.Provider
@@ -38,6 +39,8 @@ export default function App() {
         setGroupHash,
         category,
         setCategory,
+        mobileOpen,
+        setMobileOpen,
       }}
     >
       <MuiThemeProvider theme={theme}>
