@@ -1,10 +1,16 @@
 import React, { useState } from "react";
-import { Box } from "@material-ui/core";
+import { Box, createMuiTheme, MuiThemeProvider } from "@material-ui/core";
 import Logo from "./Logo";
 import AppContext from "../context/AppContext";
 import { DEFAULT_CATEGORY, CURRENT_VIEW } from "../const";
 import Main from "./Main";
 import Message from "./Message";
+
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: `"M PLUS Rounded 1c", sans-serif`,
+  },
+});
 
 export default function App() {
   const initialMembers = {
@@ -34,16 +40,18 @@ export default function App() {
         setCategory,
       }}
     >
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Message period={period * 60} severity="" message="" />
-        <Logo />
-        <Main />
-      </Box>
+      <MuiThemeProvider theme={theme}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Message period={period * 60} severity="" message="" />
+          <Logo />
+          <Main />
+        </Box>
+      </MuiThemeProvider>
     </AppContext.Provider>
   );
 }

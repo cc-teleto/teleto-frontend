@@ -135,10 +135,22 @@ export default function StartForm() {
           setMembersInput={setMembersInput}
         />
         <Box display="flex" width="100%" justifyContent="space-between">
-          <Button variant="contained" onClick={addMember}>
+          <Button
+            variant="contained"
+            onClick={addMember}
+            style={{
+              backgroundColor: "#9fe4e2",
+            }}
+          >
             参加者追加
           </Button>
-          <Button variant="contained" type="submit">
+          <Button
+            variant="contained"
+            type="submit"
+            style={{
+              backgroundColor: "#9fe4e2",
+            }}
+          >
             開始
           </Button>
         </Box>

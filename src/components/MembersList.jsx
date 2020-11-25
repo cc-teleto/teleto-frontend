@@ -157,6 +157,9 @@ export default function MembersList(props) {
           onClick={() => {
             addMember();
           }}
+          style={{
+            backgroundColor: "#9fe4e2",
+          }}
         >
           追加
         </Button>

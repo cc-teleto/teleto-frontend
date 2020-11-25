@@ -66,6 +66,9 @@ export default function RandomGenerateMember(props) {
           startText();
           fetchContent();
         }}
+        style={{
+          backgroundColor: "#9fe4e2",
+        }}
       >
         話者切替
       </Button>

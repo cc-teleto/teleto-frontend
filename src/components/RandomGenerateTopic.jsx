@@ -91,6 +91,9 @@ export default function RandomGenerateTopic(props) {
           startText();
           fetchContent();
         }}
+        style={{
+          backgroundColor: "#9fe4e2",
+        }}
       >
         話題切替
       </Button>
