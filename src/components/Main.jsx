@@ -9,15 +9,18 @@ import MembersList from "./MembersList";
 import StartForm from "./StartForm";
 
 export default function Main() {
-  const { groupHash, currentView } = useContext(AppContext);
+  const { groupHash, currentView, category } = useContext(AppContext);
   const [topicFetchURL, setTopicFetchURL] = useState("");
   const [memberFetchURL, setMemberFetchURL] = useState("");
   const [allMemberFetchURL, setAllMemberFetchURL] = useState();
 
   useEffect(() => {
-    if (groupHash) {
+    if (groupHash && category) {
       setTopicFetchURL(
-        getURL("/topics", `/?random=true&grouphash=${groupHash}`)
+        getURL(
+          "/topics",
+          `/?random=true&grouphash=${groupHash}&category=${category}`
+        )
       );
       setMemberFetchURL(
         getURL("/members", `/?random=true&grouphash=${groupHash}`)
@@ -26,7 +29,7 @@ export default function Main() {
         getURL("/members", `/?random=false&grouphash=${groupHash}`)
       );
     }
-  }, [groupHash]);
+  }, [groupHash, category]);
 
   if (currentView === CURRENT_VIEW.START_FORM) {
     return <StartForm />;

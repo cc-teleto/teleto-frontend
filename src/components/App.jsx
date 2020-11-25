@@ -17,6 +17,7 @@ export default function App() {
   const [period, setPeriod] = useState(-1);
   const [members, setMembers] = useState(initialMembers);
   const [groupHash, setGroupHash] = useState("");
+  const [category, setCategory] = useState("");
 
   return (
     <AppContext.Provider
@@ -29,6 +30,8 @@ export default function App() {
         setMembers,
         groupHash,
         setGroupHash,
+        category,
+        setCategory,
       }}
     >
       <Box

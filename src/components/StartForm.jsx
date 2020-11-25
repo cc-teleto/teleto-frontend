@@ -22,6 +22,14 @@ const periodSelectMap = _.range(
   return { name: `${hour}時間`, value: hour };
 });
 
+// カテゴリの選択リストを作成する
+const categorySelectMap = ["初対面"].map((value) => {
+  return {
+    name: value,
+    value,
+  };
+});
+
 // 参加者入力を保持するためのReducer
 const membersInputReducer = (state, action) => {
   const newState = { ...state };
@@ -54,8 +62,10 @@ export default function StartForm() {
     members,
     setMembers,
     setGroupHash,
+    setCategory,
   } = useContext(AppContext);
   const [periodInput, setPeriodInput] = useState(DEFAULT_PERIOD);
+  const [categoryInput, setCategoryInput] = useState("");
   const [membersInput, setMembersInput] = useReducer(
     membersInputReducer,
     members
@@ -85,6 +95,7 @@ export default function StartForm() {
     });
     const data = await res.json();
     setGroupHash(data.grouphash);
+    setCategory(categoryInput);
   };
 
   const onSubmit = (e) => {
@@ -108,6 +119,12 @@ export default function StartForm() {
           periodInput={periodInput}
           onChange={(e) => setPeriodInput(e.target.value)}
           selectMap={periodSelectMap}
+        />
+        <StartFormSelect
+          title="カテゴリ"
+          periodInput={categoryInput}
+          onChange={(e) => setCategoryInput(e.target.value)}
+          selectMap={categorySelectMap}
         />
         <StartFormInput
           title="参加者名"
