@@ -98,11 +98,11 @@ export default function StartForm() {
     });
     const data = await res.json();
     setGroupHash(data.grouphash);
-    setCategory(categoryInput);
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
+    setCategory(categoryInput);
     postMembers(Object.values(membersInput.members));
     setMembers(membersInput);
     setPeriod(periodInput);
