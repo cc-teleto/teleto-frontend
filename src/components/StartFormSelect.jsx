@@ -3,22 +3,6 @@ import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { Select, InputLabel, FormControl, MenuItem } from "@material-ui/core/";
 
-// const MAX_PERIOD = 3;
-// const PERIOD_INTERVAL = 0.5;
-
-// // 開催時間の選択リストを作成する
-// const periodSelectList = _.range(
-//   PERIOD_INTERVAL,
-//   MAX_PERIOD + PERIOD_INTERVAL,
-//   PERIOD_INTERVAL
-// ).map((hour) => {
-//   return (
-//     <MenuItem name="period" value={hour} key={hour}>
-//       {hour}時間
-//     </MenuItem>
-//   );
-// });
-
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -29,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
 export default function StartFormSelect(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const { title, periodInput, onChange, selectMap } = props;
+  const { title, stateInput, onChange, selectMap } = props;
   const periodSelectList = selectMap.map(({ name, value }) => {
     return (
       <MenuItem name={name} value={value} key={value}>
@@ -55,7 +39,7 @@ export default function StartFormSelect(props) {
           open={open}
           onClose={handleClose}
           onOpen={handleOpen}
-          value={periodInput}
+          value={stateInput}
           onChange={onChange}
         >
           {periodSelectList}
@@ -67,7 +51,8 @@ export default function StartFormSelect(props) {
 
 StartFormSelect.propTypes = {
   title: PropTypes.string.isRequired,
-  periodInput: PropTypes.number.isRequired,
+  stateInput: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    .isRequired,
   onChange: PropTypes.func.isRequired,
   selectMap: PropTypes.arrayOf(
     PropTypes.shape({

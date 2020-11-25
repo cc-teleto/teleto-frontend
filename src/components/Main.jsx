@@ -12,27 +12,29 @@ export default function Main() {
   const { groupHash, currentView, category } = useContext(AppContext);
   const [topicFetchURL, setTopicFetchURL] = useState("");
   const [memberFetchURL, setMemberFetchURL] = useState("");
-  const [allMemberFetchURL, setAllMemberFetchURL] = useState();
+  const [allMemberFetchURL, setAllMemberFetchURL] = useState("");
 
   useEffect(() => {
+    let newTopicFetchURL = getURL("/topics", "/?random=true");
+    const newMemberFetchURL = getURL("/members", "/?random=true");
+    const newAllMemberFetchURL = getURL("/members", "/?random=false");
+
+    if (category || category !== DEFAULT_CATEGORY) {
+      newTopicFetchURL += `&category=${category}`;
+    }
+
     const fetchURLs = {
-      topicFetchURL: [getURL("/topics", "/?random=true"), setTopicFetchURL],
-      memberFetchURL: [getURL("/members", "/?random=true"), setMemberFetchURL],
-      allMemberFetchURL: [
-        getURL("/members", "/?random=false"),
-        setAllMemberFetchURL,
-      ],
+      topicFetchURL: [newTopicFetchURL, setTopicFetchURL],
+      memberFetchURL: [newMemberFetchURL, setMemberFetchURL],
+      allMemberFetchURL: [newAllMemberFetchURL, setAllMemberFetchURL],
     };
 
     Object.values(fetchURLs).forEach(([url, setFetchURL]) => {
       let fetchURL = url;
       if (groupHash) {
         fetchURL += `&grouphash=${groupHash}`;
+        setFetchURL(fetchURL);
       }
-      if (category || category !== DEFAULT_CATEGORY) {
-        fetchURL += `&category=${category}`;
-      }
-      setFetchURL(fetchURL);
     });
   }, [groupHash, category]);
 

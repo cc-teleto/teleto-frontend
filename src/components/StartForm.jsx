@@ -64,10 +64,11 @@ export default function StartForm() {
     members,
     setMembers,
     setGroupHash,
+    category,
     setCategory,
   } = useContext(AppContext);
   const [periodInput, setPeriodInput] = useState(DEFAULT_PERIOD);
-  const [categoryInput, setCategoryInput] = useState(DEFAULT_CATEGORY);
+  const [categoryInput, setCategoryInput] = useState(category);
   const [membersInput, setMembersInput] = useReducer(
     membersInputReducer,
     members
@@ -118,13 +119,13 @@ export default function StartForm() {
       >
         <StartFormSelect
           title="開催時間"
-          periodInput={periodInput}
+          stateInput={periodInput}
           onChange={(e) => setPeriodInput(e.target.value)}
           selectMap={periodSelectMap}
         />
         <StartFormSelect
           title="カテゴリ"
-          periodInput={categoryInput}
+          stateInput={categoryInput}
           onChange={(e) => setCategoryInput(e.target.value)}
           selectMap={categorySelectMap}
         />
