@@ -23,7 +23,7 @@ const periodSelectMap = _.range(
 });
 
 // カテゴリの選択リストを作成する
-const categorySelectMap = ["初対面"].map((value) => {
+const categorySelectMap = ["初対面", "Twitterトレンド"].map((value) => {
   return {
     name: value,
     value,

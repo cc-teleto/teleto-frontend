@@ -35,6 +35,7 @@ export default function RandomGenerateTopic(props) {
 
   const fetchContent = async () => {
     try {
+      let content = null;
       const res = await fetch(fetchURL, {
         method: "GET",
         headers: {
@@ -43,8 +44,25 @@ export default function RandomGenerateTopic(props) {
         },
       });
       const data = await res.json();
-      if (data) {
-        stopText(Object.values(data));
+      if (data.value.slice(0, 11) === "Twitterトレンド") {
+        const array = data.value.split(/『|』/);
+        const twitterLink = `http://twitter.com/search?q=${encodeURIComponent(
+          array[1]
+        )}`;
+        content = (
+          <p>
+            {array[0]}
+            <a href={twitterLink} target="_blank" rel="noreferrer">
+              {array[1]}
+            </a>
+            {array[2]}
+          </p>
+        );
+      } else {
+        content = <p>{data.value}</p>;
+      }
+      if (content) {
+        stopText(content);
       }
     } catch (err) {
       console.log(err);
