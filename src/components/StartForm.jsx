@@ -2,7 +2,7 @@ import _ from "lodash";
 import React, { useContext, useReducer, useState } from "react";
 import { Box, Button } from "@material-ui/core";
 import fetch from "node-fetch";
-import { CURRENT_VIEW, getURL } from "../const";
+import { DEFAULT_CATEGORY, CURRENT_VIEW, getURL } from "../const";
 import AppContext from "../context/AppContext";
 import StartFormSelect from "./StartFormSelect";
 import StartFormInput from "./StartFormInput";
@@ -23,12 +23,14 @@ const periodSelectMap = _.range(
 });
 
 // カテゴリの選択リストを作成する
-const categorySelectMap = ["初対面", "Twitterトレンド"].map((value) => {
-  return {
-    name: value,
-    value,
-  };
-});
+const categorySelectMap = [DEFAULT_CATEGORY, "初対面", "Twitterトレンド"].map(
+  (value) => {
+    return {
+      name: value,
+      value,
+    };
+  }
+);
 
 // 参加者入力を保持するためのReducer
 const membersInputReducer = (state, action) => {
@@ -65,7 +67,7 @@ export default function StartForm() {
     setCategory,
   } = useContext(AppContext);
   const [periodInput, setPeriodInput] = useState(DEFAULT_PERIOD);
-  const [categoryInput, setCategoryInput] = useState("");
+  const [categoryInput, setCategoryInput] = useState(DEFAULT_CATEGORY);
   const [membersInput, setMembersInput] = useReducer(
     membersInputReducer,
     members

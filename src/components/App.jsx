@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box } from "@material-ui/core";
 import Logo from "./Logo";
 import AppContext from "../context/AppContext";
-import { CURRENT_VIEW } from "../const";
+import { DEFAULT_CATEGORY, CURRENT_VIEW } from "../const";
 import Main from "./Main";
 import Message from "./Message";
 
@@ -17,7 +17,7 @@ export default function App() {
   const [period, setPeriod] = useState(-1);
   const [members, setMembers] = useState(initialMembers);
   const [groupHash, setGroupHash] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(DEFAULT_CATEGORY);
 
   return (
     <AppContext.Provider

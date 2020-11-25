@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 
-import { CURRENT_VIEW, getURL } from "../const";
+import { CURRENT_VIEW, DEFAULT_CATEGORY, getURL } from "../const";
 import AppContext from "../context/AppContext";
 import RandomGenerateTopic from "./RandomGenerateTopic";
 import RandomGenerateMember from "./RandomGenerateMember";
@@ -15,20 +15,25 @@ export default function Main() {
   const [allMemberFetchURL, setAllMemberFetchURL] = useState();
 
   useEffect(() => {
-    if (groupHash && category) {
-      setTopicFetchURL(
-        getURL(
-          "/topics",
-          `/?random=true&grouphash=${groupHash}&category=${category}`
-        )
-      );
-      setMemberFetchURL(
-        getURL("/members", `/?random=true&grouphash=${groupHash}`)
-      );
-      setAllMemberFetchURL(
-        getURL("/members", `/?random=false&grouphash=${groupHash}`)
-      );
-    }
+    const fetchURLs = {
+      topicFetchURL: [getURL("/topics", "/?random=true"), setTopicFetchURL],
+      memberFetchURL: [getURL("/members", "/?random=true"), setMemberFetchURL],
+      allMemberFetchURL: [
+        getURL("/members", "/?random=false"),
+        setAllMemberFetchURL,
+      ],
+    };
+
+    Object.values(fetchURLs).forEach(([url, setFetchURL]) => {
+      let fetchURL = url;
+      if (groupHash) {
+        fetchURL += `&grouphash=${groupHash}`;
+      }
+      if (category || category !== DEFAULT_CATEGORY) {
+        fetchURL += `&category=${category}`;
+      }
+      setFetchURL(fetchURL);
+    });
   }, [groupHash, category]);
 
   if (currentView === CURRENT_VIEW.START_FORM) {
