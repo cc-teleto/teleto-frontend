@@ -19,9 +19,15 @@ export default function App() {
       member1: "",
     },
   };
+  const initialRooms = {
+    maxId: 0,
+    rooms: {
+    },
+  };
   const [currentView, setCurrentView] = useState(CURRENT_VIEW.START_FORM);
   const [period, setPeriod] = useState(-1);
   const [members, setMembers] = useState(initialMembers);
+  const [rooms, setRooms] = useState(initialRooms);
   const [groupHash, setGroupHash] = useState("");
   const [category, setCategory] = useState(DEFAULT_CATEGORY);
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -35,6 +41,8 @@ export default function App() {
         setPeriod,
         members,
         setMembers,
+        rooms,
+        setRooms,
         groupHash,
         setGroupHash,
         category,

@@ -23,5 +23,13 @@
     "plugin:react/recommended",
     "plugin:prettier/recommended",
     "prettier/react"
-  ]
+  ],
+  "rules": {
+    "prettier/prettier": [
+      "off",
+      {
+        "endOfLine":"auto"
+      }
+    ]
+  }
 }
