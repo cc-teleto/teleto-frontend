@@ -1,0 +1,52 @@
+name: FrontEnd-dev CI
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - name: Checkout source code.
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache node modules.
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/cache
+            !~/cache/exclude
+            **/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Build
+        run: yarn build
+        env:
+          CI: false
+
+      - name: Deploy
+        env:
+          AWS_ACCESS_KEY_ID: "${{ secrets.TELETO_FRONTEND_AWS_S3_ID }}"
+          AWS_SECRET_ACCESS_KEY: "${{ secrets.TELETO_FRONTEND_AWS_S3_KEY }}"
+        run: |
+          aws s3 cp \
+            --recursive \
+            --region us-east-2 \
+            build s3://teleto-page-dev
