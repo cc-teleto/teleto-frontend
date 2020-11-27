@@ -7,6 +7,7 @@ import "../styles/styles.css";
 export default function Roulette() {
   const { members } = useContext(AppContext);
   const [wheel, setWheel] = useState();
+  const [audio] = useState(new Audio("/tick.mp3"));
   const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
 
   // Called when the animation has finished.
@@ -16,13 +17,23 @@ export default function Roulette() {
   }
 
   useEffect(() => {
-    console.log(members);
     const segmentList = Object.values(members.members).map(function (
       value,
       index
     ) {
       return { fillStyle: colorList[index % 4], text: value };
     });
+
+    // This function is called when the sound is to be played.
+    function playSound() {
+      console.log(audio);
+      // Stop and rewind the sound if it already happens to be playing.
+      audio.pause();
+      audio.currentTime = 0;
+
+      // Play the sound.
+      audio.play();
+    }
 
     setWheel(
       new Winwheel({
@@ -39,10 +50,10 @@ export default function Roulette() {
           duration: 5,
           spins: 8,
           callbackFinished: alertPrize,
+          callbackSound: playSound, // Function to call when the tick sound is to be triggered.
         },
       })
     );
-    console.log(wheel);
   }, [members.maxId]);
 
   // Vars used by the code in this page to do power controls.
@@ -54,11 +65,9 @@ export default function Roulette() {
   // -------------------------------------------------------
   function startSpin() {
     // Ensure that spinning can't be clicked again while already running.
-    console.log(wheelSpinning);
     if (wheelSpinning === false) {
       // Based on the power level selected adjust the number of spins for the wheel, the more times is has
       // to rotate with the duration of the animation the quicker the wheel spins.
-      console.log(wheel);
       if (wheelPower === 1) {
         wheel.animation.spins = 3;
       } else if (wheelPower === 2) {
