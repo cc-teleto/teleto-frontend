@@ -106,7 +106,7 @@ export default function StartForm() {
     postMembers(Object.values(membersInput.members));
     setMembers(membersInput);
     setPeriod(periodInput);
-    setCurrentView(CURRENT_VIEW.RANDOM_GENERATE);
+    setCurrentView(CURRENT_VIEW.ROULETTE);
   };
 
   return (
