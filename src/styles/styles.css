@@ -5,3 +5,11 @@ div.canvas {
   background-size: 80%;
   background-repeat: no-repeat;
 }
+
+div.canvas_logo {
+  background-image: url(../img/logo_without_title.png);
+  background-position: center;
+  background-repeat: none;
+  background-size: 23%;
+  background-repeat: no-repeat;
+}

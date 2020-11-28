@@ -49,11 +49,14 @@ export default function Roulette() {
       new Winwheel({
         canvasId: "myCanvas",
         numSegments: itemNumber, // Number of segments
+        pointerAngle: 135, // Ensure this is set correctly
         outerRadius: 165, // The size of the wheel.
         innerRadius: 50,
         centerX: 217, // Used to position on the background correctly.
         centerY: 222,
-        textOrientation: "vertical",
+        strokeStyle: "#ffffff",
+        lineWidth: 1,
+        // textOrientation: "vertical",
         textFontSize: 18, // Font size.\
         rotationAngle: -360 / itemNumber / 2, // show the default position aligned to the text
         // Definition of all the segments.
@@ -63,8 +66,8 @@ export default function Roulette() {
           number: itemNumber,
           outerRadius: 6,
           margin: 3,
-          fillStyle: "#ffffff",
-          strokeStyle: "#000000",
+          fillStyle: "#47B7C1",
+          strokeStyle: "#47B7C1",
         },
         animation: {
           type: "spinToStop",
@@ -78,9 +81,7 @@ export default function Roulette() {
     );
   }, [members.maxId]);
 
-  // -------------------------------------------------------
   // Click handler for spin button.
-  // -------------------------------------------------------
   function startSpin() {
     // Ensure that spinning can't be clicked again while already running.
     if (wheelSpinning === false) {
@@ -105,7 +106,8 @@ export default function Roulette() {
           話すひとは・・・
         </Typography>
       </ThemeProvider>
-      <div className="canvas" width="438" height="582">
+      {/* set className to show the background image */}
+      <div className="canvas_logo" width="438" height="582">
         <canvas id="myCanvas" width="434" height="434">
           {" "}
         </canvas>
