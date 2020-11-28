@@ -3,6 +3,7 @@ import path from "path";
 export const CURRENT_VIEW = {
   START_FORM: "START_FORM",
   RANDOM_GENERATE: "RANDOM_GENERATE",
+  ROULETTE: "ROULETTE",
 };
 export const DEFAULT_CATEGORY = "友人・同僚";
 

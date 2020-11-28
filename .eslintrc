@@ -23,5 +23,14 @@
     "plugin:react/recommended",
     "plugin:prettier/recommended",
     "prettier/react"
-  ]
+  ],
+  "ignorePatterns": ["src/utils/Winwheel.js"],
+  "rules": {
+    "prettier/prettier": [
+      "off",
+      {
+        "endOfLine":"auto"
+      }
+    ]
+  }
 }
