@@ -1,10 +1,19 @@
 import React, { useState } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  // useParams,
+  // useHistory,
+  // useLocation,
+} from 'react-router-dom';
 import { Box, createMuiTheme, MuiThemeProvider } from "@material-ui/core";
 import Logo from "./Logo";
 import AppContext from "../context/AppContext";
 import { DEFAULT_CATEGORY, CURRENT_VIEW } from "../const";
 import Main from "./Main";
 import Message from "./Message";
+import Roulette from "./Roulette";
 
 const theme = createMuiTheme({
   typography: {
@@ -44,6 +53,7 @@ export default function App() {
       }}
     >
       <MuiThemeProvider theme={theme}>
+
         <Box
           display="flex"
           flexDirection="column"
@@ -51,8 +61,18 @@ export default function App() {
           alignItems="center"
         >
           <Message period={period * 60} severity="" message="" />
+          <Router>
           <Logo />
-          <Main />
+            <Switch>
+              <Route path="/" exact>
+                <Main />
+
+              </Route>
+              <Route path="/roulette" exact>
+                <Roulette />
+              </Route>
+            </Switch>
+          </Router>
         </Box>
       </MuiThemeProvider>
     </AppContext.Provider>

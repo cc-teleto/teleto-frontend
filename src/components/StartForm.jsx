@@ -1,5 +1,6 @@
 import _ from "lodash";
 import React, { useContext, useReducer, useState } from "react";
+import { useHistory } from 'react-router-dom';
 import { Box, Button } from "@material-ui/core";
 import fetch from "node-fetch";
 import { DEFAULT_CATEGORY, CURRENT_VIEW, getURL } from "../const";
@@ -58,6 +59,7 @@ const membersInputReducer = (state, action) => {
 };
 
 export default function StartForm() {
+  const history = useHistory();
   const {
     setPeriod,
     setCurrentView,
@@ -107,6 +109,10 @@ export default function StartForm() {
     setMembers(membersInput);
     setPeriod(periodInput);
     setCurrentView(CURRENT_VIEW.ROULETTE);
+    console.log("/////////////onSubmit historyのログ///////////");   
+    console.log(history);
+    history.push('/roulette');
+    console.log(history);
   };
 
   return (
