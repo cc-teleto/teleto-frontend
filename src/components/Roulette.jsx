@@ -1,4 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
+import {
+  // BrowserRouter as Router,
+  // Route,
+  // Switch,
+  // useParams,
+  // useHistory,
+  useLocation,
+} from 'react-router-dom';
 import { Box, Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -9,9 +17,12 @@ import {
 import AppContext from "../context/AppContext";
 import Winwheel from "../utils/Winwheel";
 import "../styles/styles.css";
+import { getURL } from "../const";
 
 export default function Roulette() {
-  const { members } = useContext(AppContext);
+  const ROOM_GET_URL = getURL("/room");
+  const location = useLocation();
+  const { members, setMembers, setEndPeriod, setCategory } = useContext(AppContext);
   const [wheel, setWheel] = useState();
   const [wheelSpinning, setWheelSpinning] = useState(false);
   const audio = new Audio("/tick.mp3");
@@ -85,6 +96,36 @@ export default function Roulette() {
     );
   }, [members.maxId]);
 
+
+  const getRoom = async (grouphash) => {
+    const strURL =  `${ROOM_GET_URL}?grouphash=${grouphash}`
+    const res = await fetch(strURL, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      mode: "cors",
+    });
+    const data = await res.json();
+    console.log("strURL:",strURL);
+    console.log("DATA:", data);
+
+    const getMembers = {
+      maxId: 0,
+      members: {
+      },
+    };
+
+    data.members.forEach((member) =>{
+      getMembers.maxId +=1 ;
+      getMembers.members[`member${member.memberorder+1}`] = member.membername;
+    });
+    setMembers(getMembers); 
+    setCategory(data.category);
+    setEndPeriod(data.endPeriod);
+  };
+
   // Click handler for spin button.
   function startSpin() {
     // Ensure that spinning can't be clicked again while already running.
@@ -113,6 +154,9 @@ export default function Roulette() {
       setWs(wsClient);
     };
     wsClient.onclose = () => console.log('ws closed');
+
+    const path = location.pathname.split('/');
+    getRoom(path[2]);
 
     return () => {
       wsClient.close();

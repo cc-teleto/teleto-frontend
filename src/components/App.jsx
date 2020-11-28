@@ -30,6 +30,7 @@ export default function App() {
   };
   const [currentView, setCurrentView] = useState(CURRENT_VIEW.START_FORM);
   const [period, setPeriod] = useState(-1);
+  const [endPeriod, setEndPeriod] = useState("");
   const [members, setMembers] = useState(initialMembers);
   const [groupHash, setGroupHash] = useState("");
   const [category, setCategory] = useState(DEFAULT_CATEGORY);
@@ -42,6 +43,8 @@ export default function App() {
         setCurrentView,
         period,
         setPeriod,
+        endPeriod,
+        setEndPeriod,
         members,
         setMembers,
         groupHash,

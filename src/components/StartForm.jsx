@@ -70,6 +70,7 @@ export default function StartForm() {
     setGroupHash,
     category,
     setCategory,
+//    grouphash,
   } = useContext(AppContext);
   const [periodInput, setPeriodInput] = useState(DEFAULT_PERIOD);
   const [categoryInput, setCategoryInput] = useState(category);
@@ -105,6 +106,8 @@ export default function StartForm() {
     });
     const data = await res.json();
     setGroupHash(data.grouphash);
+    console.log("grouphash:",data.grouphash);
+    return data.grouphash
   };
 
   const calcEndPeriod = (_period) => {
@@ -112,21 +115,19 @@ export default function StartForm() {
     return dt.add(_period, "hours").format("YYYY-MM-DD HH:mm");
   }
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     setCategory(categoryInput);
     const endPeriod = calcEndPeriod(periodInput)
 
-    postRooms(Object.values(membersInput.members), endPeriod, categoryInput);
+    const grouphash = await postRooms(Object.values(membersInput.members), endPeriod, categoryInput);
     console.log("endPeriod:", endPeriod);
     console.log(postRooms);
     setMembers(membersInput);
     setPeriod(periodInput);
     setCurrentView(CURRENT_VIEW.ROULETTE);
-    history.push('/roulette/XXXXXXXXXXXXXXXXXXXXXXXX');
+    history.push(`/roulette/${grouphash}`);
   };
-
-
 
   return (
     <form id="start-form" onSubmit={onSubmit}>
