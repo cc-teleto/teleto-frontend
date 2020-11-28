@@ -1,14 +1,23 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Box } from "@material-ui/core";
-import Winwheel from "../utils/Winwheel";
+import { Box, Button } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import {
+  createMuiTheme,
+  responsiveFontSizes,
+  ThemeProvider,
+} from "@material-ui/core/styles";
 import AppContext from "../context/AppContext";
+import Winwheel from "../utils/Winwheel";
 import "../styles/styles.css";
 
 export default function Roulette() {
   const { members } = useContext(AppContext);
   const [wheel, setWheel] = useState();
+  const [wheelSpinning, setWheelSpinning] = useState(false);
   const audio = new Audio("/tick.mp3");
   const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
+  let theme = createMuiTheme();
+  theme = responsiveFontSizes(theme);
 
   // Called when the animation has finished.
   function alertPrize(indicatedSegment) {
@@ -69,44 +78,47 @@ export default function Roulette() {
     );
   }, [members.maxId]);
 
-  // Vars used by the code in this page to do power controls.
-  let wheelSpinning = false;
-
   // -------------------------------------------------------
   // Click handler for spin button.
   // -------------------------------------------------------
   function startSpin() {
     // Ensure that spinning can't be clicked again while already running.
     if (wheelSpinning === false) {
-      // Disable the spin button so can't click again while wheel is spinning.
-      document.getElementById("spin_button").src = "spin_off.png";
-      document.getElementById("spin_button").className = "";
-
       // Begin the spin animation by calling startAnimation on the wheel object.
       wheel.startAnimation();
 
       // Set to true so that power can't be changed and spin button re-enabled during
       // the current animation. The user will have to reset before spinning again.
-      wheelSpinning = true;
+      setWheelSpinning(true);
     }
   }
 
   return (
-    <Box justifyContent="center" display="flex">
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <ThemeProvider theme={theme}>
+        <Typography variant="h4" align="center">
+          話すひとは・・・
+        </Typography>
+      </ThemeProvider>
       <div className="canvas" width="438" height="582">
         <canvas id="myCanvas" width="434" height="434">
           {" "}
         </canvas>
       </div>
-      <input
-        type="button"
-        value="SPIN"
-        id="spin_button"
-        src="spin_off.png"
-        alt="Spin"
+      <Button
+        variant="contained"
         onClick={startSpin}
-        onKeyDown={startSpin}
-      />
+        style={{
+          backgroundColor: "#9fe4e2",
+        }}
+      >
+        START
+      </Button>
     </Box>
   );
 }
