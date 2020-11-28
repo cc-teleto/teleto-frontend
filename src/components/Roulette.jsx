@@ -22,7 +22,7 @@ export default function Roulette() {
   // Called when the animation has finished.
   function alertPrize(indicatedSegment) {
     // Do basic alert of the segment text.
-    alert(String(indicatedSegment.text));
+    alert(indicatedSegment.text);
   }
 
   useEffect(() => {
@@ -85,6 +85,12 @@ export default function Roulette() {
   function startSpin() {
     // Ensure that spinning can't be clicked again while already running.
     if (wheelSpinning === false) {
+      // Randomly set the stop angle
+      const stopAt = Math.floor(Math.random() * 361);
+      // TODO send stopAt to websocket
+      console.log(stopAt);
+
+      wheel.animation.stopAngle = stopAt;
       // Begin the spin animation by calling startAnimation on the wheel object.
       wheel.startAnimation();
 
