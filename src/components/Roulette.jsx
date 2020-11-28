@@ -19,6 +19,13 @@ export default function Roulette() {
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
 
+  // for websocket
+  const [ws, setWs] = useState(null);
+  const [messages, setMessages] = useState([]);
+
+
+
+
   // Called when the animation has finished.
   function alertPrize(indicatedSegment) {
     // Do basic alert of the segment text.
@@ -100,6 +107,43 @@ export default function Roulette() {
     }
   }
 
+
+  // for websocket
+  useEffect(() => {
+    const wsClient = new WebSocket('wss://jjfbo951m5.execute-api.us-east-1.amazonaws.com/Prod');
+    wsClient.onopen = () => {
+      console.log('ws opened');
+      setWs(wsClient);
+    };
+    wsClient.onclose = () => console.log('ws closed');
+
+    return () => {
+      wsClient.close();
+    }
+  }, []);
+
+  const messagesTmp = messages;
+  useEffect(() => {
+    if (!ws) return;
+    ws.onmessage = e => {
+      console.log("receiveData", e.data);
+      // const newMessages = messagesTmp.concat([e.data]);
+      // console.log('messagesTmp', newMessages);
+      // setMessages(newMessages);
+      startSpin();
+    };
+  }, [messagesTmp, setMessages, ws]);
+
+  function handleOnClick() {
+    const data = {
+      action: "sendmessage",
+      data: "HelloWorld"
+    }
+    console.log("send message");
+    ws.send(JSON.stringify(data));
+  }
+
+
   return (
     <Box
       display="flex"
@@ -120,7 +164,7 @@ export default function Roulette() {
       </div>
       <Button
         variant="contained"
-        onClick={startSpin}
+        onClick={() => handleOnClick()}
         style={{
           backgroundColor: "#9fe4e2",
         }}
