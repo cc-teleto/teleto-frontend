@@ -49,19 +49,19 @@ export default function Roulette() {
       new Winwheel({
         canvasId: "myCanvas",
         numSegments: itemNumber, // Number of segments
-        outerRadius: 110, // The size of the wheel.
-        innerRadius: 30,
+        outerRadius: 165, // The size of the wheel.
+        innerRadius: 50,
         centerX: 217, // Used to position on the background correctly.
         centerY: 222,
         textOrientation: "vertical",
-        textFontSize: 13, // Font size.\
+        textFontSize: 18, // Font size.\
         rotationAngle: -360 / itemNumber / 2, // show the default position aligned to the text
         // Definition of all the segments.
         segments: segmentList,
         // Specify pin parameters.
         pins: {
           number: itemNumber,
-          outerRadius: 4,
+          outerRadius: 6,
           margin: 3,
           fillStyle: "#ffffff",
           strokeStyle: "#000000",
