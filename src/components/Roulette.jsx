@@ -24,6 +24,7 @@ export default function Roulette() {
   const location = useLocation();
   const { members, setMembers, setEndPeriod, setCategory } = useContext(AppContext);
   const [wheel, setWheel] = useState();
+  const [rouletteMode, setRouletteMode] = useState("HUMAN");
   const [wheelSpinning, setWheelSpinning] = useState(false);
   const audio = new Audio("/tick.mp3");
   const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
@@ -34,10 +35,16 @@ export default function Roulette() {
   const [ws, setWs] = useState(null);
   const [messages, setMessages] = useState([]);
 
+  function setMode(mode) {
+    setRouletteMode(mode);
+  }
+
   // Called when the animation has finished.
   function alertPrize(indicatedSegment) {
     // Do basic alert of the segment text.
-    alert(indicatedSegment.text);
+    setTimeout(setMode, 2000, "TOPIC");
+    console.log(indicatedSegment.text);
+    console.log(setRouletteMode);
   }
 
   useEffect(() => {
@@ -96,9 +103,8 @@ export default function Roulette() {
     );
   }, [members.maxId]);
 
-
   const getRoom = async (grouphash) => {
-    const strURL =  `${ROOM_GET_URL}?grouphash=${grouphash}`
+    const strURL = `${ROOM_GET_URL}?grouphash=${grouphash}`
     const res = await fetch(strURL, {
       method: "GET",
       headers: {
@@ -108,7 +114,7 @@ export default function Roulette() {
       mode: "cors",
     });
     const data = await res.json();
-    console.log("strURL:",strURL);
+    console.log("strURL:", strURL);
     console.log("DATA:", data);
 
     const getMembers = {
@@ -117,11 +123,11 @@ export default function Roulette() {
       },
     };
 
-    data.members.forEach((member) =>{
-      getMembers.maxId +=1 ;
-      getMembers.members[`member${member.memberorder+1}`] = member.membername;
+    data.members.forEach((member) => {
+      getMembers.maxId += 1;
+      getMembers.members[`member${member.memberorder + 1}`] = member.membername;
     });
-    setMembers(getMembers); 
+    setMembers(getMembers);
     setCategory(data.category);
     setEndPeriod(data.endPeriod);
   };
@@ -145,13 +151,18 @@ export default function Roulette() {
     }
   }
 
-
   // for websocket
   useEffect(() => {
     const wsClient = new WebSocket('wss://jjfbo951m5.execute-api.us-east-1.amazonaws.com/Prod');
     wsClient.onopen = () => {
       console.log('ws opened');
       setWs(wsClient);
+
+      // const data = {
+      //   action: "sendhash",
+      //   grouphash: grouphash
+      // }
+
     };
     wsClient.onclose = () => console.log('ws closed');
 
@@ -192,26 +203,33 @@ export default function Roulette() {
       justifyContent="center"
       alignItems="center"
     >
-      <ThemeProvider theme={theme}>
-        <Typography variant="h4" align="center">
-          話すひとは・・・
+      {rouletteMode === "HUMAN" ? (
+        <>
+          <ThemeProvider theme={theme}>
+            <Typography variant="h4" align="center">
+              話すひとは・・・
         </Typography>
-      </ThemeProvider>
-      {/* set className to show the background image */}
-      <div className="canvas_logo" width="438" height="582">
-        <canvas id="myCanvas" width="434" height="434">
-          {" "}
-        </canvas>
-      </div>
-      <Button
-        variant="contained"
-        onClick={() => handleOnClick()}
-        style={{
-          backgroundColor: "#9fe4e2",
-        }}
-      >
-        START
+          </ThemeProvider>
+          {/* set className to show the background image */}
+          <div className="canvas_logo" width="438" height="582">
+            <canvas id="myCanvas" width="434" height="434">
+              {" "}
+            </canvas>
+          </div>
+          <Button
+            variant="contained"
+            onClick={() => handleOnClick()}
+            style={{
+              backgroundColor: "#9fe4e2",
+            }}
+          >
+            START
       </Button>
-    </Box>
+        </>
+      ) : (
+          "Topicモード"
+        )
+      }
+    </Box >
   );
 }
