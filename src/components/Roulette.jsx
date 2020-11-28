@@ -34,22 +34,36 @@ export default function Roulette() {
       audio.play();
     }
 
+    const itemNumber = Object.values(members.members).length;
+
     setWheel(
       new Winwheel({
         canvasId: "myCanvas",
-        numSegments: Object.values(members.members).length, // Number of segments
+        numSegments: itemNumber, // Number of segments
         outerRadius: 110, // The size of the wheel.
+        innerRadius: 30,
         centerX: 217, // Used to position on the background correctly.
         centerY: 222,
-        textFontSize: 10, // Font size.
+        textOrientation: "vertical",
+        textFontSize: 13, // Font size.\
+        rotationAngle: -360 / itemNumber / 2, // show the default position aligned to the text
         // Definition of all the segments.
         segments: segmentList,
+        // Specify pin parameters.
+        pins: {
+          number: itemNumber,
+          outerRadius: 4,
+          margin: 3,
+          fillStyle: "#ffffff",
+          strokeStyle: "#000000",
+        },
         animation: {
           type: "spinToStop",
           duration: 5,
           spins: 8,
           callbackFinished: alertPrize,
           callbackSound: playSound, // Function to call when the tick sound is to be triggered.
+          soundTrigger: "pin",
         },
       })
     );
