@@ -3,13 +3,15 @@ import React, { useContext, useReducer, useState } from "react";
 import { useHistory } from 'react-router-dom';
 import { Box, Button } from "@material-ui/core";
 import fetch from "node-fetch";
+import moment from 'moment';
 import { DEFAULT_CATEGORY, CURRENT_VIEW, getURL } from "../const";
 import AppContext from "../context/AppContext";
 import StartFormSelect from "./StartFormSelect";
 import StartFormInput from "./StartFormInput";
 
+
 const DEFAULT_PERIOD = 2;
-const MEMBER_POST_URL = getURL("/members");
+const ROOM_POST_URL = getURL("/room");
 
 const MAX_PERIOD = 3;
 const PERIOD_INTERVAL = 0.5;
@@ -83,13 +85,16 @@ export default function StartForm() {
   };
 
   // 参加者のリストをAPIに送信する
-  const postMembers = async (_members) => {
+  const postRooms = async (_members, _endPeriod, _category) => {
     const body = {
       members: _members.map((member) => {
         return { name: member };
       }),
+      endPeriod: _endPeriod,
+      category: _category,
     };
-    const res = await fetch(MEMBER_POST_URL, {
+    console.log("body:", body);
+    const res = await fetch(ROOM_POST_URL, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -102,18 +107,26 @@ export default function StartForm() {
     setGroupHash(data.grouphash);
   };
 
+  const calcEndPeriod = (_period) => {
+    const dt = moment();
+    return dt.add(_period, "hours").format("YYYY-MM-DD HH:mm");
+  }
+
   const onSubmit = (e) => {
     e.preventDefault();
     setCategory(categoryInput);
-    postMembers(Object.values(membersInput.members));
+    const endPeriod = calcEndPeriod(periodInput)
+
+    postRooms(Object.values(membersInput.members), endPeriod, categoryInput);
+    console.log("endPeriod:", endPeriod);
+    console.log(postRooms);
     setMembers(membersInput);
     setPeriod(periodInput);
     setCurrentView(CURRENT_VIEW.ROULETTE);
-    console.log("/////////////onSubmit historyのログ///////////");   
-    console.log(history);
-    history.push('/roulette');
-    console.log(history);
+    history.push('/roulette/XXXXXXXXXXXXXXXXXXXXXXXX');
   };
+
+
 
   return (
     <form id="start-form" onSubmit={onSubmit}>

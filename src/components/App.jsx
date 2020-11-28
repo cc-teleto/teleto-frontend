@@ -66,9 +66,8 @@ export default function App() {
             <Switch>
               <Route path="/" exact>
                 <Main />
-
               </Route>
-              <Route path="/roulette" exact>
+              <Route path="/roulette/:id" exact>
                 <Roulette />
               </Route>
             </Switch>

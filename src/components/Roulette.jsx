@@ -23,9 +23,6 @@ export default function Roulette() {
   const [ws, setWs] = useState(null);
   const [messages, setMessages] = useState([]);
 
-
-
-
   // Called when the animation has finished.
   function alertPrize(indicatedSegment) {
     // Do basic alert of the segment text.
