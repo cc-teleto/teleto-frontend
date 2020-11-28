@@ -7,7 +7,7 @@ import "../styles/styles.css";
 export default function Roulette() {
   const { members } = useContext(AppContext);
   const [wheel, setWheel] = useState();
-  const [audio] = useState(new Audio("/tick.mp3"));
+  const audio = new Audio("/tick.mp3");
   const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
 
   // Called when the animation has finished.
@@ -21,12 +21,11 @@ export default function Roulette() {
       value,
       index
     ) {
-      return { fillStyle: colorList[index % 4], text: value };
+      return { fillStyle: colorList[index % colorList.length], text: value };
     });
 
     // This function is called when the sound is to be played.
     function playSound() {
-      console.log(audio);
       // Stop and rewind the sound if it already happens to be playing.
       audio.pause();
       audio.currentTime = 0;
@@ -57,7 +56,6 @@ export default function Roulette() {
   }, [members.maxId]);
 
   // Vars used by the code in this page to do power controls.
-  const wheelPower = 0;
   let wheelSpinning = false;
 
   // -------------------------------------------------------
@@ -66,16 +64,6 @@ export default function Roulette() {
   function startSpin() {
     // Ensure that spinning can't be clicked again while already running.
     if (wheelSpinning === false) {
-      // Based on the power level selected adjust the number of spins for the wheel, the more times is has
-      // to rotate with the duration of the animation the quicker the wheel spins.
-      if (wheelPower === 1) {
-        wheel.animation.spins = 3;
-      } else if (wheelPower === 2) {
-        wheel.animation.spins = 8;
-      } else if (wheelPower === 3) {
-        wheel.animation.spins = 15;
-      }
-
       // Disable the spin button so can't click again while wheel is spinning.
       document.getElementById("spin_button").src = "spin_off.png";
       document.getElementById("spin_button").className = "";
