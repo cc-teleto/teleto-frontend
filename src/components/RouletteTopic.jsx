@@ -11,18 +11,13 @@ import AppContext from "../context/AppContext";
 import Winwheel from "../utils/Winwheel";
 import "../styles/styles.css";
 import { getURL } from "../const";
-import RouletteTopic from "./RouletteTopic";
 
-export default function Roulette() {
+export default function RouletteTopic() {
   const ROOM_GET_URL = getURL("/room");
   const location = useLocation();
-  const {
-    members,
-    setMembers,
-    setEndPeriod,
-    setCategory,
-    setSelectedTalker,
-  } = useContext(AppContext);
+  const { members, setMembers, setEndPeriod, setCategory } = useContext(
+    AppContext
+  );
   const [wheel, setWheel] = useState();
   const [rouletteMode, setRouletteMode] = useState("HUMAN");
   const [wheelSpinning, setWheelSpinning] = useState(false);
@@ -39,18 +34,11 @@ export default function Roulette() {
   }
 
   // Called when the animation has finished.
-  function stopAction(indicatedSegment) {
-    console.log(indicatedSegment.text);
-    setSelectedTalker(indicatedSegment.text);
-    const data = {
-      action: "stoproulette",
-      roulette: "Topic",
-    };
-    console.log("stop roulette");
-    ws.send(JSON.stringify(data));
-
+  function alertPrize(indicatedSegment) {
+    // Do basic alert of the segment text.
     setTimeout(setMode, 2000, "TOPIC");
-    console.log(setRouletteMode);
+    console.log(indicatedSegment.text);
+    console.log(rouletteMode);
   }
 
   useEffect(() => {
@@ -101,7 +89,7 @@ export default function Roulette() {
           type: "spinToStop",
           duration: 5,
           spins: 8,
-          callbackFinished: stopAction,
+          callbackFinished: alertPrize,
           callbackSound: playSound, // Function to call when the tick sound is to be triggered.
           soundTrigger: "pin",
         },
