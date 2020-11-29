@@ -197,7 +197,7 @@ export default function Roulette() {
         }
       }
     };
-  }, [ws]);
+  }, [ws,wheel]);
 
   function handleOnClick() {
     const data = {
