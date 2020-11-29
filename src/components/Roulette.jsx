@@ -189,11 +189,17 @@ export default function Roulette() {
   }, [messagesTmp, setMessages, ws]);
 
   function handleOnClick() {
+    // const data = {
+    //   action: "sendmessage",
+    //   data: "HelloWorld",
+    // };
+    // console.log("send message");
+    // ws.send(JSON.stringify(data));
     const data = {
-      action: "sendmessage",
-      data: "HelloWorld",
+      action: "startroulette",
+      roulette: "Talker",
     };
-    console.log("send message");
+    console.log("start roulette");
     ws.send(JSON.stringify(data));
   }
 
