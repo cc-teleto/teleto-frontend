@@ -133,19 +133,31 @@ export default function Roulette() {
     setEndPeriod(data.endPeriod);
   };
 
-  // Click handler for spin button.
-  function startSpin(angle) {
-    // Ensure that spinning can't be clicked again while already running.
-    if (wheelSpinning === false) {
-      wheel.animation.stopAngle = angle;
+  useEffect(() => {
+    if (wheelSpinning === true) {
+      // wheel.animation.stopAngle = angle;
       // Begin the spin animation by calling startAnimation on the wheel object.
+      console.log(wheel);
       wheel.startAnimation();
 
       // Set to true so that power can't be changed and spin button re-enabled during
       // the current animation. The user will have to reset before spinning again.
-      setWheelSpinning(true);
+      setWheelSpinning(false);
     }
-  }
+  }, [wheelSpinning]);
+  // Click handler for spin button.
+  // function startSpin(angle) {
+  //   // Ensure that spinning can't be clicked again while already running.
+  //   if (wheelSpinning === false) {
+  //     wheel.animation.stopAngle = angle;
+  //     // Begin the spin animation by calling startAnimation on the wheel object.
+  //     wheel.startAnimation();
+
+  //     // Set to true so that power can't be changed and spin button re-enabled during
+  //     // the current animation. The user will have to reset before spinning again.
+  //     setWheelSpinning(true);
+  //   }
+  // }
 
   // for websocket
   useEffect(() => {
@@ -179,7 +191,9 @@ export default function Roulette() {
       // const newMessages = messagesTmp.concat([e.data]);
       // console.log('messagesTmp', newMessages);
       // setMessages(newMessages);
-      startSpin(e.data);
+      // startSpin(e.data);
+      wheel.animation.stopAngle = e.data;
+      setWheelSpinning(true);
     };
   }, [messagesTmp, setMessages, ws]);
 
