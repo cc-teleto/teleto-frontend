@@ -1,12 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import {
-  // BrowserRouter as Router,
-  // Route,
-  // Switch,
-  // useParams,
-  // useHistory,
-  useLocation,
-} from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Box, Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -133,19 +126,17 @@ export default function Roulette() {
     setEndPeriod(data.endPeriod);
   };
 
-  // Click handler for spin button.
-  function startSpin(angle) {
-    // Ensure that spinning can't be clicked again while already running.
-    if (wheelSpinning === false) {
-      wheel.animation.stopAngle = angle;
+  useEffect(() => {
+    if (wheelSpinning === true) {
       // Begin the spin animation by calling startAnimation on the wheel object.
+      console.log(wheel);
       wheel.startAnimation();
 
       // Set to true so that power can't be changed and spin button re-enabled during
       // the current animation. The user will have to reset before spinning again.
-      setWheelSpinning(true);
+      setWheelSpinning(false);
     }
-  }
+  }, [wheelSpinning]);
 
   // for websocket
   useEffect(() => {
@@ -176,20 +167,13 @@ export default function Roulette() {
     if (!ws) return;
     ws.onmessage = (e) => {
       console.log("receiveData", e.data);
-      // const newMessages = messagesTmp.concat([e.data]);
-      // console.log('messagesTmp', newMessages);
-      // setMessages(newMessages);
-      startSpin(e.data);
+
+      wheel.animation.stopAngle = e.data;
+      setWheelSpinning(true);
     };
   }, [messagesTmp, setMessages, ws]);
 
   function handleOnClick() {
-    // const data = {
-    //   action: "sendmessage",
-    //   data: "HelloWorld",
-    // };
-    // console.log("send message");
-    // ws.send(JSON.stringify(data));
     const data = {
       action: "startroulette",
       roulette: "Talker",
@@ -229,7 +213,7 @@ export default function Roulette() {
           </Button>
         </>
       ) : (
-        "Topicモード"
+        "TOPICモード"
       )}
     </Box>
   );
