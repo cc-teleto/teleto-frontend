@@ -36,7 +36,6 @@ export default function Roulette() {
   theme = responsiveFontSizes(theme);
 
   // for websocket
-
   function setMode(mode) {
     setRouletteMode(mode);
   }
@@ -197,7 +196,7 @@ export default function Roulette() {
         }
       }
     };
-  }, [ws,wheel]);
+  }, [ws, wheel]);
 
   function handleOnClick() {
     const data = {

@@ -9,11 +9,21 @@ import {
 import AppContext from "../context/AppContext";
 import Winwheel from "../utils/Winwheel";
 import "../styles/styles.css";
+import { CURRENT_VIEW } from "../const";
 
 export default function RouletteTopic() {
-  const { category, ws, selectedTalker } = useContext(AppContext);
+  const {
+    category,
+    ws,
+    selectedTopic,
+    setSelectedTopic,
+    setCurrentView,
+    selectedTalker,
+  } = useContext(AppContext);
   const [wheel, setWheel] = useState();
   const [wheelSpinning, setWheelSpinning] = useState(false);
+  const [wheelStopped, setWheelStopped] = useState(false);
+  const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
   // const [topics, setTopics] = useState([]);
   const audio = new Audio("/tick.mp3");
   let theme = createMuiTheme();
@@ -29,17 +39,30 @@ export default function RouletteTopic() {
     audio.play();
   }
 
+  // for websocket
+  function setNextView() {
+    setCurrentView(CURRENT_VIEW.RESULT);
+  }
+
   // Called when the animation has finished.
   function stopAction(indicatedSegment) {
     console.log(indicatedSegment.text);
-    const data = {
-      action: "stoproulette",
-      roulette: "Talker",
-      selectedTalker: indicatedSegment.text,
-    };
-    console.log("stop roulette");
-    ws.send(JSON.stringify(data));
+    setSelectedTopic(indicatedSegment.text);
+    setWheelStopped(true);
+    setTimeout(setNextView, 2000);
   }
+
+  useEffect(() => {
+    if (wheelStopped === true) {
+      const data = {
+        action: "stoproulette",
+        roulette: "Topic",
+        selectedTopic,
+      };
+      console.log("stop roulette");
+      ws.send(JSON.stringify(data));
+    }
+  }, [wheelStopped]);
 
   useEffect(() => {
     console.log("=====wheelSpinning-useEffect Start=====");
@@ -70,28 +93,26 @@ export default function RouletteTopic() {
     console.log("=====ws-useEffect Start=====");
     if (!ws) return;
     ws.onmessage = (e) => {
-      console.log("receiveData", e.data);
+      console.log("Topic:receiveData", e.data);
       const resData = JSON.parse(e.data);
 
       // バックエンドバグ修正までコメントアウト
-      // if (resData.action === "getmultitopics") {
-      if (resData.action !== "startroulette") {
+      if (resData.action === "getmultitopics") {
         console.log("*****getmultitopics Start*****");
-        // const segmentList = Object.values(resData.topics).map(function (
-        //   value,
-        //   index
-        // ) {
-        //   return {
-        //     fillStyle: colorList[index % colorList.length],
-        //     text: value,
-        //   };
-        // });
-
-        const segmentList = [
-          { fillStyle: "#eae56f", text: "c" },
-          { fillStyle: "#89f26e", text: "b" },
-          { fillStyle: "#7de6ef", text: "a" },
-        ];
+        const segmentList = Object.values(resData.topics).map(function (
+          value,
+          index
+        ) {
+          return {
+            fillStyle: colorList[index % colorList.length],
+            text: value,
+          };
+        });
+        // const segmentList = [
+        //   { fillStyle: "#eae56f", text: "c" },
+        //   { fillStyle: "#89f26e", text: "b" },
+        //   { fillStyle: "#7de6ef", text: "a" },
+        // ];
 
         console.log("*****segmentList*****");
         console.log(segmentList);
@@ -133,10 +154,10 @@ export default function RouletteTopic() {
           })
         );
       }
-      // } else if (resData.action === "startroulette") {
+
       if (resData.action === "startroulette") {
         if (resData.roulette === "Topic") {
-          wheel.animation.stopAngle = e.data;
+          wheel.animation.stopAngle = resData.rouletteStopAt;
           setWheelSpinning(true);
         }
       }

@@ -55,7 +55,7 @@ export default function Main() {
   // if (currentView === CURRENT_VIEW.ROULETTE) {
   //   return <Roulette />;
   // }
-  if (currentView === CURRENT_VIEW.RANDOM_GENERATE) {
+  if (currentView === CURRENT_VIEW.RESULT) {
     return (
       <>
         <Box width="100%">
@@ -90,5 +90,6 @@ export default function Main() {
       </>
     );
   }
+
   return null;
 }
