@@ -21,11 +21,13 @@ export default function Roulette() {
     setMembers,
     setEndPeriod,
     setCategory,
+    selectedTalker,
     setSelectedTalker,
   } = useContext(AppContext);
   const [wheel, setWheel] = useState();
   const [rouletteMode, setRouletteMode] = useState("HUMAN");
   const [wheelSpinning, setWheelSpinning] = useState(false);
+  const [wheelStopped, setWheelStopped] = useState(false);
   const audio = new Audio("/tick.mp3");
   const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
   let theme = createMuiTheme();
@@ -42,17 +44,23 @@ export default function Roulette() {
   function stopAction(indicatedSegment) {
     console.log(indicatedSegment.text);
     setSelectedTalker(indicatedSegment.text);
-    const data = {
-      action: "stoproulette",
-      roulette: "Talker",
-      selectedTalker: indicatedSegment.text,
-    };
-    console.log("stop roulette");
-    ws.send(JSON.stringify(data));
-
+    setWheelStopped(true);
     setTimeout(setMode, 2000, "TOPIC");
     console.log(setRouletteMode);
   }
+
+  useEffect(() => {
+    if (wheelStopped === true) {
+      const data = {
+        action: "stoproulette",
+        roulette: "Talker",
+        selectedTalker,
+      };
+      console.log("stop roulette");
+      console.log(`51: ${ws}`);
+      ws.send(JSON.stringify(data));
+    }
+  }, [wheelStopped]);
 
   useEffect(() => {
     const segmentList = Object.values(members.members).map(function (
@@ -176,6 +184,7 @@ export default function Roulette() {
 
   useEffect(() => {
     if (!ws) return;
+    console.log(`179: ${ws}`);
     ws.onmessage = (e) => {
       console.log("receiveData", e.data);
 
@@ -190,6 +199,7 @@ export default function Roulette() {
       roulette: "Talker",
     };
     console.log("start roulette");
+    console.log(`194: ${ws}`);
     ws.send(JSON.stringify(data));
   }
 
