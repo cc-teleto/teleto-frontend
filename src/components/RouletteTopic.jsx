@@ -11,11 +11,11 @@ import Winwheel from "../utils/Winwheel";
 import "../styles/styles.css";
 
 export default function RouletteTopic() {
-  const { category, ws } = useContext(AppContext);
+  const { category, ws, selectedTalker } = useContext(AppContext);
   const [wheel, setWheel] = useState();
   const [wheelSpinning, setWheelSpinning] = useState(false);
+  // const [topics, setTopics] = useState([]);
   const audio = new Audio("/tick.mp3");
-  const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
 
@@ -42,7 +42,9 @@ export default function RouletteTopic() {
   }
 
   useEffect(() => {
+    console.log("=====wheelSpinning-useEffect Start=====");
     if (wheelSpinning === true) {
+      console.log("*****wheelSpinning true*****");
       // Begin the spin animation by calling startAnimation on the wheel object.
       console.log(wheel);
       wheel.startAnimation();
@@ -55,32 +57,46 @@ export default function RouletteTopic() {
 
   // ルーレット生成のためのトピックを取得し、ルーレット生成
   useEffect(() => {
+    console.log("=====useEffect Start=====");
     const getTopicsParams = {
       action: "getmultitopics",
       category,
       num: 8,
     };
-    ws.send(JSON.stringify(JSON.stringify(getTopicsParams)));
+    ws.send(JSON.stringify(getTopicsParams));
   }, []);
 
   useEffect(() => {
+    console.log("=====ws-useEffect Start=====");
     if (!ws) return;
     ws.onmessage = (e) => {
       console.log("receiveData", e.data);
       const resData = JSON.parse(e.data);
 
-      if (resData.action === "getmultitopics") {
-        const segmentList = Object.values(resData.topics).map(function (
-          value,
-          index
-        ) {
-          return {
-            fillStyle: colorList[index % colorList.length],
-            text: value,
-          };
-        });
+      // バックエンドバグ修正までコメントアウト
+      // if (resData.action === "getmultitopics") {
+      if (resData.action !== "startroulette") {
+        console.log("*****getmultitopics Start*****");
+        // const segmentList = Object.values(resData.topics).map(function (
+        //   value,
+        //   index
+        // ) {
+        //   return {
+        //     fillStyle: colorList[index % colorList.length],
+        //     text: value,
+        //   };
+        // });
 
-        const itemNumber = Object.values(e.data.data).length;
+        const segmentList = [
+          { fillStyle: "#eae56f", text: "c" },
+          { fillStyle: "#89f26e", text: "b" },
+          { fillStyle: "#7de6ef", text: "a" },
+        ];
+
+        console.log("*****segmentList*****");
+        console.log(segmentList);
+
+        const itemNumber = segmentList.length;
 
         setWheel(
           new Winwheel({
@@ -116,7 +132,9 @@ export default function RouletteTopic() {
             },
           })
         );
-      } else if (resData.action === "startroulette") {
+      }
+      // } else if (resData.action === "startroulette") {
+      if (resData.action === "startroulette") {
         if (resData.roulette === "Topic") {
           wheel.animation.stopAngle = e.data;
           setWheelSpinning(true);
@@ -138,7 +156,7 @@ export default function RouletteTopic() {
     <>
       <ThemeProvider theme={theme}>
         <Typography variant="h4" align="center">
-          お題は・・・
+          {selectedTalker}さんが話すお題は・・・
         </Typography>
       </ThemeProvider>
       {/* set className to show the background image */}

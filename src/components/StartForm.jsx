@@ -1,14 +1,13 @@
 import _ from "lodash";
 import React, { useContext, useReducer, useState } from "react";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 import { Box, Button } from "@material-ui/core";
 import fetch from "node-fetch";
-import moment from 'moment';
+import moment from "moment";
 import { DEFAULT_CATEGORY, CURRENT_VIEW, getURL } from "../const";
 import AppContext from "../context/AppContext";
 import StartFormSelect from "./StartFormSelect";
 import StartFormInput from "./StartFormInput";
-
 
 const DEFAULT_PERIOD = 2;
 const ROOM_POST_URL = getURL("/room");
@@ -66,11 +65,11 @@ export default function StartForm() {
     setPeriod,
     setCurrentView,
     members,
-    setMembers,
+    // setMembers,
     setGroupHash,
     category,
     setCategory,
-//    grouphash,
+    //    grouphash,
   } = useContext(AppContext);
   const [periodInput, setPeriodInput] = useState(DEFAULT_PERIOD);
   const [categoryInput, setCategoryInput] = useState(category);
@@ -106,24 +105,28 @@ export default function StartForm() {
     });
     const data = await res.json();
     setGroupHash(data.grouphash);
-    console.log("grouphash:",data.grouphash);
-    return data.grouphash
+    console.log("grouphash:", data.grouphash);
+    return data.grouphash;
   };
 
   const calcEndPeriod = (_period) => {
     const dt = moment();
     return dt.add(_period, "hours").format("YYYY-MM-DD HH:mm");
-  }
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setCategory(categoryInput);
-    const endPeriod = calcEndPeriod(periodInput)
+    const endPeriod = calcEndPeriod(periodInput);
 
-    const grouphash = await postRooms(Object.values(membersInput.members), endPeriod, categoryInput);
+    const grouphash = await postRooms(
+      Object.values(membersInput.members),
+      endPeriod,
+      categoryInput
+    );
     console.log("endPeriod:", endPeriod);
     console.log(postRooms);
-    setMembers(membersInput);
+    // setMembers(membersInput);
     setPeriod(periodInput);
     setCurrentView(CURRENT_VIEW.ROULETTE);
     history.push(`/roulette/${grouphash}`);

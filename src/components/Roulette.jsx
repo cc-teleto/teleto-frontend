@@ -70,6 +70,8 @@ export default function Roulette() {
       return { fillStyle: colorList[index % colorList.length], text: value };
     });
 
+    console.log(segmentList);
+
     // This function is called when the sound is to be played.
     function playSound() {
       // Stop and rewind the sound if it already happens to be playing.
