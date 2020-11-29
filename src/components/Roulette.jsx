@@ -22,6 +22,8 @@ export default function Roulette() {
     setEndPeriod,
     setCategory,
     setSelectedTalker,
+    ws,
+    setWs,
   } = useContext(AppContext);
   const [wheel, setWheel] = useState();
   const [rouletteMode, setRouletteMode] = useState("HUMAN");
@@ -32,7 +34,6 @@ export default function Roulette() {
   theme = responsiveFontSizes(theme);
 
   // for websocket
-  const [ws, setWs] = useState(null);
 
   function setMode(mode) {
     setRouletteMode(mode);
@@ -178,9 +179,14 @@ export default function Roulette() {
     if (!ws) return;
     ws.onmessage = (e) => {
       console.log("receiveData", e.data);
+      const resData = JSON.parse(e.data);
 
-      wheel.animation.stopAngle = e.data;
-      setWheelSpinning(true);
+      if (resData.action === "startroulette") {
+        if (resData.roulette === "Talker") {
+          wheel.animation.stopAngle = e.data;
+          setWheelSpinning(true);
+        }
+      }
     };
   }, [ws]);
 
@@ -224,7 +230,7 @@ export default function Roulette() {
           </Button>
         </>
       ) : (
-        <RouletteTopic />
+        <RouletteTopic ws={ws} setWs={setWs} />
       )}
     </Box>
   );

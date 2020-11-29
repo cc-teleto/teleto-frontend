@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useLocation } from "react-router-dom";
-import { Box, Button } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {
   createMuiTheme,
@@ -10,120 +9,37 @@ import {
 import AppContext from "../context/AppContext";
 import Winwheel from "../utils/Winwheel";
 import "../styles/styles.css";
-import { getURL } from "../const";
 
 export default function RouletteTopic() {
-  const ROOM_GET_URL = getURL("/room");
-  const location = useLocation();
-  const { members, setMembers, setEndPeriod, setCategory } = useContext(
-    AppContext
-  );
+  const { category, ws } = useContext(AppContext);
   const [wheel, setWheel] = useState();
-  const [rouletteMode, setRouletteMode] = useState("HUMAN");
   const [wheelSpinning, setWheelSpinning] = useState(false);
   const audio = new Audio("/tick.mp3");
   const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
 
-  // for websocket
-  const [ws, setWs] = useState(null);
+  // This function is called when the sound is to be played.
+  function playSound() {
+    // Stop and rewind the sound if it already happens to be playing.
+    audio.pause();
+    audio.currentTime = 0;
 
-  function setMode(mode) {
-    setRouletteMode(mode);
+    // Play the sound.
+    audio.play();
   }
 
   // Called when the animation has finished.
-  function alertPrize(indicatedSegment) {
-    // Do basic alert of the segment text.
-    setTimeout(setMode, 2000, "TOPIC");
+  function stopAction(indicatedSegment) {
     console.log(indicatedSegment.text);
-    console.log(rouletteMode);
-  }
-
-  useEffect(() => {
-    const segmentList = Object.values(members.members).map(function (
-      value,
-      index
-    ) {
-      return { fillStyle: colorList[index % colorList.length], text: value };
-    });
-
-    // This function is called when the sound is to be played.
-    function playSound() {
-      // Stop and rewind the sound if it already happens to be playing.
-      audio.pause();
-      audio.currentTime = 0;
-
-      // Play the sound.
-      audio.play();
-    }
-
-    const itemNumber = Object.values(members.members).length;
-
-    setWheel(
-      new Winwheel({
-        canvasId: "myCanvas",
-        numSegments: itemNumber, // Number of segments
-        pointerAngle: 135, // Ensure this is set correctly
-        outerRadius: 165, // The size of the wheel.
-        innerRadius: 50,
-        centerX: 217, // Used to position on the background correctly.
-        centerY: 222,
-        strokeStyle: "#ffffff",
-        lineWidth: 1,
-        // textOrientation: "vertical",
-        textFontSize: 18, // Font size.\
-        rotationAngle: -360 / itemNumber / 2, // show the default position aligned to the text
-        // Definition of all the segments.
-        segments: segmentList,
-        // Specify pin parameters.
-        pins: {
-          number: itemNumber,
-          outerRadius: 6,
-          margin: 3,
-          fillStyle: "#47B7C1",
-          strokeStyle: "#47B7C1",
-        },
-        animation: {
-          type: "spinToStop",
-          duration: 5,
-          spins: 8,
-          callbackFinished: alertPrize,
-          callbackSound: playSound, // Function to call when the tick sound is to be triggered.
-          soundTrigger: "pin",
-        },
-      })
-    );
-  }, [members.maxId]);
-
-  const getRoom = async (grouphash) => {
-    const strURL = `${ROOM_GET_URL}?grouphash=${grouphash}`;
-    const res = await fetch(strURL, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      mode: "cors",
-    });
-    const data = await res.json();
-    console.log("strURL:", strURL);
-    console.log("DATA:", data);
-
-    const getMembers = {
-      maxId: 0,
-      members: {},
+    const data = {
+      action: "stoproulette",
+      roulette: "Talker",
+      selectedTalker: indicatedSegment.text,
     };
-
-    data.members.forEach((member) => {
-      getMembers.maxId += 1;
-      getMembers.members[`member${member.memberorder + 1}`] = member.membername;
-    });
-    setMembers(getMembers);
-    setCategory(data.category);
-    setEndPeriod(data.endPeriod);
-  };
+    console.log("stop roulette");
+    ws.send(JSON.stringify(data));
+  }
 
   useEffect(() => {
     if (wheelSpinning === true) {
@@ -137,82 +53,109 @@ export default function RouletteTopic() {
     }
   }, [wheelSpinning]);
 
-  // for websocket
+  // ルーレット生成のためのトピックを取得し、ルーレット生成
   useEffect(() => {
-    const path = location.pathname.split("/");
-    const wsClient = new WebSocket(
-      "wss://jjfbo951m5.execute-api.us-east-1.amazonaws.com/Prod"
-    );
-    wsClient.onopen = () => {
-      console.log("ws opened");
-      const data = {
-        action: "sendhash",
-        grouphash: path[2],
-      };
-      wsClient.send(JSON.stringify(data));
-      console.log("send hash");
-      setWs(wsClient);
+    const getTopicsParams = {
+      action: "getmultitopics",
+      category,
+      num: 8,
     };
-    wsClient.onclose = () => console.log("ws closed");
-    getRoom(path[2]);
-
-    return () => {
-      wsClient.close();
-    };
+    ws.send(JSON.stringify(JSON.stringify(getTopicsParams)));
   }, []);
 
   useEffect(() => {
     if (!ws) return;
     ws.onmessage = (e) => {
       console.log("receiveData", e.data);
+      const resData = JSON.parse(e.data);
 
-      wheel.animation.stopAngle = e.data;
-      setWheelSpinning(true);
+      if (resData.action === "getmultitopics") {
+        const segmentList = Object.values(resData.topics).map(function (
+          value,
+          index
+        ) {
+          return {
+            fillStyle: colorList[index % colorList.length],
+            text: value,
+          };
+        });
+
+        const itemNumber = Object.values(e.data.data).length;
+
+        setWheel(
+          new Winwheel({
+            canvasId: "topicRoulette",
+            numSegments: itemNumber, // Number of segments
+            pointerAngle: 135, // Ensure this is set correctly
+            outerRadius: 165, // The size of the wheel.
+            innerRadius: 50,
+            centerX: 217, // Used to position on the background correctly.
+            centerY: 222,
+            strokeStyle: "#ffffff",
+            lineWidth: 1,
+            // textOrientation: "vertical",
+            textFontSize: 18, // Font size.\
+            rotationAngle: -360 / itemNumber / 2, // show the default position aligned to the text
+            // Definition of all the segments.
+            segments: segmentList,
+            // Specify pin parameters.
+            pins: {
+              number: itemNumber,
+              outerRadius: 6,
+              margin: 3,
+              fillStyle: "#47B7C1",
+              strokeStyle: "#47B7C1",
+            },
+            animation: {
+              type: "spinToStop",
+              duration: 5,
+              spins: 8,
+              callbackFinished: stopAction,
+              callbackSound: playSound, // Function to call when the tick sound is to be triggered.
+              soundTrigger: "pin",
+            },
+          })
+        );
+      } else if (resData.action === "startroulette") {
+        if (resData.roulette === "Topic") {
+          wheel.animation.stopAngle = e.data;
+          setWheelSpinning(true);
+        }
+      }
     };
   }, [ws]);
 
   function handleOnClick() {
     const data = {
       action: "startroulette",
-      roulette: "Talker",
+      roulette: "Topic",
     };
     console.log("start roulette");
     ws.send(JSON.stringify(data));
   }
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-    >
-      {rouletteMode === "HUMAN" ? (
-        <>
-          <ThemeProvider theme={theme}>
-            <Typography variant="h4" align="center">
-              話すひとは・・・
-            </Typography>
-          </ThemeProvider>
-          {/* set className to show the background image */}
-          <div className="canvas_logo" width="438" height="582">
-            <canvas id="myCanvas" width="434" height="434">
-              {" "}
-            </canvas>
-          </div>
-          <Button
-            variant="contained"
-            onClick={() => handleOnClick()}
-            style={{
-              backgroundColor: "#9fe4e2",
-            }}
-          >
-            START
-          </Button>
-        </>
-      ) : (
-        <RouletteTopic />
-      )}
-    </Box>
+    <>
+      <ThemeProvider theme={theme}>
+        <Typography variant="h4" align="center">
+          お題は・・・
+        </Typography>
+      </ThemeProvider>
+      {/* set className to show the background image */}
+      <div className="canvas_logo" width="438" height="582">
+        <canvas id="topicRoulette" width="434" height="434">
+          {" "}
+        </canvas>
+      </div>
+      <Button
+        variant="contained"
+        onClick={() => handleOnClick()}
+        style={{
+          backgroundColor: "#9fe4e2",
+        }}
+      >
+        START
+      </Button>
+    </>
   );
 }

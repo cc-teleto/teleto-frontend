@@ -37,6 +37,7 @@ export default function App() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [selectedTalker, setSelectedTalker] = useState("");
   const [selectedTopic, setSelectedTopic] = useState("");
+  const [ws, setWs] = useState(null);
 
   return (
     <AppContext.Provider
@@ -59,6 +60,8 @@ export default function App() {
         setSelectedTalker,
         selectedTopic,
         setSelectedTopic,
+        ws,
+        setWs,
       }}
     >
       <MuiThemeProvider theme={theme}>
