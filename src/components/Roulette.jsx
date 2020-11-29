@@ -6,7 +6,7 @@ import {
   // useParams,
   // useHistory,
   useLocation,
-} from 'react-router-dom';
+} from "react-router-dom";
 import { Box, Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -22,7 +22,9 @@ import { getURL } from "../const";
 export default function Roulette() {
   const ROOM_GET_URL = getURL("/room");
   const location = useLocation();
-  const { members, setMembers, setEndPeriod, setCategory } = useContext(AppContext);
+  const { members, setMembers, setEndPeriod, setCategory } = useContext(
+    AppContext
+  );
   const [wheel, setWheel] = useState();
   const [rouletteMode, setRouletteMode] = useState("HUMAN");
   const [wheelSpinning, setWheelSpinning] = useState(false);
@@ -104,7 +106,7 @@ export default function Roulette() {
   }, [members.maxId]);
 
   const getRoom = async (grouphash) => {
-    const strURL = `${ROOM_GET_URL}?grouphash=${grouphash}`
+    const strURL = `${ROOM_GET_URL}?grouphash=${grouphash}`;
     const res = await fetch(strURL, {
       method: "GET",
       headers: {
@@ -119,8 +121,7 @@ export default function Roulette() {
 
     const getMembers = {
       maxId: 0,
-      members: {
-      },
+      members: {},
     };
 
     data.members.forEach((member) => {
@@ -153,31 +154,32 @@ export default function Roulette() {
 
   // for websocket
   useEffect(() => {
-    const wsClient = new WebSocket('wss://jjfbo951m5.execute-api.us-east-1.amazonaws.com/Prod');
+    const path = location.pathname.split("/");
+    const wsClient = new WebSocket(
+      "wss://jjfbo951m5.execute-api.us-east-1.amazonaws.com/Prod"
+    );
     wsClient.onopen = () => {
-      console.log('ws opened');
+      console.log("ws opened");
+      const data = {
+        action: "sendhash",
+        grouphash: path[2],
+      };
+      wsClient.send(JSON.stringify(data));
+      console.log("send hash");
       setWs(wsClient);
-
-      // const data = {
-      //   action: "sendhash",
-      //   grouphash: grouphash
-      // }
-
     };
-    wsClient.onclose = () => console.log('ws closed');
-
-    const path = location.pathname.split('/');
+    wsClient.onclose = () => console.log("ws closed");
     getRoom(path[2]);
 
     return () => {
       wsClient.close();
-    }
+    };
   }, []);
 
   const messagesTmp = messages;
   useEffect(() => {
     if (!ws) return;
-    ws.onmessage = e => {
+    ws.onmessage = (e) => {
       console.log("receiveData", e.data);
       // const newMessages = messagesTmp.concat([e.data]);
       // console.log('messagesTmp', newMessages);
@@ -189,12 +191,11 @@ export default function Roulette() {
   function handleOnClick() {
     const data = {
       action: "sendmessage",
-      data: "HelloWorld"
-    }
+      data: "HelloWorld",
+    };
     console.log("send message");
     ws.send(JSON.stringify(data));
   }
-
 
   return (
     <Box
@@ -208,7 +209,7 @@ export default function Roulette() {
           <ThemeProvider theme={theme}>
             <Typography variant="h4" align="center">
               話すひとは・・・
-        </Typography>
+            </Typography>
           </ThemeProvider>
           {/* set className to show the background image */}
           <div className="canvas_logo" width="438" height="582">
@@ -224,12 +225,11 @@ export default function Roulette() {
             }}
           >
             START
-      </Button>
+          </Button>
         </>
       ) : (
-          "Topicモード"
-        )
-      }
-    </Box >
+        "Topicモード"
+      )}
+    </Box>
   );
 }
