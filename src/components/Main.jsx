@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Box, Drawer, Button } from "@material-ui/core";
 import PeopleIcon from "@material-ui/icons/People";
-
 import { CURRENT_VIEW, DEFAULT_CATEGORY, getURL } from "../const";
 import AppContext from "../context/AppContext";
 import RandomGenerateTopic from "./RandomGenerateTopic";
@@ -9,8 +8,6 @@ import RandomGenerateMember from "./RandomGenerateMember";
 import StartForm from "./StartForm";
 import MembersList from "./MembersList";
 import LogoWithText from "./LogoWithText";
-import Roulette from "./Roulette";
-
 
 export default function Main() {
   const {
@@ -55,9 +52,9 @@ export default function Main() {
   if (currentView === CURRENT_VIEW.START_FORM) {
     return <StartForm />;
   }
-  if (currentView === CURRENT_VIEW.ROULETTE) {
-    return <Roulette />;
-  }
+  // if (currentView === CURRENT_VIEW.ROULETTE) {
+  //   return <Roulette />;
+  // }
   if (currentView === CURRENT_VIEW.RANDOM_GENERATE) {
     return (
       <>

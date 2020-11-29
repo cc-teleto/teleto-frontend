@@ -1,4 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
+import {
+  // BrowserRouter as Router,
+  // Route,
+  // Switch,
+  // useParams,
+  // useHistory,
+  useLocation,
+} from "react-router-dom";
 import { Box, Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -9,10 +17,16 @@ import {
 import AppContext from "../context/AppContext";
 import Winwheel from "../utils/Winwheel";
 import "../styles/styles.css";
+import { getURL } from "../const";
 
 export default function Roulette() {
-  const { members } = useContext(AppContext);
+  const ROOM_GET_URL = getURL("/room");
+  const location = useLocation();
+  const { members, setMembers, setEndPeriod, setCategory } = useContext(
+    AppContext
+  );
   const [wheel, setWheel] = useState();
+  const [rouletteMode, setRouletteMode] = useState("HUMAN");
   const [wheelSpinning, setWheelSpinning] = useState(false);
   const audio = new Audio("/tick.mp3");
   const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
@@ -23,13 +37,16 @@ export default function Roulette() {
   const [ws, setWs] = useState(null);
   const [messages, setMessages] = useState([]);
 
-
-
+  function setMode(mode) {
+    setRouletteMode(mode);
+  }
 
   // Called when the animation has finished.
   function alertPrize(indicatedSegment) {
     // Do basic alert of the segment text.
-    alert(indicatedSegment.text);
+    setTimeout(setMode, 2000, "TOPIC");
+    console.log(indicatedSegment.text);
+    console.log(setRouletteMode);
   }
 
   useEffect(() => {
@@ -88,6 +105,34 @@ export default function Roulette() {
     );
   }, [members.maxId]);
 
+  const getRoom = async (grouphash) => {
+    const strURL = `${ROOM_GET_URL}?grouphash=${grouphash}`;
+    const res = await fetch(strURL, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      mode: "cors",
+    });
+    const data = await res.json();
+    console.log("strURL:", strURL);
+    console.log("DATA:", data);
+
+    const getMembers = {
+      maxId: 0,
+      members: {},
+    };
+
+    data.members.forEach((member) => {
+      getMembers.maxId += 1;
+      getMembers.members[`member${member.memberorder + 1}`] = member.membername;
+    });
+    setMembers(getMembers);
+    setCategory(data.category);
+    setEndPeriod(data.endPeriod);
+  };
+
   // Click handler for spin button.
   function startSpin() {
     // Ensure that spinning can't be clicked again while already running.
@@ -107,25 +152,34 @@ export default function Roulette() {
     }
   }
 
-
   // for websocket
   useEffect(() => {
-    const wsClient = new WebSocket('wss://jjfbo951m5.execute-api.us-east-1.amazonaws.com/Prod');
+    const path = location.pathname.split("/");
+    const wsClient = new WebSocket(
+      "wss://jjfbo951m5.execute-api.us-east-1.amazonaws.com/Prod"
+    );
     wsClient.onopen = () => {
-      console.log('ws opened');
+      console.log("ws opened");
+      const data = {
+        action: "sendhash",
+        grouphash: path[2],
+      };
+      wsClient.send(JSON.stringify(data));
+      console.log("send hash");
       setWs(wsClient);
     };
-    wsClient.onclose = () => console.log('ws closed');
+    wsClient.onclose = () => console.log("ws closed");
+    getRoom(path[2]);
 
     return () => {
       wsClient.close();
-    }
+    };
   }, []);
 
   const messagesTmp = messages;
   useEffect(() => {
     if (!ws) return;
-    ws.onmessage = e => {
+    ws.onmessage = (e) => {
       console.log("receiveData", e.data);
       // const newMessages = messagesTmp.concat([e.data]);
       // console.log('messagesTmp', newMessages);
@@ -137,12 +191,11 @@ export default function Roulette() {
   function handleOnClick() {
     const data = {
       action: "sendmessage",
-      data: "HelloWorld"
-    }
+      data: "HelloWorld",
+    };
     console.log("send message");
     ws.send(JSON.stringify(data));
   }
-
 
   return (
     <Box
@@ -151,26 +204,32 @@ export default function Roulette() {
       justifyContent="center"
       alignItems="center"
     >
-      <ThemeProvider theme={theme}>
-        <Typography variant="h4" align="center">
-          話すひとは・・・
-        </Typography>
-      </ThemeProvider>
-      {/* set className to show the background image */}
-      <div className="canvas_logo" width="438" height="582">
-        <canvas id="myCanvas" width="434" height="434">
-          {" "}
-        </canvas>
-      </div>
-      <Button
-        variant="contained"
-        onClick={() => handleOnClick()}
-        style={{
-          backgroundColor: "#9fe4e2",
-        }}
-      >
-        START
-      </Button>
+      {rouletteMode === "HUMAN" ? (
+        <>
+          <ThemeProvider theme={theme}>
+            <Typography variant="h4" align="center">
+              話すひとは・・・
+            </Typography>
+          </ThemeProvider>
+          {/* set className to show the background image */}
+          <div className="canvas_logo" width="438" height="582">
+            <canvas id="myCanvas" width="434" height="434">
+              {" "}
+            </canvas>
+          </div>
+          <Button
+            variant="contained"
+            onClick={() => handleOnClick()}
+            style={{
+              backgroundColor: "#9fe4e2",
+            }}
+          >
+            START
+          </Button>
+        </>
+      ) : (
+        "Topicモード"
+      )}
     </Box>
   );
 }

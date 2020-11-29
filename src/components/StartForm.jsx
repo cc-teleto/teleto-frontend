@@ -1,14 +1,17 @@
 import _ from "lodash";
 import React, { useContext, useReducer, useState } from "react";
+import { useHistory } from 'react-router-dom';
 import { Box, Button } from "@material-ui/core";
 import fetch from "node-fetch";
+import moment from 'moment';
 import { DEFAULT_CATEGORY, CURRENT_VIEW, getURL } from "../const";
 import AppContext from "../context/AppContext";
 import StartFormSelect from "./StartFormSelect";
 import StartFormInput from "./StartFormInput";
 
+
 const DEFAULT_PERIOD = 2;
-const MEMBER_POST_URL = getURL("/members");
+const ROOM_POST_URL = getURL("/room");
 
 const MAX_PERIOD = 3;
 const PERIOD_INTERVAL = 0.5;
@@ -58,6 +61,7 @@ const membersInputReducer = (state, action) => {
 };
 
 export default function StartForm() {
+  const history = useHistory();
   const {
     setPeriod,
     setCurrentView,
@@ -66,6 +70,7 @@ export default function StartForm() {
     setGroupHash,
     category,
     setCategory,
+//    grouphash,
   } = useContext(AppContext);
   const [periodInput, setPeriodInput] = useState(DEFAULT_PERIOD);
   const [categoryInput, setCategoryInput] = useState(category);
@@ -81,13 +86,16 @@ export default function StartForm() {
   };
 
   // 参加者のリストをAPIに送信する
-  const postMembers = async (_members) => {
+  const postRooms = async (_members, _endPeriod, _category) => {
     const body = {
       members: _members.map((member) => {
         return { name: member };
       }),
+      endPeriod: _endPeriod,
+      category: _category,
     };
-    const res = await fetch(MEMBER_POST_URL, {
+    console.log("body:", body);
+    const res = await fetch(ROOM_POST_URL, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -98,15 +106,27 @@ export default function StartForm() {
     });
     const data = await res.json();
     setGroupHash(data.grouphash);
+    console.log("grouphash:",data.grouphash);
+    return data.grouphash
   };
 
-  const onSubmit = (e) => {
+  const calcEndPeriod = (_period) => {
+    const dt = moment();
+    return dt.add(_period, "hours").format("YYYY-MM-DD HH:mm");
+  }
+
+  const onSubmit = async (e) => {
     e.preventDefault();
     setCategory(categoryInput);
-    postMembers(Object.values(membersInput.members));
+    const endPeriod = calcEndPeriod(periodInput)
+
+    const grouphash = await postRooms(Object.values(membersInput.members), endPeriod, categoryInput);
+    console.log("endPeriod:", endPeriod);
+    console.log(postRooms);
     setMembers(membersInput);
     setPeriod(periodInput);
     setCurrentView(CURRENT_VIEW.ROULETTE);
+    history.push(`/roulette/${grouphash}`);
   };
 
   return (
