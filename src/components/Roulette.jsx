@@ -1,10 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
 import {
-  // BrowserRouter as Router,
-  // Route,
-  // Switch,
-  // useParams,
-  // useHistory,
   useLocation,
 } from "react-router-dom";
 import { Box, Button } from "@material-ui/core";
@@ -135,7 +130,6 @@ export default function Roulette() {
 
   useEffect(() => {
     if (wheelSpinning === true) {
-      // wheel.animation.stopAngle = angle;
       // Begin the spin animation by calling startAnimation on the wheel object.
       console.log(wheel);
       wheel.startAnimation();
@@ -145,19 +139,6 @@ export default function Roulette() {
       setWheelSpinning(false);
     }
   }, [wheelSpinning]);
-  // Click handler for spin button.
-  // function startSpin(angle) {
-  //   // Ensure that spinning can't be clicked again while already running.
-  //   if (wheelSpinning === false) {
-  //     wheel.animation.stopAngle = angle;
-  //     // Begin the spin animation by calling startAnimation on the wheel object.
-  //     wheel.startAnimation();
-
-  //     // Set to true so that power can't be changed and spin button re-enabled during
-  //     // the current animation. The user will have to reset before spinning again.
-  //     setWheelSpinning(true);
-  //   }
-  // }
 
   // for websocket
   useEffect(() => {
@@ -188,22 +169,13 @@ export default function Roulette() {
     if (!ws) return;
     ws.onmessage = (e) => {
       console.log("receiveData", e.data);
-      // const newMessages = messagesTmp.concat([e.data]);
-      // console.log('messagesTmp', newMessages);
-      // setMessages(newMessages);
-      // startSpin(e.data);
+
       wheel.animation.stopAngle = e.data;
       setWheelSpinning(true);
     };
   }, [messagesTmp, setMessages, ws]);
 
   function handleOnClick() {
-    // const data = {
-    //   action: "sendmessage",
-    //   data: "HelloWorld",
-    // };
-    // console.log("send message");
-    // ws.send(JSON.stringify(data));
     const data = {
       action: "startroulette",
       roulette: "Talker",
@@ -243,7 +215,28 @@ export default function Roulette() {
           </Button>
         </>
       ) : (
-        "Topicモード"
+        <>
+          <ThemeProvider theme={theme}>
+            <Typography variant="h4" align="center">
+              話すひとは・・・
+            </Typography>
+          </ThemeProvider>
+          {/* set className to show the background image */}
+          <div className="canvas_logo" width="438" height="582">
+            <canvas id="myCanvas" width="434" height="434">
+              {" "}
+            </canvas>
+          </div>
+          <Button
+            variant="contained"
+            onClick={() => handleOnClick()}
+            style={{
+              backgroundColor: "#9fe4e2",
+            }}
+          >
+            START
+          </Button>
+        </>
       )}
     </Box>
   );
