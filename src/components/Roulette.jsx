@@ -57,7 +57,6 @@ export default function Roulette() {
         selectedTalker,
       };
       console.log("stop roulette");
-      console.log(`51: ${ws}`);
       ws.send(JSON.stringify(data));
     }
   }, [wheelStopped]);
@@ -184,7 +183,6 @@ export default function Roulette() {
 
   useEffect(() => {
     if (!ws) return;
-    console.log(`179: ${ws}`);
     ws.onmessage = (e) => {
       console.log("receiveData", e.data);
 
@@ -199,7 +197,6 @@ export default function Roulette() {
       roulette: "Talker",
     };
     console.log("start roulette");
-    console.log(`194: ${ws}`);
     ws.send(JSON.stringify(data));
   }
 
