@@ -134,15 +134,10 @@ export default function Roulette() {
   };
 
   // Click handler for spin button.
-  function startSpin() {
+  function startSpin(angle) {
     // Ensure that spinning can't be clicked again while already running.
     if (wheelSpinning === false) {
-      // Randomly set the stop angle
-      const stopAt = Math.floor(Math.random() * 361);
-      // TODO send stopAt to websocket
-      console.log(stopAt);
-
-      wheel.animation.stopAngle = stopAt;
+      wheel.animation.stopAngle = angle;
       // Begin the spin animation by calling startAnimation on the wheel object.
       wheel.startAnimation();
 
@@ -184,16 +179,22 @@ export default function Roulette() {
       // const newMessages = messagesTmp.concat([e.data]);
       // console.log('messagesTmp', newMessages);
       // setMessages(newMessages);
-      startSpin();
+      startSpin(e.data);
     };
   }, [messagesTmp, setMessages, ws]);
 
   function handleOnClick() {
+    // const data = {
+    //   action: "sendmessage",
+    //   data: "HelloWorld",
+    // };
+    // console.log("send message");
+    // ws.send(JSON.stringify(data));
     const data = {
-      action: "sendmessage",
-      data: "HelloWorld",
+      action: "startroulette",
+      roulette: "Talker",
     };
-    console.log("send message");
+    console.log("start roulette");
     ws.send(JSON.stringify(data));
   }
 
