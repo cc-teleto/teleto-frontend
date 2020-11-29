@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import {
-  useLocation,
-} from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Box, Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -215,28 +213,7 @@ export default function Roulette() {
           </Button>
         </>
       ) : (
-        <>
-          <ThemeProvider theme={theme}>
-            <Typography variant="h4" align="center">
-              話すひとは・・・
-            </Typography>
-          </ThemeProvider>
-          {/* set className to show the background image */}
-          <div className="canvas_logo" width="438" height="582">
-            <canvas id="myCanvas" width="434" height="434">
-              {" "}
-            </canvas>
-          </div>
-          <Button
-            variant="contained"
-            onClick={() => handleOnClick()}
-            style={{
-              backgroundColor: "#9fe4e2",
-            }}
-          >
-            START
-          </Button>
-        </>
+        "TOPICモード"
       )}
     </Box>
   );
