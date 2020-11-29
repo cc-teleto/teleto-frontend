@@ -190,7 +190,7 @@ export default function Roulette() {
 
       if (resData.action === "startroulette") {
         if (resData.roulette === "Talker") {
-          wheel.animation.stopAngle = e.data;
+          wheel.animation.stopAngle = resData.rouletteStopAt;
           setWheelSpinning(true);
         }
       }
