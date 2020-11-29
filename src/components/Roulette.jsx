@@ -44,7 +44,8 @@ export default function Roulette() {
     setSelectedTalker(indicatedSegment.text);
     const data = {
       action: "stoproulette",
-      roulette: "Topic",
+      roulette: "Talker",
+      selectedTalker: indicatedSegment.text,
     };
     console.log("stop roulette");
     ws.send(JSON.stringify(data));
