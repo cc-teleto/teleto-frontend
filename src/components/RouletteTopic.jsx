@@ -203,7 +203,6 @@ export default function RouletteTopic() {
         </Typography>
       </ThemeProvider>
       {/* set className to show the background image */}
-      {/* {wheel ?  */}
       <>
         <div className="canvas_logo" width="438" height="582">
           <canvas id="topicRoulette" width="434" height="434">
@@ -220,25 +219,6 @@ export default function RouletteTopic() {
           START
         </Button>
       </>
-      {/* //  : 
-      //   <>
-      //     <div className="canvas_logo" width="438" height="582">
-      //       <canvas id="loadingRoulette" width="434" height="434">
-      //         {" "}
-      //       </canvas>
-      //     </div>
-      //     <Button
-      //       variant="contained"
-      //       style={{
-      //         backgroundColor: "#9fe4e2",
-      //       }}
-      //       disabled
-      //     >
-      //       START
-      //     </Button>
-      //   </>
-      // }
-      // ) */}
     </>
   );
 }
