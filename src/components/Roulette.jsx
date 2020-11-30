@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import { Box, Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -10,12 +10,13 @@ import {
 import AppContext from "../context/AppContext";
 import Winwheel from "../utils/Winwheel";
 import "../styles/styles.css";
-import { getURL } from "../const";
+import { getURL, CURRENT_VIEW } from "../const";
 import RouletteTopic from "./RouletteTopic";
 
 export default function Roulette() {
   const ROOM_GET_URL = getURL("/room");
   const location = useLocation();
+  const history = useHistory();
   const {
     members,
     setMembers,
@@ -23,11 +24,14 @@ export default function Roulette() {
     setCategory,
     selectedTalker,
     setSelectedTalker,
+    selectedTopic,
+    setCurrentView,
     ws,
     setWs,
     rouletteMode,
     setRouletteMode,
   } = useContext(AppContext);
+
   const [wheel, setWheel] = useState();
   const [wheelSpinning, setWheelSpinning] = useState(false);
   const [wheelStopped, setWheelStopped] = useState(false);
@@ -43,11 +47,21 @@ export default function Roulette() {
 
   // Called when the animation has finished.
   function stopAction(indicatedSegment) {
-    console.log(indicatedSegment.text);
-    setSelectedTalker(indicatedSegment.text);
-    setWheelStopped(true);
-    setTimeout(setMode, 2000, "TOPIC");
-    console.log(setRouletteMode);
+    if (selectedTopic) {
+      const path = location.pathname.split("/");
+      const grouphash = path[2];
+      console.log("detect topic already set");
+      setSelectedTalker(indicatedSegment.text);
+      setWheelStopped(true);
+      setCurrentView(CURRENT_VIEW.RESULT);
+      history.push(`/result/${grouphash}`);
+    } else {
+      console.log(indicatedSegment.text);
+      setSelectedTalker(indicatedSegment.text);
+      setWheelStopped(true);
+      setTimeout(setMode, 2000, "TOPIC");
+      console.log(setRouletteMode);
+    }    
   }
 
   useEffect(() => {
