@@ -34,6 +34,8 @@ export default function RouletteTopic() {
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
 
+  console.log("Rendering RouletteTopic");
+
   // This function is called when the sound is to be played.
   function playSound() {
     // Stop and rewind the sound if it already happens to be playing.
@@ -49,6 +51,7 @@ export default function RouletteTopic() {
     const path = location.pathname.split("/");
     const grouphash = path[2];
     setCurrentView(CURRENT_VIEW.RESULT);
+    setWheel(undefined);
     history.push(`/result/${grouphash}`);
   }
 
@@ -200,7 +203,6 @@ export default function RouletteTopic() {
         </Typography>
       </ThemeProvider>
       {/* set className to show the background image */}
-      {/* {wheel ?  */}
       <>
         <div className="canvas_logo" width="438" height="582">
           <canvas id="topicRoulette" width="434" height="434">
@@ -217,25 +219,6 @@ export default function RouletteTopic() {
           START
         </Button>
       </>
-      {/* //  : 
-      //   <>
-      //     <div className="canvas_logo" width="438" height="582">
-      //       <canvas id="loadingRoulette" width="434" height="434">
-      //         {" "}
-      //       </canvas>
-      //     </div>
-      //     <Button
-      //       variant="contained"
-      //       style={{
-      //         backgroundColor: "#9fe4e2",
-      //       }}
-      //       disabled
-      //     >
-      //       START
-      //     </Button>
-      //   </>
-      // }
-      // ) */}
     </>
   );
 }

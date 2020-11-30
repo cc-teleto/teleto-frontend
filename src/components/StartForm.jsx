@@ -65,7 +65,7 @@ export default function StartForm() {
     setPeriod,
     setCurrentView,
     members,
-    // setMembers,
+    setMembers,
     setGroupHash,
     category,
     setCategory,
@@ -125,7 +125,18 @@ export default function StartForm() {
       endPeriodLocal,
       categoryInput
     );
-    // setMembers(membersInput);
+
+    console.log("endPeriod:", endPeriod);
+    console.log(postRooms);
+
+    // URLでアクセスした場合と条件をそろえるためにMembersを初期化
+    setMembers({
+      maxId: 1,
+      members: {
+        member1: "",
+      },
+    });
+
     setPeriod(periodInput);
     setCurrentView(CURRENT_VIEW.ROULETTE);
     history.push(`/roulette/${grouphash}`);

@@ -66,7 +66,9 @@ export default function MembersList(props) {
   const classes = useStyles();
   const [list, setList] = useState([]);
   const [addMem, setAddMem] = useState({ value: "" });
-  const { groupHash, mobileOpen, setMobileOpen } = useContext(AppContext);
+  const { groupHash, mobileOpen, setMobileOpen, members } = useContext(
+    AppContext
+  );
   const isFirstRender = useRef(false);
   const items = [];
   const { fetchURL } = props;
@@ -93,6 +95,10 @@ export default function MembersList(props) {
   };
 
   useEffect(() => {
+    const addMemberList = Object.values(members.members).map(function (value) {
+      return { membername: value };
+    });
+    setList(addMemberList);
     isFirstRender.current = true;
   }, []);
 
@@ -102,7 +108,6 @@ export default function MembersList(props) {
         isFirstRender.current = false;
       } else {
         const data = await fetchContent();
-
         setList(data.members);
       }
     })();
