@@ -16,7 +16,7 @@ export default function Roulette() {
     setMembers,
     setEndPeriod,
     setCategory,
-    setWs,
+    ws,
     rouletteMode,
   } = useContext(AppContext);
 
@@ -50,24 +50,20 @@ export default function Roulette() {
     setEndPeriod(data.endPeriod);
   };
 
-  // for websocket
   useEffect(() => {
-    const path = location.pathname.split("/");
-    const wsClient = new WebSocket(
-      "wss://jjfbo951m5.execute-api.us-east-1.amazonaws.com/Prod"
-    );
-    wsClient.onopen = () => {
-      console.log("ws opened");
+    if (ws) {
+      const path = location.pathname.split("/");
       const data = {
         action: "sendhash",
         grouphash: path[2],
       };
-      wsClient.send(JSON.stringify(data));
+      ws.send(JSON.stringify(data));
       console.log("send hash");
-      setWs(wsClient);
-    };
-    wsClient.onclose = () => console.log("ws closed");
+    }
+  }, [ws])
 
+  // for websocket
+  useEffect(() => {
     setLoadingWheel(
       new Winwheel({
         canvasId: "loadingRoulette",
@@ -109,11 +105,8 @@ export default function Roulette() {
     );
 
     // 必要情報の取得
+    const path = location.pathname.split("/");
     getRoom(path[2]);
-
-    return () => {
-      wsClient.close();
-    };
   }, []);
 
   return (
