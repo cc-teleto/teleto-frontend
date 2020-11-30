@@ -95,11 +95,10 @@ export default function MembersList(props) {
   };
 
   useEffect(() => {
-    const segmentList = Object.values(members.members).map(function (value) {
+    const addMemberList = Object.values(members.members).map(function (value) {
       return { membername: value };
     });
-    console.log("segmentList:", segmentList);
-    setList(segmentList);
+    setList(addMemberList);
     isFirstRender.current = true;
   }, []);
 
@@ -109,8 +108,6 @@ export default function MembersList(props) {
         isFirstRender.current = false;
       } else {
         const data = await fetchContent();
-        console.log("data.members:", data.members);
-
         setList(data.members);
       }
     })();
