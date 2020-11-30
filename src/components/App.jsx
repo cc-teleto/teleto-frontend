@@ -81,6 +81,9 @@ export default function App() {
               <Route path="/roulette/:id" exact>
                 <Roulette />
               </Route>
+              <Route path="/result/:id" exact>
+                <Main />
+              </Route>
             </Switch>
           </Router>
         </Box>

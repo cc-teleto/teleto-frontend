@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import { useLocation, useHistory } from "react-router-dom";
 import { Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -12,6 +13,8 @@ import "../styles/styles.css";
 import { CURRENT_VIEW } from "../const";
 
 export default function RouletteTopic() {
+  const location = useLocation();
+  const history = useHistory();
   const {
     category,
     ws,
@@ -24,6 +27,7 @@ export default function RouletteTopic() {
   const [wheelSpinning, setWheelSpinning] = useState(false);
   const [wheelStopped, setWheelStopped] = useState(false);
   const [topics, setTopics] = useState([]);
+  const [topicList, setTopicList] = useState([]);
   const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
   // const [topics, setTopics] = useState([]);
   const audio = new Audio("/tick.mp3");
@@ -79,13 +83,23 @@ export default function RouletteTopic() {
 
   // for websocket
   function setNextView() {
+    const path = location.pathname.split("/");
+    const grouphash = path[2];
     setCurrentView(CURRENT_VIEW.RESULT);
+    history.push(`/result/${grouphash}`);
   }
 
   // Called when the animation has finished.
   function stopAction(indicatedSegment) {
-    console.log(indicatedSegment.text);
-    setSelectedTopic(indicatedSegment.text);
+    console.log("selectedTopic:", topicList);
+    let resultTopic;
+    topicList.forEach((topic) => {
+      if (topic.keyword === indicatedSegment.text) {
+        resultTopic = topic.topic;
+      }
+    });
+    console.log("resultTopic:", resultTopic);
+    setSelectedTopic(resultTopic);
     setWheelStopped(true);
     setTimeout(setNextView, 2000);
   }
@@ -176,7 +190,7 @@ export default function RouletteTopic() {
       // バックエンドバグ修正までコメントアウト
       if (resData.action === "getmultitopics") {
         console.log("*****getmultitopics Start*****");
-
+        setTopicList(resData.topics);
         const segmentList = resData.topics.map(function (value, index) {
           console.log(value.topic.replace(/(?:[\w\s]{16})/g, "$&|\n"));
           return {
