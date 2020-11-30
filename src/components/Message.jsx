@@ -23,8 +23,6 @@ export default function Message(props) {
 
   useEffect(() => {
     let intervalId;
-    console.log("timeLeft");
-    console.log(timeLeft);
     if (endPeriod) {
 
       intervalId = setInterval(() => {
