@@ -14,20 +14,25 @@ export default function Message(props) {
   const { period, severity, message } = props;
 
   useEffect(() => {
-    setTimeLeft(period);
-  }, [period]);
-  console.log("timeLeft");
-  console.log(timeLeft);
+    // setTimeLeft(period);
+    const dt = moment();
+    const endTime = moment(endPeriod);
+    const dif = endTime.diff(dt, 'minutes');
+    setTimeLeft(dif + 1);
+  }, [period, endPeriod]);
+
   useEffect(() => {
     let intervalId;
-    if (timeLeft > 0) {
+    console.log("timeLeft");
+    console.log(timeLeft);
+    if (endPeriod) {
 
       intervalId = setInterval(() => {
         // setTimeLeft(timeLeft - 1);
         const dt = moment();
         const endTime = moment(endPeriod);
         const dif = endTime.diff(dt, 'minutes');
-        setTimeLeft(dif);
+        setTimeLeft(dif + 1);
       }, 1000 * 60);
     }
     if (timeLeft === 0 && currentView === CURRENT_VIEW.RANDOM_GENERATE) {
@@ -35,7 +40,7 @@ export default function Message(props) {
       alert("終了時刻となりました");
     }
     return () => clearInterval(intervalId);
-  }, [timeLeft, currentView]);
+  }, [timeLeft, currentView,endPeriod]);
 
   if (severity && message) {
     setAlertMsg(<Alert severity={severity}>{message}</Alert>);
