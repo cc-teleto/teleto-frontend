@@ -1,6 +1,7 @@
 import { Box, Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import DiceIcon from "@material-ui/icons/Casino";
+import { useHistory, useLocation } from "react-router-dom";
 import {
   createMuiTheme,
   responsiveFontSizes,
@@ -11,19 +12,25 @@ import React, { useContext } from "react";
 // import PropTypes from "prop-types";
 // import TextLoop from "react-text-loop";
 import AppContext from "../context/AppContext";
+import { CURRENT_VIEW } from "../const";
 
 export default function RandomGenerateMember() {
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
+  const history = useHistory();
+  const location = useLocation();
   const {
     // members,
     // category,
     // ws,
     // selectedTopic,
     // setSelectedTopic,
-    // setCurrentView,
+    setCurrentView,
     selectedTalker,
+    // grouphash
   } = useContext(AppContext);
+  const path = location.pathname.split("/");
+  const grouphash = path[2];
   // const { fetchURL } = props;
   // const [membersLoop, setMembersLoop] = useState(
   //   Object.values(members.members)
@@ -99,10 +106,10 @@ export default function RandomGenerateMember() {
         <Button
           variant="contained"
           startIcon={<DiceIcon />}
-          // onClick={async () => {
-          //   // startText();
-          //   // fetchContent();
-          // }}
+           onClick={async () => {
+            setCurrentView(CURRENT_VIEW.ROULETTE);
+            history.push(`/roulette/${grouphash}`);
+           }}
           style={{
             backgroundColor: "#9fe4e2",
             fontSize: "15px",
