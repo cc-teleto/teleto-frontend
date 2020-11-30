@@ -51,6 +51,11 @@ export default function Roulette() {
   }
 
   useEffect(() => {
+    console.log("loadingWheel start");
+    if (loadingWheel) loadingWheel.startAnimation();
+  }, [loadingWheel]);
+
+  useEffect(() => {
     if (wheelStopped === true) {
       const data = {
         action: "stoproulette",
@@ -229,10 +234,7 @@ export default function Roulette() {
     };
   }, []);
 
-  useEffect(() => {
-    console.log("loadingWheel start");
-    if (loadingWheel) loadingWheel.startAnimation();
-  }, [loadingWheel]);
+
 
   useEffect(() => {
     if (!ws) return;
@@ -274,6 +276,7 @@ export default function Roulette() {
 
     console.log(initialMembersJson);
     console.log(currentMembersJson);
+    console.log("check:",initialMembersJson !== currentMembersJson);
 
     if (initialMembersJson !== currentMembersJson) {
       if (loadingWheel) loadingWheel.stopAnimation();
