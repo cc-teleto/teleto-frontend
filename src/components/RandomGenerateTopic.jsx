@@ -9,8 +9,6 @@ import {
 
 import React, { useContext } from "react";
 import AppContext from "../context/AppContext";
-// import PropTypes from "prop-types";
-// import TextLoop from "react-text-loop";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,85 +38,24 @@ export default function RandomGenerateTopic() {
   const classes = useStyles();
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
+  const { selectedTopic, setSelectedTopic } = useContext(AppContext);
 
-  // const { fetchURL } = props;
-  // const [interval, setInterval] = useState(100);
-  // const [isAniDone, setIsAniDone] = useState(false);
-  const { selectedTopic } = useContext(AppContext);
-
-  // const dummyTopics = [
-  //   "リンゴについてどう思いますか",
-  //   "もし空を飛べるとしたら、何をしますか",
-  //   "トイレットペーパーについて教えてください",
-  //   "どっち派？犬と猫",
-  //   "生姜さんのいい点を一つ教えてください",
-  //   "鈴木さんを動物に例えると何だと思いますか",
-  //   "好きなものをちくわを使ってでプレゼンしてください",
-  //   "メンバーの中でホルンが上手そうな人は誰だと思いますか",
-  //   "うどんとそばのどちらに興味がありますか",
-  // ];
-  // const [topicsLoop, setTopicsLoop] = useState(dummyTopics);
-
-  // const stopText = (text) => {
-  //   setTimeout(() => {
-  //     setTopicsLoop(text);
-  //   }, 1300);
-  //   setTimeout(() => {
-  //     setInterval(0);
-  //   }, 1500);
-  //   setTimeout(() => {
-  //     setIsAniDone(true);
-  //   }, 2000);
-  // };
-
-  // const startText = () => {
-  //   setIsAniDone(false);
-  //   setTopicsLoop(dummyTopics);
-  //   setInterval(100);
-  // };
-
-  // const fetchContent = async () => {
-  //   try {
-  //     let content = null;
-  //     const res = await fetch(fetchURL, {
-  //       method: "GET",
-  //       headers: {
-  //         Accept: "application/json",
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //     const data = await res.json();
-  //     if (data.value.slice(0, 11) === "Twitterトレンド") {
-  //       const array = data.value.split(/『|』/);
-  //       const twitterLink = `http://twitter.com/search?q=${encodeURIComponent(
-  //         array[1]
-  //       )}`;
-  //       content = (
-  //         <>
-  //           {array[0]}
-  //           <a href={twitterLink} target="_blank" rel="noreferrer">
-  //             {array[1]}
-  //           </a>
-  //           {array[2]}
-  //         </>
-  //       );
-  //     } else {
-  //       content = data.value;
-  //     }
-  //     if (content) {
-  //       stopText(content);
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (fetchURL) {
-  //     startText();
-  //     fetchContent();
-  //   }
-  // }, [fetchURL]);
+  if (String(selectedTopic).slice(0, 11) === "Twitterトレンド") {
+    const array = String(selectedTopic).split(/『|』/);
+    const twitterLink = `http://twitter.com/search?q=${encodeURIComponent(
+      array[1]
+    )}`;
+    const content = (
+      <>
+        {array[0]}
+        <a href={twitterLink} target="_blank" rel="noreferrer">
+          {array[1]}
+        </a>
+        {array[2]}
+      </>
+    );
+    setSelectedTopic(content);
+  }
 
   return (
     <Box
@@ -150,10 +87,6 @@ export default function RandomGenerateTopic() {
         <Button
           variant="contained"
           startIcon={<ChatIcon />}
-          // onClick={async () => {
-          //   startText();
-          //   fetchContent();
-          // }}
           style={{
             backgroundColor: "#9fe4e2",
             fontSize: "15px",
@@ -165,7 +98,3 @@ export default function RandomGenerateTopic() {
     </Box>
   );
 }
-
-// RandomGenerateTopic.propTypes = {
-//   fetchURL: PropTypes.string.isRequired,
-// };
