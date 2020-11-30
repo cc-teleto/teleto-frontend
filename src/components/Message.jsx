@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Box } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
+import moment from "moment";
 
 import AppContext from "../context/AppContext";
 import { CURRENT_VIEW } from "../const";
@@ -9,18 +10,24 @@ import { CURRENT_VIEW } from "../const";
 export default function Message(props) {
   const [timeLeft, setTimeLeft] = useState(-1);
   const [alertMsg, setAlertMsg] = useState("");
-  const { currentView } = useContext(AppContext);
+  const { currentView, endPeriod } = useContext(AppContext);
   const { period, severity, message } = props;
 
   useEffect(() => {
     setTimeLeft(period);
   }, [period]);
-
+  console.log("timeLeft");
+  console.log(timeLeft);
   useEffect(() => {
     let intervalId;
     if (timeLeft > 0) {
+
       intervalId = setInterval(() => {
-        setTimeLeft(timeLeft - 1);
+        // setTimeLeft(timeLeft - 1);
+        const dt = moment();
+        const endTime = moment(endPeriod);
+        const dif = endTime.diff(dt, 'minutes');
+        setTimeLeft(dif);
       }, 1000 * 60);
     }
     if (timeLeft === 0 && currentView === CURRENT_VIEW.RANDOM_GENERATE) {
