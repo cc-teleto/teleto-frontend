@@ -123,7 +123,6 @@ export default function MembersList(props) {
 
   async function addMember() {
     const url = `/?grouphash=${groupHash}`;
-    console.log(url);
     await fetchAddMember(getURL("/members", url), addMem);
     setAddMem({ value: "" });
     const data = await fetchContent();
