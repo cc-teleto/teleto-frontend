@@ -6,10 +6,13 @@ import { CURRENT_VIEW } from "../const";
 import AppContext from "../context/AppContext";
 
 export default function Logo() {
-  const { setCurrentView } = useContext(AppContext);
+  const { setCurrentView, setSelectedTalker, setSelectedTopic, setRouletteMode } = useContext(AppContext);
   const history = useHistory();
 
   const onClick = () => {
+    setSelectedTalker("");
+    setSelectedTopic("");
+    setRouletteMode("HUMAN");
     setCurrentView(CURRENT_VIEW.START_FORM);
     history.push('/');
   };
