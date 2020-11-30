@@ -11,36 +11,55 @@ import AppContext from "../context/AppContext";
 import Winwheel from "../utils/Winwheel";
 import "../styles/styles.css";
 import { getURL } from "../const";
+import RouletteTopic from "./RouletteTopic";
 
 export default function Roulette() {
   const ROOM_GET_URL = getURL("/room");
   const location = useLocation();
-  const { members, setMembers, setEndPeriod, setCategory } = useContext(
-    AppContext
-  );
+  const {
+    members,
+    setMembers,
+    setEndPeriod,
+    setCategory,
+    selectedTalker,
+    setSelectedTalker,
+    ws,
+    setWs,
+  } = useContext(AppContext);
   const [wheel, setWheel] = useState();
   const [rouletteMode, setRouletteMode] = useState("HUMAN");
   const [wheelSpinning, setWheelSpinning] = useState(false);
+  const [wheelStopped, setWheelStopped] = useState(false);
   const audio = new Audio("/tick.mp3");
   const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
 
   // for websocket
-  const [ws, setWs] = useState(null);
-  const [messages, setMessages] = useState([]);
-
   function setMode(mode) {
     setRouletteMode(mode);
   }
 
   // Called when the animation has finished.
-  function alertPrize(indicatedSegment) {
-    // Do basic alert of the segment text.
-    setTimeout(setMode, 2000, "TOPIC");
+  function stopAction(indicatedSegment) {
     console.log(indicatedSegment.text);
+    setSelectedTalker(indicatedSegment.text);
+    setWheelStopped(true);
+    setTimeout(setMode, 2000, "TOPIC");
     console.log(setRouletteMode);
   }
+
+  useEffect(() => {
+    if (wheelStopped === true) {
+      const data = {
+        action: "stoproulette",
+        roulette: "Talker",
+        selectedTalker,
+      };
+      console.log("stop roulette");
+      ws.send(JSON.stringify(data));
+    }
+  }, [wheelStopped]);
 
   useEffect(() => {
     const segmentList = Object.values(members.members).map(function (
@@ -49,6 +68,8 @@ export default function Roulette() {
     ) {
       return { fillStyle: colorList[index % colorList.length], text: value };
     });
+
+    console.log(segmentList);
 
     // This function is called when the sound is to be played.
     function playSound() {
@@ -90,7 +111,7 @@ export default function Roulette() {
           type: "spinToStop",
           duration: 5,
           spins: 8,
-          callbackFinished: alertPrize,
+          callbackFinished: stopAction,
           callbackSound: playSound, // Function to call when the tick sound is to be triggered.
           soundTrigger: "pin",
         },
@@ -162,16 +183,20 @@ export default function Roulette() {
     };
   }, []);
 
-  const messagesTmp = messages;
   useEffect(() => {
     if (!ws) return;
     ws.onmessage = (e) => {
       console.log("receiveData", e.data);
+      const resData = JSON.parse(e.data);
 
-      wheel.animation.stopAngle = e.data;
-      setWheelSpinning(true);
+      if (resData.action === "startroulette") {
+        if (resData.roulette === "Talker") {
+          wheel.animation.stopAngle = resData.rouletteStopAt;
+          setWheelSpinning(true);
+        }
+      }
     };
-  }, [messagesTmp, setMessages, ws]);
+  }, [ws, wheel]);
 
   function handleOnClick() {
     const data = {
@@ -213,7 +238,7 @@ export default function Roulette() {
           </Button>
         </>
       ) : (
-        "TOPICモード"
+        <RouletteTopic ws={ws} setWs={setWs} />
       )}
     </Box>
   );

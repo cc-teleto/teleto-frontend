@@ -6,7 +6,7 @@ import {
   // useParams,
   // useHistory,
   // useLocation,
-} from 'react-router-dom';
+} from "react-router-dom";
 import { Box, createMuiTheme, MuiThemeProvider } from "@material-ui/core";
 import Logo from "./Logo";
 import AppContext from "../context/AppContext";
@@ -35,6 +35,9 @@ export default function App() {
   const [groupHash, setGroupHash] = useState("");
   const [category, setCategory] = useState(DEFAULT_CATEGORY);
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [selectedTalker, setSelectedTalker] = useState("");
+  const [selectedTopic, setSelectedTopic] = useState("");
+  const [ws, setWs] = useState(null);
 
   return (
     <AppContext.Provider
@@ -53,10 +56,15 @@ export default function App() {
         setCategory,
         mobileOpen,
         setMobileOpen,
+        selectedTalker,
+        setSelectedTalker,
+        selectedTopic,
+        setSelectedTopic,
+        ws,
+        setWs,
       }}
     >
       <MuiThemeProvider theme={theme}>
-
         <Box
           display="flex"
           flexDirection="column"
@@ -65,7 +73,7 @@ export default function App() {
         >
           <Message period={period * 60} severity="" message="" />
           <Router>
-          <Logo />
+            <Logo />
             <Switch>
               <Route path="/" exact>
                 <Main />
