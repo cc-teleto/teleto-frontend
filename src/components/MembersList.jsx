@@ -66,7 +66,9 @@ export default function MembersList(props) {
   const classes = useStyles();
   const [list, setList] = useState([]);
   const [addMem, setAddMem] = useState({ value: "" });
-  const { groupHash, mobileOpen, setMobileOpen } = useContext(AppContext);
+  const { groupHash, mobileOpen, setMobileOpen, members } = useContext(
+    AppContext
+  );
   const isFirstRender = useRef(false);
   const items = [];
   const { fetchURL } = props;
@@ -93,6 +95,11 @@ export default function MembersList(props) {
   };
 
   useEffect(() => {
+    const segmentList = Object.values(members.members).map(function (value) {
+      return { membername: value };
+    });
+    console.log("segmentList:", segmentList);
+    setList(segmentList);
     isFirstRender.current = true;
   }, []);
 
@@ -102,6 +109,7 @@ export default function MembersList(props) {
         isFirstRender.current = false;
       } else {
         const data = await fetchContent();
+        console.log("data.members:", data.members);
 
         setList(data.members);
       }
@@ -118,6 +126,7 @@ export default function MembersList(props) {
 
   async function addMember() {
     const url = `/?grouphash=${groupHash}`;
+    console.log(url);
     await fetchAddMember(getURL("/members", url), addMem);
     setAddMem({ value: "" });
     const data = await fetchContent();
