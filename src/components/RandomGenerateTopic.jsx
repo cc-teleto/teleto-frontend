@@ -6,9 +6,10 @@ import {
   ThemeProvider,
   makeStyles,
 } from "@material-ui/core/styles";
-
 import React, { useContext } from "react";
+import { useLocation, useHistory } from "react-router-dom";
 import AppContext from "../context/AppContext";
+import { CURRENT_VIEW } from "../const";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,10 +36,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function RandomGenerateTopic() {
+  const location = useLocation();
   const classes = useStyles();
+  const history = useHistory();
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
-  const { selectedTopic, setSelectedTopic } = useContext(AppContext);
+  const {
+    selectedTopic,
+    setSelectedTopic,
+    setCurrentView,
+    setRouletteMode,
+  } = useContext(AppContext);
 
   if (String(selectedTopic).slice(0, 11) === "Twitterトレンド") {
     const array = String(selectedTopic).split(/『|』/);
@@ -55,6 +63,14 @@ export default function RandomGenerateTopic() {
       </>
     );
     setSelectedTopic(content);
+  }
+
+  function handleOnClick() {
+    const path = location.pathname.split("/");
+    const grouphash = path[2];
+    setCurrentView(CURRENT_VIEW.ROULETTE);
+    setRouletteMode("TOPIC");
+    history.push(`/roulette/${grouphash}`);
   }
 
   return (
@@ -87,6 +103,7 @@ export default function RandomGenerateTopic() {
         <Button
           variant="contained"
           startIcon={<ChatIcon />}
+          onClick={() => handleOnClick()}
           style={{
             backgroundColor: "#9fe4e2",
             fontSize: "15px",
