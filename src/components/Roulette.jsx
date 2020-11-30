@@ -36,6 +36,8 @@ export default function Roulette() {
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
 
+  console.log("reRendor:", wheel);
+
   // for websocket
   function setMode(mode) {
     setRouletteMode(mode);
@@ -276,10 +278,15 @@ export default function Roulette() {
 
     console.log(initialMembersJson);
     console.log(currentMembersJson);
-    console.log("check:",initialMembersJson !== currentMembersJson);
+    console.log("check:", initialMembersJson !== currentMembersJson);
 
     if (initialMembersJson !== currentMembersJson) {
-      if (loadingWheel) loadingWheel.stopAnimation();
+      if (loadingWheel) {
+        loadingWheel.stopAnimation();
+
+        // （おそらく）複数のwheelを管理した状態だとアニメーションの描画に失敗するため削除
+        setLoadingWheel(undefined);
+      }
       return true;
     }
     return false;
@@ -318,16 +325,16 @@ export default function Roulette() {
               </Button>
             </>
           ) : (
-            <div className="canvas_logo" width="438" height="582">
-              <canvas id="loadingRoulette" width="434" height="434">
-                {" "}
-              </canvas>
-            </div>
-          )}
+              <div className="canvas_logo" width="438" height="582">
+                <canvas id="loadingRoulette" width="434" height="434">
+                  {" "}
+                </canvas>
+              </div>
+            )}
         </>
       ) : (
-        <RouletteTopic ws={ws} setWs={setWs} loadingWheel={loadingWheel} />
-      )}
+          <RouletteTopic ws={ws} setWs={setWs} loadingWheel={loadingWheel} />
+        )}
     </Box>
   );
 }
