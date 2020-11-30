@@ -7,10 +7,7 @@ import {
   responsiveFontSizes,
   ThemeProvider,
 } from "@material-ui/core/styles";
-
 import React, { useContext } from "react";
-// import PropTypes from "prop-types";
-// import TextLoop from "react-text-loop";
 import AppContext from "../context/AppContext";
 import { CURRENT_VIEW } from "../const";
 
@@ -75,7 +72,6 @@ export default function RandomGenerateMember() {
   //     fetchContent();
   //   }
   // }, [fetchURL]);
-
   return (
     <Box
       display="flex"
@@ -121,7 +117,3 @@ export default function RandomGenerateMember() {
     </Box>
   );
 }
-
-// RandomGenerateMember.propTypes = {
-//   fetchURL: PropTypes.string.isRequired,
-// };

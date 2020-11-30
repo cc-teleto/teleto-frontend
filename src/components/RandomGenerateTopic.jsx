@@ -63,8 +63,7 @@ export default function RandomGenerateTopic() {
       </>
     );
     setSelectedTopic(content);
-  }
-  function handleOnClick() {
+  }  function handleOnClick() {
     const path = location.pathname.split("/");
     const grouphash = path[2];
     setCurrentView(CURRENT_VIEW.ROULETTE);
