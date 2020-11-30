@@ -6,10 +6,10 @@ import {
   ThemeProvider,
   makeStyles,
 } from "@material-ui/core/styles";
-
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import TextLoop from "react-text-loop";
+import React, { useContext } from "react";
+import { useLocation, useHistory } from "react-router-dom";
+import AppContext from "../context/AppContext";
+import { CURRENT_VIEW } from "../const";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,88 +35,43 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function RandomGenerateTopic(props) {
+export default function RandomGenerateTopic() {
+  const location = useLocation();
   const classes = useStyles();
+  const history = useHistory();
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
+  const {
+    selectedTopic,
+    setSelectedTopic,
+    setCurrentView,
+    setRouletteMode,
+  } = useContext(AppContext);
 
-  const { fetchURL } = props;
-  const [interval, setInterval] = useState(100);
-  const [isAniDone, setIsAniDone] = useState(false);
+  if (String(selectedTopic).slice(0, 11) === "Twitterトレンド") {
+    const array = String(selectedTopic).split(/『|』/);
+    const twitterLink = `http://twitter.com/search?q=${encodeURIComponent(
+      array[1]
+    )}`;
+    const content = (
+      <>
+        {array[0]}
+        <a href={twitterLink} target="_blank" rel="noreferrer">
+          {array[1]}
+        </a>
+        {array[2]}
+      </>
+    );
+    setSelectedTopic(content);
+  }
 
-  const dummyTopics = [
-    "リンゴについてどう思いますか",
-    "もし空を飛べるとしたら、何をしますか",
-    "トイレットペーパーについて教えてください",
-    "どっち派？犬と猫",
-    "生姜さんのいい点を一つ教えてください",
-    "鈴木さんを動物に例えると何だと思いますか",
-    "好きなものをちくわを使ってでプレゼンしてください",
-    "メンバーの中でホルンが上手そうな人は誰だと思いますか",
-    "うどんとそばのどちらに興味がありますか",
-  ];
-  const [topicsLoop, setTopicsLoop] = useState(dummyTopics);
-
-  const stopText = (text) => {
-    setTimeout(() => {
-      setTopicsLoop(text);
-    }, 1300);
-    setTimeout(() => {
-      setInterval(0);
-    }, 1500);
-    setTimeout(() => {
-      setIsAniDone(true);
-    }, 2000);
-  };
-
-  const startText = () => {
-    setIsAniDone(false);
-    setTopicsLoop(dummyTopics);
-    setInterval(100);
-  };
-
-  const fetchContent = async () => {
-    try {
-      let content = null;
-      const res = await fetch(fetchURL, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await res.json();
-      if (data.value.slice(0, 11) === "Twitterトレンド") {
-        const array = data.value.split(/『|』/);
-        const twitterLink = `http://twitter.com/search?q=${encodeURIComponent(
-          array[1]
-        )}`;
-        content = (
-          <>
-            {array[0]}
-            <a href={twitterLink} target="_blank" rel="noreferrer">
-              {array[1]}
-            </a>
-            {array[2]}
-          </>
-        );
-      } else {
-        content = data.value;
-      }
-      if (content) {
-        stopText(content);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    if (fetchURL) {
-      startText();
-      fetchContent();
-    }
-  }, [fetchURL]);
+  function handleOnClick() {
+    const path = location.pathname.split("/");
+    const grouphash = path[2];
+    setCurrentView(CURRENT_VIEW.ROULETTE);
+    setRouletteMode("TOPIC");
+    history.push(`/roulette/${grouphash}`);
+  }
 
   return (
     <Box
@@ -135,12 +90,7 @@ export default function RandomGenerateTopic(props) {
       >
         <ThemeProvider theme={theme}>
           <Typography variant="h4" align="center" className={classes.root}>
-            <TextLoop
-              interval={interval}
-              className={isAniDone ? "textLoopDone" : ""}
-            >
-              {topicsLoop}
-            </TextLoop>
+            {selectedTopic}
           </Typography>
         </ThemeProvider>
       </Box>
@@ -153,10 +103,7 @@ export default function RandomGenerateTopic(props) {
         <Button
           variant="contained"
           startIcon={<ChatIcon />}
-          onClick={async () => {
-            startText();
-            fetchContent();
-          }}
+          onClick={() => handleOnClick()}
           style={{
             backgroundColor: "#9fe4e2",
             fontSize: "15px",
@@ -168,7 +115,3 @@ export default function RandomGenerateTopic(props) {
     </Box>
   );
 }
-
-RandomGenerateTopic.propTypes = {
-  fetchURL: PropTypes.string.isRequired,
-};

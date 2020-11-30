@@ -25,9 +25,10 @@ export default function Roulette() {
     setSelectedTalker,
     ws,
     setWs,
+    rouletteMode,
+    setRouletteMode,
   } = useContext(AppContext);
   const [wheel, setWheel] = useState();
-  const [rouletteMode, setRouletteMode] = useState("HUMAN");
   const [wheelSpinning, setWheelSpinning] = useState(false);
   const [wheelStopped, setWheelStopped] = useState(false);
   const [loadingWheel, setLoadingWheel] = useState();
@@ -240,17 +241,21 @@ export default function Roulette() {
 
   useEffect(() => {
     if (!ws) return;
-    ws.onmessage = (e) => {
-      console.log("receiveData", e.data);
-      const resData = JSON.parse(e.data);
+    console.log("Human:ws return済:");
+    console.log("Human:rouletteMode", rouletteMode);
+    if (rouletteMode === "HUMAN") {
+      ws.onmessage = (e) => {
+        console.log("Human:receiveData", e.data);
+        const resData = JSON.parse(e.data);
 
-      if (resData.action === "startroulette") {
-        if (resData.roulette === "Talker") {
-          wheel.animation.stopAngle = resData.rouletteStopAt;
-          setWheelSpinning(true);
+        if (resData.action === "startroulette") {
+          if (resData.roulette === "Talker") {
+            wheel.animation.stopAngle = resData.rouletteStopAt;
+            setWheelSpinning(true);
+          }
         }
-      }
-    };
+      };
+    }
   }, [ws, wheel]);
 
   function handleOnClick() {
