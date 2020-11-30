@@ -30,6 +30,7 @@ export default function Roulette() {
   const [rouletteMode, setRouletteMode] = useState("HUMAN");
   const [wheelSpinning, setWheelSpinning] = useState(false);
   const [wheelStopped, setWheelStopped] = useState(false);
+  const [loadingWheel, setLoadingWheel] = useState();
   const audio = new Audio("/tick.mp3");
   const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
   let theme = createMuiTheme();
@@ -176,12 +177,62 @@ export default function Roulette() {
       setWs(wsClient);
     };
     wsClient.onclose = () => console.log("ws closed");
+
+    setLoadingWheel(
+      new Winwheel({
+        canvasId: "loadingRoulette",
+        numSegments: 3, // Number of segments
+        pointerAngle: 135, // Ensure this is set correctly
+        outerRadius: 165, // The size of the wheel.
+        innerRadius: 50,
+        centerX: 217, // Used to position on the background correctly.
+        centerY: 222,
+        strokeStyle: "#ffffff",
+        lineWidth: 1,
+        textOrientation: "curved",
+        textAligment: "center",
+        textFontSize: 30, // Font size.\
+        rotationAngle: -360 / 3 / 2, // show the default position aligned to the text
+        // Definition of all the segments.
+        segments: [
+          { fillStyle: "#E3B8B6", text: "ル ー レ ッ ト" },
+          { fillStyle: "#9FE4E2", text: "読 み 込 み 中" },
+          { fillStyle: "#E3C188", text: "！ ！ ！" },
+        ],
+        // Specify pin parameters.
+        pins: {
+          number: 3,
+          outerRadius: 6,
+          margin: 3,
+          fillStyle: "#47B7C1",
+          strokeStyle: "#47B7C1",
+        },
+        animation: {
+          type: "spinOngoing",
+          duration: 1000,
+          spins: 100,
+          easing: "Linear.easeNone",
+          direction: "anti-clockwise",
+          repeat: -1,
+        },
+      })
+    );
+
+    // 必要情報の取得
     getRoom(path[2]);
+
+    // console.log(loadingWheel);
+    // console.log(loadingWheel);
 
     return () => {
       wsClient.close();
     };
   }, []);
+
+  useEffect(() => {
+    console.log("loadingWheel start");
+    if (loadingWheel) loadingWheel.startAnimation();
+  }, [loadingWheel]);
 
   useEffect(() => {
     if (!ws) return;
@@ -207,6 +258,30 @@ export default function Roulette() {
     ws.send(JSON.stringify(data));
   }
 
+  function checkMemberLoad() {
+    const initialMembers = {
+      maxId: 1,
+      members: {
+        member1: "",
+      },
+    };
+
+    // Sting化して比較
+    const initialMembersJson = JSON.stringify(
+      Object.entries(initialMembers).sort()
+    );
+    const currentMembersJson = JSON.stringify(Object.entries(members).sort());
+
+    console.log(initialMembersJson);
+    console.log(currentMembersJson);
+
+    if (initialMembersJson !== currentMembersJson) {
+      if (loadingWheel) loadingWheel.stopAnimation();
+      return true;
+    }
+    return false;
+  }
+
   return (
     <Box
       display="flex"
@@ -222,23 +297,33 @@ export default function Roulette() {
             </Typography>
           </ThemeProvider>
           {/* set className to show the background image */}
-          <div className="canvas_logo" width="438" height="582">
-            <canvas id="myCanvas" width="434" height="434">
-              {" "}
-            </canvas>
-          </div>
-          <Button
-            variant="contained"
-            onClick={() => handleOnClick()}
-            style={{
-              backgroundColor: "#9fe4e2",
-            }}
-          >
-            START
-          </Button>
+          {checkMemberLoad() ? (
+            <>
+              <div className="canvas_logo" width="438" height="582">
+                <canvas id="myCanvas" width="434" height="434">
+                  {" "}
+                </canvas>
+              </div>
+              <Button
+                variant="contained"
+                onClick={() => handleOnClick()}
+                style={{
+                  backgroundColor: "#9fe4e2",
+                }}
+              >
+                START
+              </Button>
+            </>
+          ) : (
+            <div className="canvas_logo" width="438" height="582">
+              <canvas id="loadingRoulette" width="434" height="434">
+                {" "}
+              </canvas>
+            </div>
+          )}
         </>
       ) : (
-        <RouletteTopic ws={ws} setWs={setWs} />
+        <RouletteTopic ws={ws} setWs={setWs} loadingWheel={loadingWheel} />
       )}
     </Box>
   );
