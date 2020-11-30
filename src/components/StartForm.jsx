@@ -69,6 +69,7 @@ export default function StartForm() {
     setGroupHash,
     category,
     setCategory,
+    setEndPeriod,
     //    grouphash,
   } = useContext(AppContext);
   const [periodInput, setPeriodInput] = useState(DEFAULT_PERIOD);
@@ -117,13 +118,14 @@ export default function StartForm() {
   const onSubmit = async (e) => {
     e.preventDefault();
     setCategory(categoryInput);
-    const endPeriod = calcEndPeriod(periodInput);
-
+    const endPeriodLocal = calcEndPeriod(periodInput);
+    setEndPeriod(calcEndPeriod(periodInput));
     const grouphash = await postRooms(
       Object.values(membersInput.members),
-      endPeriod,
+      endPeriodLocal,
       categoryInput
     );
+
     console.log("endPeriod:", endPeriod);
     console.log(postRooms);
 
@@ -134,6 +136,7 @@ export default function StartForm() {
         member1: "",
       },
     });
+
     setPeriod(periodInput);
     setCurrentView(CURRENT_VIEW.ROULETTE);
     history.push(`/roulette/${grouphash}`);
