@@ -17,61 +17,14 @@ export default function RandomGenerateMember() {
   const history = useHistory();
   const location = useLocation();
   const {
-    // members,
-    // category,
-    // ws,
-    // selectedTopic,
-    // setSelectedTopic,
     setCurrentView,
     selectedTalker,
+    setRouletteMode,
     // grouphash
   } = useContext(AppContext);
   const path = location.pathname.split("/");
   const grouphash = path[2];
-  // const { fetchURL } = props;
-  // const [membersLoop, setMembersLoop] = useState(
-  //   Object.values(members.members)
-  // );
-  // const [interval, setInterval] = useState(100);
-
-  // const stopText = (text) => {
-  //   setTimeout(() => {
-  //     setMembersLoop(text);
-  //   }, 1300);
-  //   setTimeout(() => {
-  //     setInterval(0);
-  //   }, 1500);
-  // };
-
-  // const startText = () => {
-  //   setMembersLoop(Object.values(members.members));
-  //   setInterval(100);
-  // };
-
-  // const fetchContent = async () => {
-  //   try {
-  //     const res = await fetch(fetchURL, {
-  //       method: "GET",
-  //       headers: {
-  //         Accept: "application/json",
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //     // const data = await res.json();
-  //     // if (data) {
-  //     //   stopText(Object.values(data));
-  //     // }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (fetchURL) {
-  //     startText();
-  //     fetchContent();
-  //   }
-  // }, [fetchURL]);
+  
   return (
     <Box
       display="flex"
@@ -104,6 +57,7 @@ export default function RandomGenerateMember() {
           startIcon={<DiceIcon />}
            onClick={async () => {
             setCurrentView(CURRENT_VIEW.ROULETTE);
+            setRouletteMode("HUMAN");
             history.push(`/roulette/${grouphash}`);
            }}
           style={{
