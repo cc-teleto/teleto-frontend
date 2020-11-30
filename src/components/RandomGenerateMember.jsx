@@ -6,60 +6,13 @@ import {
   responsiveFontSizes,
   ThemeProvider,
 } from "@material-ui/core/styles";
-
-import React, { useEffect, useState, useContext } from "react";
-import PropTypes from "prop-types";
-import TextLoop from "react-text-loop";
+import React, { useContext } from "react";
 import AppContext from "../context/AppContext";
 
-export default function RandomGenerateMember(props) {
+export default function RandomGenerateMember() {
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
-  const { fetchURL } = props;
-  const { members } = useContext(AppContext);
-  const [membersLoop, setMembersLoop] = useState(
-    Object.values(members.members)
-  );
-  const [interval, setInterval] = useState(100);
-
-  const stopText = (text) => {
-    setTimeout(() => {
-      setMembersLoop(text);
-    }, 1300);
-    setTimeout(() => {
-      setInterval(0);
-    }, 1500);
-  };
-
-  const startText = () => {
-    setMembersLoop(Object.values(members.members));
-    setInterval(100);
-  };
-
-  const fetchContent = async () => {
-    try {
-      const res = await fetch(fetchURL, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await res.json();
-      if (data) {
-        stopText(Object.values(data));
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    if (fetchURL) {
-      startText();
-      fetchContent();
-    }
-  }, [fetchURL]);
+  const { selectedTalker } = useContext(AppContext);
 
   return (
     <Box
@@ -78,7 +31,7 @@ export default function RandomGenerateMember(props) {
       >
         <ThemeProvider theme={theme}>
           <Typography variant="h4" align="center">
-            <TextLoop interval={interval}>{membersLoop}</TextLoop> さん
+            {selectedTalker} さん
           </Typography>
         </ThemeProvider>
       </Box>
@@ -91,10 +44,6 @@ export default function RandomGenerateMember(props) {
         <Button
           variant="contained"
           startIcon={<DiceIcon />}
-          onClick={async () => {
-            startText();
-            fetchContent();
-          }}
           style={{
             backgroundColor: "#9fe4e2",
             fontSize: "15px",
@@ -106,7 +55,3 @@ export default function RandomGenerateMember(props) {
     </Box>
   );
 }
-
-RandomGenerateMember.propTypes = {
-  fetchURL: PropTypes.string.isRequired,
-};

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import { useLocation, useHistory } from "react-router-dom";
 import { Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -12,6 +13,8 @@ import "../styles/styles.css";
 import { CURRENT_VIEW } from "../const";
 
 export default function RouletteTopic() {
+  const location = useLocation();
+  const history = useHistory();
   const {
     category,
     ws,
@@ -19,53 +22,17 @@ export default function RouletteTopic() {
     setSelectedTopic,
     setCurrentView,
     selectedTalker,
+    rouletteMode,
   } = useContext(AppContext);
   const [wheel, setWheel] = useState();
   const [wheelSpinning, setWheelSpinning] = useState(false);
   const [wheelStopped, setWheelStopped] = useState(false);
   const [topics, setTopics] = useState([]);
+  const [topicList, setTopicList] = useState([]);
   const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
-  // const [topics, setTopics] = useState([]);
   const audio = new Audio("/tick.mp3");
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
-
-  // const loadingWheel = new Winwheel({
-  //   canvasId: "loadingRoulette",
-  //   numSegments: 4, // Number of segments
-  //   pointerAngle: 135, // Ensure this is set correctly
-  //   outerRadius: 165, // The size of the wheel.
-  //   innerRadius: 50,
-  //   centerX: 217, // Used to position on the background correctly.
-  //   centerY: 222,
-  //   strokeStyle: "#ffffff",
-  //   lineWidth: 1,
-  //   // textOrientation: "vertical",
-  //   textFontSize: 18, // Font size.\
-  //   rotationAngle: -360 / 4 / 2, // show the default position aligned to the text
-  //   // Definition of all the segments.
-  //   segments: [
-  //     { fillStyle: "#eae56f", text: "Segment 1" },
-  //     { fillStyle: "#89f26e", text: "Segment 2" },
-  //     { fillStyle: "#7de6ef", text: "Segment 3" },
-  //     { fillStyle: "#e7706f", text: "Segment 4" },
-  //   ],
-  //   // Specify pin parameters.
-  //   pins: {
-  //     number: 4,
-  //     outerRadius: 6,
-  //     margin: 3,
-  //     fillStyle: "#47B7C1",
-  //     strokeStyle: "#47B7C1",
-  //   },
-  //   animation: {
-  //     type: "spinOngoing",
-  //     duration: 5,
-  //     spins: 8,
-  //   },
-  // });
-
-  // console.log(loadingWheel);
 
   // This function is called when the sound is to be played.
   function playSound() {
@@ -79,13 +46,23 @@ export default function RouletteTopic() {
 
   // for websocket
   function setNextView() {
+    const path = location.pathname.split("/");
+    const grouphash = path[2];
     setCurrentView(CURRENT_VIEW.RESULT);
+    history.push(`/result/${grouphash}`);
   }
 
   // Called when the animation has finished.
   function stopAction(indicatedSegment) {
-    console.log(indicatedSegment.text);
-    setSelectedTopic(indicatedSegment.text);
+    console.log("Topic:selectedTopic:", topicList);
+    let resultTopic;
+    topicList.forEach((topic) => {
+      if (topic.keyword === indicatedSegment.text) {
+        resultTopic = topic.topic;
+      }
+    });
+    console.log("resultTopic:", resultTopic);
+    setSelectedTopic(resultTopic);
     setWheelStopped(true);
     setTimeout(setNextView, 2000);
   }
@@ -97,15 +74,15 @@ export default function RouletteTopic() {
         roulette: "Topic",
         selectedTopic,
       };
-      console.log("stop roulette");
+      console.log("Topic:stop roulette");
       ws.send(JSON.stringify(data));
     }
   }, [wheelStopped]);
 
   useEffect(() => {
-    console.log("=====wheelSpinning-useEffect Start=====");
+    console.log("Topic:=====wheelSpinning-useEffect Start=====");
     if (wheelSpinning === true) {
-      console.log("*****wheelSpinning true*****");
+      console.log("Topic:*****wheelSpinning true*****");
       // Begin the spin animation by calling startAnimation on the wheel object.
       console.log(wheel);
       wheel.startAnimation();
@@ -118,14 +95,14 @@ export default function RouletteTopic() {
 
   // ルーレット生成のためのトピックを取得し、ルーレット生成
   useEffect(() => {
-    console.log("=====useEffect Start=====");
+    console.log("Topic:=====useEffect Start=====");
     const getTopicsParams = {
       action: "getmultitopics",
       category,
       num: 8,
     };
     ws.send(JSON.stringify(getTopicsParams));
-  }, []);
+  }, [ws]);
 
   useEffect(() => {
     const itemNumber = topics.length;
@@ -166,43 +143,44 @@ export default function RouletteTopic() {
   }, [topics.length, topics]);
 
   useEffect(() => {
-    console.log("=====ws-useEffect Start=====");
-    console.log(wheel);
+    console.log("Topic:=====ws-useEffect Start=====");
+    console.log("Topic:ws", wheel);
+    console.log("Topic:ws", ws);
     if (!ws) return;
-    ws.onmessage = (e) => {
-      console.log("Topic:receiveData", e.data);
-      const resData = JSON.parse(e.data);
+    console.log("Topic:ws return済:");
+    if (rouletteMode === "TOPIC") {
+      ws.onmessage = (e) => {
+        console.log("Topic:receiveData", e.data);
+        const resData = JSON.parse(e.data);
 
-      // バックエンドバグ修正までコメントアウト
-      if (resData.action === "getmultitopics") {
-        console.log("*****getmultitopics Start*****");
+        if (resData.action === "getmultitopics") {
+          console.log("Topic:*****getmultitopics Start*****");
+          setTopicList(resData.topics);
+          const segmentList = resData.topics.map(function (value, index) {
+            console.log(
+              "Topic:topicList",
+              value.topic.replace(/(?:[\w\s]{16})/g, "$&|\n")
+            );
+            return {
+              fillStyle: colorList[index % colorList.length],
+              text: value.keyword.replace(/(?:[\w\s]{16})/g, "$&|\n"),
+            };
+          });
 
-        const segmentList = resData.topics.map(function (value, index) {
-          console.log(value.topic.replace(/(?:[\w\s]{16})/g, "$&|\n"));
-          return {
-            fillStyle: colorList[index % colorList.length],
-            text: value.keyword.replace(/(?:[\w\s]{16})/g, "$&|\n"),
-          };
-        });
-        // const segmentList = [
-        //   { fillStyle: "#eae56f", text: "c" },
-        //   { fillStyle: "#89f26e", text: "b" },
-        //   { fillStyle: "#7de6ef", text: "a" },
-        // ];
-
-        console.log("*****segmentList*****");
-        console.log(segmentList);
-
-        setTopics(segmentList);
-      }
-
-      if (resData.action === "startroulette") {
-        if (resData.roulette === "Topic") {
-          wheel.animation.stopAngle = resData.rouletteStopAt;
-          setWheelSpinning(true);
+          console.log("Topic:*****segmentList*****");
+          console.log(segmentList);
+          setTopics([]);
+          setTopics(segmentList);
         }
-      }
-    };
+
+        if (resData.action === "startroulette") {
+          if (resData.roulette === "Topic") {
+            wheel.animation.stopAngle = resData.rouletteStopAt;
+            setWheelSpinning(true);
+          }
+        }
+      };
+    }
   }, [ws, wheel]);
 
   function handleOnClick() {
@@ -210,7 +188,7 @@ export default function RouletteTopic() {
       action: "startroulette",
       roulette: "Topic",
     };
-    console.log("start roulette");
+    console.log("Topic:start roulette");
     ws.send(JSON.stringify(data));
   }
 

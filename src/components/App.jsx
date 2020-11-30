@@ -38,6 +38,7 @@ export default function App() {
   const [selectedTalker, setSelectedTalker] = useState("");
   const [selectedTopic, setSelectedTopic] = useState("");
   const [ws, setWs] = useState(null);
+  const [rouletteMode, setRouletteMode] = useState("HUMAN");
 
   return (
     <AppContext.Provider
@@ -62,6 +63,8 @@ export default function App() {
         setSelectedTopic,
         ws,
         setWs,
+        rouletteMode,
+        setRouletteMode,
       }}
     >
       <MuiThemeProvider theme={theme}>
@@ -80,6 +83,9 @@ export default function App() {
               </Route>
               <Route path="/roulette/:id" exact>
                 <Roulette />
+              </Route>
+              <Route path="/result/:id" exact>
+                <Main />
               </Route>
             </Switch>
           </Router>
