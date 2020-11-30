@@ -34,6 +34,8 @@ export default function RouletteTopic() {
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
 
+  console.log("Rendering RouletteTopic");
+
   // This function is called when the sound is to be played.
   function playSound() {
     // Stop and rewind the sound if it already happens to be playing.
@@ -49,6 +51,7 @@ export default function RouletteTopic() {
     const path = location.pathname.split("/");
     const grouphash = path[2];
     setCurrentView(CURRENT_VIEW.RESULT);
+    setWheel(undefined);
     history.push(`/result/${grouphash}`);
   }
 

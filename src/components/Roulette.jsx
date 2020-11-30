@@ -41,6 +41,7 @@ export default function Roulette() {
 
   // for websocket
   function setMode(mode) {
+    setWheel(undefined);
     setRouletteMode(mode);
   }
 
@@ -237,8 +238,6 @@ export default function Roulette() {
     };
   }, []);
 
-
-
   useEffect(() => {
     if (!ws) return;
     console.log("Human:ws return済:");
@@ -330,16 +329,16 @@ export default function Roulette() {
               </Button>
             </>
           ) : (
-              <div className="canvas_logo" width="438" height="582">
-                <canvas id="loadingRoulette" width="434" height="434">
-                  {" "}
-                </canvas>
-              </div>
-            )}
+            <div className="canvas_logo" width="438" height="582">
+              <canvas id="loadingRoulette" width="434" height="434">
+                {" "}
+              </canvas>
+            </div>
+          )}
         </>
       ) : (
-          <RouletteTopic ws={ws} setWs={setWs} loadingWheel={loadingWheel} />
-        )}
+        <RouletteTopic ws={ws} setWs={setWs} />
+      )}
     </Box>
   );
 }
