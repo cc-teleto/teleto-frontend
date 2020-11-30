@@ -126,8 +126,6 @@ export default function StartForm() {
       categoryInput
     );
 
-    console.log("endPeriod:", endPeriod);
-    console.log(postRooms);
 
     // URLでアクセスした場合と条件をそろえるためにMembersを初期化
     setMembers({
