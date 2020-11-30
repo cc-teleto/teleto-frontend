@@ -12,12 +12,13 @@ import Winwheel from "../utils/Winwheel";
 import "../styles/styles.css";
 import { CURRENT_VIEW } from "../const";
 import RouletteContext from "../context/RouletteContext";
+import getRoomInfo from "../utils/webApi";
 
 function RouletteMember() {
   const location = useLocation();
   const history = useHistory();
   const {
-    members,
+    // members,
     selectedTalker,
     setSelectedTalker,
     selectedTopic,
@@ -27,16 +28,36 @@ function RouletteMember() {
     setRouletteMode,
   } = useContext(AppContext);
   const { loadingWheel, setLoadingWheel } = useContext(RouletteContext);
-
   const [wheel, setWheel] = useState();
   const [wheelSpinning, setWheelSpinning] = useState(false);
   const [wheelStopped, setWheelStopped] = useState(false);
+  const [members, setMembers] = useState({
+    maxId: 1,
+    members: {
+      member1: "",
+    },
+  });
+
   const audio = new Audio("/tick.mp3");
   const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
 
-  console.log("reRendor:", wheel);
+  const getRoom = async (grouphash) => {
+    const data = await getRoomInfo(grouphash);
+    console.log("DATA in Member:", data);
+
+    const getMembers = {
+      maxId: 0,
+      members: {},
+    };
+    data.members.forEach((member) => {
+      getMembers.maxId += 1;
+      getMembers.members[`member${member.memberorder + 1}`] = member.membername;
+    });
+    setMembers(getMembers);
+  };
+
 
   // for websocket
   function setMode(mode) {
@@ -169,6 +190,11 @@ function RouletteMember() {
     }
   }, [ws, wheel]);
 
+  useEffect(() => {
+    const path = location.pathname.split("/");
+    getRoom(path[2]);
+  }, [])
+
   function handleOnClick() {
     const data = {
       action: "startroulette",
@@ -234,12 +260,12 @@ function RouletteMember() {
           </Button>
         </>
       ) : (
-        <div className="canvas_logo" width="438" height="582">
-          <canvas id="loadingRoulette" width="434" height="434">
-            {" "}
-          </canvas>
-        </div>
-      )}
+          <div className="canvas_logo" width="438" height="582">
+            <canvas id="loadingRoulette" width="434" height="434">
+              {" "}
+            </canvas>
+          </div>
+        )}
     </>
   );
 }

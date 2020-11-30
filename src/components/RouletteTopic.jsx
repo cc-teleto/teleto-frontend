@@ -11,6 +11,7 @@ import AppContext from "../context/AppContext";
 import Winwheel from "../utils/Winwheel";
 import "../styles/styles.css";
 import { CURRENT_VIEW } from "../const";
+import RouletteContext from "../context/RouletteContext";
 
 export default function RouletteTopic() {
   const location = useLocation();
@@ -24,6 +25,7 @@ export default function RouletteTopic() {
     selectedTalker,
     rouletteMode,
   } = useContext(AppContext);
+  const { loadingWheel, setLoadingWheel } = useContext(RouletteContext);
   const [wheel, setWheel] = useState();
   const [wheelSpinning, setWheelSpinning] = useState(false);
   const [wheelStopped, setWheelStopped] = useState(false);
@@ -34,7 +36,7 @@ export default function RouletteTopic() {
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
 
-  console.log("Rendering RouletteTopic");
+  console.log("Rendering RouletteTopic:", topics);
 
   // This function is called when the sound is to be played.
   function playSound() {
@@ -172,7 +174,7 @@ export default function RouletteTopic() {
 
           console.log("Topic:*****segmentList*****");
           console.log(segmentList);
-          setTopics([]);
+          // setTopics([]);
           setTopics(segmentList);
         }
 
@@ -195,6 +197,25 @@ export default function RouletteTopic() {
     ws.send(JSON.stringify(data));
   }
 
+  useEffect(() => {
+    console.log("loadingWheel start");
+    if (loadingWheel) loadingWheel.startAnimation();
+  }, [loadingWheel]);
+
+  function checkTopicLoad() {
+    if (topics.length !== 0) {
+      if (loadingWheel) {
+        loadingWheel.stopAnimation();
+
+        // （おそらく）複数のwheelを管理した状態だとアニメーションの描画に失敗するため削除
+        setLoadingWheel(undefined);
+      }
+      return true;
+    }
+    return false;
+  }
+
+
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -203,22 +224,30 @@ export default function RouletteTopic() {
         </Typography>
       </ThemeProvider>
       {/* set className to show the background image */}
-      <>
-        <div className="canvas_logo" width="438" height="582">
-          <canvas id="topicRoulette" width="434" height="434">
-            {" "}
-          </canvas>
-        </div>
-        <Button
-          variant="contained"
-          onClick={() => handleOnClick()}
-          style={{
-            backgroundColor: "#9fe4e2",
-          }}
-        >
-          START
+      {checkTopicLoad() ? (
+        <>
+          <div className="canvas_logo" width="438" height="582">
+            <canvas id="topicRoulette" width="434" height="434">
+              {" "}
+            </canvas>
+          </div>
+          <Button
+            variant="contained"
+            onClick={() => handleOnClick()}
+            style={{
+              backgroundColor: "#9fe4e2",
+            }}
+          >
+            START
         </Button>
-      </>
+        </>
+      ) : (
+          <div className="canvas_logo" width="438" height="582">
+            <canvas id="loadingRoulette" width="434" height="434">
+              {" "}
+            </canvas>
+          </div>
+        )}
     </>
   );
 }

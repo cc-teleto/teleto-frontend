@@ -4,16 +4,18 @@ import { Box } from "@material-ui/core";
 import AppContext from "../context/AppContext";
 import Winwheel from "../utils/Winwheel";
 import "../styles/styles.css";
-import { getURL } from "../const";
+// import { getURL } from "../const";
 import RouletteTopic from "./RouletteTopic";
 import RouletteMember from "./RouletteMember";
 import RouletteContext from "../context/RouletteContext";
+import getRoomInfo from "../utils/webApi";
+
 
 export default function Roulette() {
-  const ROOM_GET_URL = getURL("/room");
+  // const ROOM_GET_URL = getURL("/room");
   const location = useLocation();
   const {
-    setMembers,
+    // setMembers,
     setEndPeriod,
     setCategory,
     ws,
@@ -23,29 +25,8 @@ export default function Roulette() {
   const [loadingWheel, setLoadingWheel] = useState();
 
   const getRoom = async (grouphash) => {
-    const strURL = `${ROOM_GET_URL}?grouphash=${grouphash}`;
-    const res = await fetch(strURL, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      mode: "cors",
-    });
-    const data = await res.json();
-    console.log("strURL:", strURL);
-    console.log("DATA:", data);
-
-    const getMembers = {
-      maxId: 0,
-      members: {},
-    };
-
-    data.members.forEach((member) => {
-      getMembers.maxId += 1;
-      getMembers.members[`member${member.memberorder + 1}`] = member.membername;
-    });
-    setMembers(getMembers);
+    const data = await getRoomInfo(grouphash);
+    console.log("DATA in Roulette:", data);
     setCategory(data.category);
     setEndPeriod(data.endPeriod);
   };
@@ -62,7 +43,6 @@ export default function Roulette() {
     }
   }, [ws])
 
-  // for websocket
   useEffect(() => {
     setLoadingWheel(
       new Winwheel({
@@ -103,7 +83,9 @@ export default function Roulette() {
         },
       })
     );
+  }, [rouletteMode]);
 
+  useEffect(() => {
     // 必要情報の取得
     const path = location.pathname.split("/");
     getRoom(path[2]);
