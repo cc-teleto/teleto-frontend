@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -39,6 +39,21 @@ export default function App() {
   const [selectedTopic, setSelectedTopic] = useState("");
   const [ws, setWs] = useState(null);
   const [rouletteMode, setRouletteMode] = useState("HUMAN");
+
+  // for websocket
+  useEffect(() => {
+    const wsClient = new WebSocket(
+      "wss://jjfbo951m5.execute-api.us-east-1.amazonaws.com/Prod"
+    );
+    wsClient.onopen = () => {
+      console.log("ws opened");
+      setWs(wsClient);
+    };
+    wsClient.onclose = () => console.log("ws closed");
+    return () => {
+      wsClient.close();
+    };
+  }, []);
 
   return (
     <AppContext.Provider
