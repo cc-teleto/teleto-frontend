@@ -71,7 +71,7 @@ export default function Message(props) {
     <Box display="flex" flexWrap="nowrap" width="50%">
       
       <Box width="100%">{alertMsg}</Box>
-      <Box display="flex" flexWrap="nowrap" width="60%">
+      <Box display="flex" flexWrap="nowrap" width="100%">
       <font face="arial"><Box flexShrink={0}>{timeLeft > 0 ? `残り時間: ${timeLeft}分` : ""}</Box></font>
       </Box>
       <Box display="flex" flexWrap="nowrap" width="50%">
