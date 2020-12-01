@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useLocation, useHistory } from "react-router-dom";
 import { Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {
   createMuiTheme,
   responsiveFontSizes,
   ThemeProvider,
+  makeStyles,
 } from "@material-ui/core/styles";
 import AppContext from "../context/AppContext";
 import Winwheel from "../utils/Winwheel";
@@ -13,9 +13,17 @@ import "../styles/styles.css";
 import { CURRENT_VIEW } from "../const";
 import RouletteContext from "../context/RouletteContext";
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    [theme.breakpoints.only("xs")]: {
+      width: "70%",
+      height: "auto !important",
+    },
+  },
+}));
+
 export default function RouletteTopic() {
-  const location = useLocation();
-  const history = useHistory();
+  const classes = useStyles();
   const {
     category,
     ws,
@@ -24,6 +32,7 @@ export default function RouletteTopic() {
     setCurrentView,
     selectedTalker,
     rouletteMode,
+    setRouletteMode,
   } = useContext(AppContext);
   const { loadingWheel, setLoadingWheel } = useContext(RouletteContext);
   const [wheel, setWheel] = useState();
@@ -32,6 +41,14 @@ export default function RouletteTopic() {
   const [topics, setTopics] = useState([]);
   const [topicList, setTopicList] = useState([]);
   const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
+  const grayColorList = {
+    "#eae56f": "#6B6932",
+    "#89f26e": "#407334",
+    "#7de6ef": "#3A6C70",
+    "#e7706f": "#693232",
+  };
+  const screenTransitionInterval = 3000;
+  const stopAudio = new Audio("/stop.mp3");
   const audio = new Audio("/tick.mp3");
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
@@ -50,11 +67,9 @@ export default function RouletteTopic() {
 
   // for websocket
   function setNextView() {
-    const path = location.pathname.split("/");
-    const grouphash = path[2];
     setCurrentView(CURRENT_VIEW.RESULT);
     setWheel(undefined);
-    history.push(`/result/${grouphash}`);
+    setRouletteMode("RESULT");
   }
 
   // Called when the animation has finished.
@@ -74,11 +89,22 @@ export default function RouletteTopic() {
     console.log("resultTopic:", resultTopic);
     setSelectedTopic(resultTopic);
     setWheelStopped(true);
-    setTimeout(setNextView, 2000);
+    setTimeout(setNextView, screenTransitionInterval);
   }
 
   useEffect(() => {
     if (wheelStopped === true) {
+      // Highlight the selected segmanet and gray out the others
+      const winningSegmentNumber = wheel.getIndicatedSegmentNumber();
+      for (let x = 1; x < wheel.segments.length; x += 1) {
+        if (x !== winningSegmentNumber) {
+          wheel.segments[x].fillStyle =
+            grayColorList[wheel.segments[x].fillStyle];
+        }
+      }
+      wheel.draw();
+      stopAudio.play();
+
       const data = {
         action: "stoproulette",
         roulette: "Topic",
@@ -173,16 +199,17 @@ export default function RouletteTopic() {
               "Topic:topicList",
               value.topic.replace(/(?:[\w\s]{16})/g, "$&|\n")
             );
+
             const str = value.keyword.replace(/(?:[\w\s]{16})/g, "$&|\n");
             let repstr = "";
             let fontSize = 15;
             if (str.length > 7) {
-              const a = str.slice(0,6);
+              const a = str.slice(0, 6);
               const b = str.slice(6);
-              repstr = a.concat('\n',b);
-              if  (repstr.length > 13) {
-                const c = repstr.slice(0,13);
-                repstr = c.concat ('\n','...');
+              repstr = a.concat("\n", b);
+              if (repstr.length > 13) {
+                const c = repstr.slice(0, 13);
+                repstr = c.concat("\n", "...");
                 fontSize = 13;
               }
             } else {
@@ -197,7 +224,9 @@ export default function RouletteTopic() {
               fillStyle: colorList[index % colorList.length],
               text: repstr,
               textFontSize: fontSize,
+
               textOriginal: str
+
             };
           });
 
@@ -244,11 +273,10 @@ export default function RouletteTopic() {
     return false;
   }
 
-
   return (
     <>
       <ThemeProvider theme={theme}>
-        <Typography variant="h4" align="center">
+        <Typography variant="h4" align="center" className={classes.root}>
           {selectedTalker}さんが話すお題は・・・
         </Typography>
       </ThemeProvider>
@@ -268,15 +296,15 @@ export default function RouletteTopic() {
             }}
           >
             START
-        </Button>
+          </Button>
         </>
       ) : (
-          <div className="canvas_logo" width="438" height="582">
-            <canvas id="loadingRoulette" width="434" height="434">
-              {" "}
-            </canvas>
-          </div>
-        )}
+        <div className="canvas_logo" width="438" height="582">
+          <canvas id="loadingRoulette" width="434" height="434">
+            {" "}
+          </canvas>
+        </div>
+      )}
     </>
   );
 }

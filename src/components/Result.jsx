@@ -6,11 +6,10 @@ import { CURRENT_VIEW, DEFAULT_CATEGORY, getURL } from "../const";
 import AppContext from "../context/AppContext";
 import RandomGenerateTopic from "./RandomGenerateTopic";
 import RandomGenerateMember from "./RandomGenerateMember";
-import StartForm from "./StartForm";
 import MembersList from "./MembersList";
 import LogoWithText from "./LogoWithText";
 
-export default function Main() {
+export default function Result() {
   const location = useLocation();
   const history = useHistory();
   const {
@@ -95,70 +94,62 @@ export default function Main() {
     }
   }
 
-  if (currentView === CURRENT_VIEW.START_FORM) {
-    return <StartForm />;
-  }
-
-  if (currentView === CURRENT_VIEW.RESULT) {
-    return (
-      <>
-        <Box width="100%">
-          <RandomGenerateMember fetchURL={memberFetchURL} />
-          <RandomGenerateTopic fetchURL={topicFetchURL} />
-        </Box>
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          m={3}
+  return (
+    <>
+      <Box width="100%">
+        <RandomGenerateMember fetchURL={memberFetchURL} />
+        <RandomGenerateTopic fetchURL={topicFetchURL} />
+      </Box>
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        m={3}
+      >
+        <Button
+          variant="contained"
+          startIcon={<PeopleIcon />}
+          onClick={handlerOnClickForBothChange}
+          style={{
+            backgroundColor: "#E3C188",
+            fontSize: "15px",
+          }}
         >
-          <Button
-            variant="contained"
-            startIcon={<PeopleIcon />}
-            onClick={handlerOnClickForBothChange}
-            style={{
-              backgroundColor: "#E3C188",
-              fontSize: "15px",
-            }}
-          >
-            両方チェンジ！
-          </Button>
-        </Box>
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          m={5}
+          両方チェンジ！
+        </Button>
+      </Box>
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        m={5}
+      >
+        <Button
+          variant="contained"
+          startIcon={<PeopleIcon />}
+          onClick={handleDrawerToggle}
+          style={{
+            backgroundColor: "#9fe4e2",
+            fontSize: "15px",
+          }}
         >
-          <Button
-            variant="contained"
-            startIcon={<PeopleIcon />}
-            onClick={handleDrawerToggle}
-            style={{
-              backgroundColor: "#9fe4e2",
-              fontSize: "15px",
-            }}
-          >
-            参加者を変える
-          </Button>
-          <Drawer
-            variant="temporary"
-            anchor="left"
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            ModalProps={{
-              keepMounted: true,
-            }}
-          >
-            <LogoWithText />
-            <MembersList fetchURL={allMemberFetchURL} />
-          </Drawer>
-        </Box>
-      </>
-    );
-  }
-
-  return null;
+          参加者を変える
+        </Button>
+        <Drawer
+          variant="temporary"
+          anchor="left"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true,
+          }}
+        >
+          <LogoWithText />
+          <MembersList fetchURL={allMemberFetchURL} />
+        </Drawer>
+      </Box>
+    </>
+  );
 }
