@@ -96,7 +96,6 @@ export default function StartForm() {
       endPeriod: _endPeriod,
       category: _category,
     };
-    console.log("body:", body);
     const res = await fetch(ROOM_POST_URL, {
       method: "POST",
       headers: {
@@ -108,7 +107,6 @@ export default function StartForm() {
     });
     const data = await res.json();
     setGroupHash(data.grouphash);
-    console.log("grouphash:", data.grouphash);
     return data.grouphash;
   };
 

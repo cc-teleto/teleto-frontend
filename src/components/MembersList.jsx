@@ -74,11 +74,9 @@ export default function MembersList(props) {
   const location = useLocation();
   const path = location.pathname.split("/");
   const groupHash = path[2];
-  console.log("groupHash", groupHash);
 
   const fetchContent = async () => {
     let data = "";
-    console.log("fetchURL", fetchURL);
     try {
       const res = await fetch(fetchURL, {
         method: "GET",
@@ -122,7 +120,6 @@ export default function MembersList(props) {
     await fetchDeleteMember(getURL("/members", url));
     const data = await fetchContent();
 
-    console.log("deleteMember list:", data.members);
     setList(data.members);
   }
 
@@ -133,7 +130,6 @@ export default function MembersList(props) {
     const data = await fetchContent();
 
     setList(data.members);
-    console.log("addMember list:", data.members);
   }
 
   function handleChange(e) {

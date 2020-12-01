@@ -61,7 +61,6 @@ export default function RandomGenerateTopic() {
         action: "changeresult",
         roulette: "Topic",
       };
-      console.log("ws changeresult Topic");
       ws.send(JSON.stringify(data));
     }
   }
