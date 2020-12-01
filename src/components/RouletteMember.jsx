@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useLocation, useHistory } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -16,7 +16,6 @@ import getRoomInfo from "../utils/webApi";
 
 function RouletteMember() {
   const location = useLocation();
-  const history = useHistory();
   const {
     // members,
     selectedTalker,
@@ -76,17 +75,11 @@ function RouletteMember() {
   function stopAction(indicatedSegment) {
     // Set the result and move to next screen
     if (selectedTopic) {
-      const path = location.pathname.split("/");
-      const grouphash = path[2];
       console.log("detect topic already set");
       setSelectedTalker(indicatedSegment.text);
       setWheelStopped(true);
       setTimeout(setCurrentView, screenTransitionInterval, CURRENT_VIEW.RESULT);
-      setTimeout(
-        history.push,
-        screenTransitionInterval,
-        `/result/${grouphash}`
-      );
+      setTimeout(setRouletteMode, screenTransitionInterval, "RESULT");
     } else {
       console.log(indicatedSegment.text);
       setSelectedTalker(indicatedSegment.text);

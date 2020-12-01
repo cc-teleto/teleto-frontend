@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useLocation, useHistory } from "react-router-dom";
 import { Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -14,8 +13,6 @@ import { CURRENT_VIEW } from "../const";
 import RouletteContext from "../context/RouletteContext";
 
 export default function RouletteTopic() {
-  const location = useLocation();
-  const history = useHistory();
   const {
     category,
     ws,
@@ -24,6 +21,7 @@ export default function RouletteTopic() {
     setCurrentView,
     selectedTalker,
     rouletteMode,
+    setRouletteMode,
   } = useContext(AppContext);
   const { loadingWheel, setLoadingWheel } = useContext(RouletteContext);
   const [wheel, setWheel] = useState();
@@ -58,11 +56,9 @@ export default function RouletteTopic() {
 
   // for websocket
   function setNextView() {
-    const path = location.pathname.split("/");
-    const grouphash = path[2];
     setCurrentView(CURRENT_VIEW.RESULT);
     setWheel(undefined);
-    history.push(`/result/${grouphash}`);
+    setRouletteMode("RESULT");
   }
 
   // Called when the animation has finished.
