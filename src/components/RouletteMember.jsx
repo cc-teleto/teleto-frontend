@@ -40,12 +40,12 @@ function RouletteMember() {
 
   const audio = new Audio("/tick.mp3");
   const stopAudio = new Audio("/stop.mp3");
-  const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
+  const colorList = ["#9FE4E2", "#E3B8B6", "#AAC7E3", "#E3C188"];
   const grayColorList = {
-    "#eae56f": "#6B6932",
-    "#89f26e": "#407334",
-    "#7de6ef": "#3A6C70",
-    "#e7706f": "#693232",
+    "#9FE4E2": "#7BB0AE",
+    "#E3B8B6": "#B08F8D",
+    "#AAC7E3": "#849BB0",
+    "#E3C188": "#B0966A",
   };
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
@@ -58,10 +58,9 @@ function RouletteMember() {
       maxId: 0,
       members: {},
     };
-    data.members.forEach((member) => {
+    data.members.forEach((member, index) => {
       membersInfo.maxId += 1;
-      membersInfo.members[`member${member.memberorder + 1}`] =
-        member.membername;
+      membersInfo.members[`member${index + 1}`] = member.membername;
     });
     console.log("membersInfo:", membersInfo);
     setMembers(membersInfo);
@@ -127,7 +126,25 @@ function RouletteMember() {
       value,
       index
     ) {
-      return { fillStyle: colorList[index % colorList.length], text: value };
+      let repstr = "";
+      let fontSize = 15;
+      if (value.length > 7) {
+        const a = value.slice(0, 6);
+        const b = value.slice(6);
+        repstr = a.concat("\n", b);
+        if (value.length > 12) {
+          const c = repstr.slice(0, 12);
+          repstr = c.concat("\n", "...");
+          fontSize = 13;
+        }
+      } else {
+        repstr = value;
+      }
+      return {
+        fillStyle: colorList[index % colorList.length],
+        text: repstr,
+        textFontSize: fontSize,
+      };
     });
 
     console.log(segmentList);
