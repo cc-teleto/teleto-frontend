@@ -37,9 +37,17 @@ function RouletteMember() {
       member1: "",
     },
   });
+  const screenTransitionInterval = 3000;
 
   const audio = new Audio("/tick.mp3");
+  const stopAudio = new Audio("/stop.mp3");
   const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
+  const grayColorList = {
+    "#eae56f": "#6B6932",
+    "#89f26e": "#407334",
+    "#7de6ef": "#3A6C70",
+    "#e7706f": "#693232",
+  };
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
 
@@ -58,7 +66,6 @@ function RouletteMember() {
     setMembers(getMembers);
   };
 
-
   // for websocket
   function setMode(mode) {
     setWheel(undefined);
@@ -67,25 +74,44 @@ function RouletteMember() {
 
   // Called when the animation has finished.
   function stopAction(indicatedSegment) {
+    // Set the result and move to next screen
     if (selectedTopic) {
       const path = location.pathname.split("/");
       const grouphash = path[2];
       console.log("detect topic already set");
       setSelectedTalker(indicatedSegment.text);
       setWheelStopped(true);
-      setCurrentView(CURRENT_VIEW.RESULT);
-      history.push(`/result/${grouphash}`);
+      setTimeout(setCurrentView, screenTransitionInterval, CURRENT_VIEW.RESULT);
+      setTimeout(
+        history.push,
+        screenTransitionInterval,
+        `/result/${grouphash}`
+      );
     } else {
       console.log(indicatedSegment.text);
       setSelectedTalker(indicatedSegment.text);
       setWheelStopped(true);
-      setTimeout(setMode, 2000, "TOPIC");
+      setTimeout(setMode, screenTransitionInterval, "TOPIC");
       console.log(setRouletteMode);
     }
   }
 
   useEffect(() => {
     if (wheelStopped === true) {
+      // Highlight the selected segmanet and gray out the others
+      console.log("Human:=====wheel stopped=====");
+      console.log(wheel);
+      const winningSegmentNumber = wheel.getIndicatedSegmentNumber();
+      for (let x = 1; x < wheel.segments.length; x += 1) {
+        if (x !== winningSegmentNumber) {
+          wheel.segments[x].fillStyle =
+            // "gray";
+            grayColorList[wheel.segments[x].fillStyle];
+        }
+      }
+      wheel.draw();
+      stopAudio.play();
+
       const data = {
         action: "stoproulette",
         roulette: "Talker",
@@ -193,7 +219,7 @@ function RouletteMember() {
   useEffect(() => {
     const path = location.pathname.split("/");
     getRoom(path[2]);
-  }, [])
+  }, []);
 
   function handleOnClick() {
     const data = {
@@ -260,12 +286,12 @@ function RouletteMember() {
           </Button>
         </>
       ) : (
-          <div className="canvas_logo" width="438" height="582">
-            <canvas id="loadingRoulette" width="434" height="434">
-              {" "}
-            </canvas>
-          </div>
-        )}
+        <div className="canvas_logo" width="438" height="582">
+          <canvas id="loadingRoulette" width="434" height="434">
+            {" "}
+          </canvas>
+        </div>
+      )}
     </>
   );
 }
