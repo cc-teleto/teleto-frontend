@@ -7,7 +7,7 @@ import {
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { makeStyles } from "@material-ui/core/styles";
-
+import { useLocation } from "react-router-dom";
 import React, { useState, useEffect, useRef, useContext } from "react";
 import PropTypes from "prop-types";
 import { getURL } from "../const";
@@ -66,15 +66,19 @@ export default function MembersList(props) {
   const classes = useStyles();
   const [list, setList] = useState([]);
   const [addMem, setAddMem] = useState({ value: "" });
-  const { groupHash, mobileOpen, setMobileOpen, members } = useContext(
-    AppContext
-  );
+  const { mobileOpen, setMobileOpen, members } = useContext(AppContext);
   const isFirstRender = useRef(false);
   const items = [];
   const { fetchURL } = props;
 
+  const location = useLocation();
+  const path = location.pathname.split("/");
+  const groupHash = path[2];
+  console.log("groupHash", groupHash);
+
   const fetchContent = async () => {
     let data = "";
+    console.log("fetchURL", fetchURL);
     try {
       const res = await fetch(fetchURL, {
         method: "GET",
@@ -118,6 +122,7 @@ export default function MembersList(props) {
     await fetchDeleteMember(getURL("/members", url));
     const data = await fetchContent();
 
+    console.log("deleteMember list:", data.members);
     setList(data.members);
   }
 
@@ -128,6 +133,7 @@ export default function MembersList(props) {
     const data = await fetchContent();
 
     setList(data.members);
+    console.log("addMember list:", data.members);
   }
 
   function handleChange(e) {

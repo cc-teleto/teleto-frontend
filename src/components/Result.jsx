@@ -14,7 +14,6 @@ export default function Result() {
   const location = useLocation();
   const history = useHistory();
   const {
-    groupHash,
     currentView,
     category,
     mobileOpen,
@@ -29,6 +28,9 @@ export default function Result() {
   const [memberFetchURL, setMemberFetchURL] = useState("");
   const [allMemberFetchURL, setAllMemberFetchURL] = useState("");
 
+  const path = location.pathname.split("/");
+  const groupHash = path[2];
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -42,7 +44,6 @@ export default function Result() {
   };
 
   useEffect(() => {
-    const path = location.pathname.split("/");
     setBasicInfo(path[2]);
   }, []);
 
@@ -75,7 +76,6 @@ export default function Result() {
       ws.onmessage = (e) => {
         console.log("changeresult data:", e.data);
         const resData = JSON.parse(e.data);
-        const path = location.pathname.split("/");
         const grouphash = path[2];
 
         if (resData.action === "changeresult") {
