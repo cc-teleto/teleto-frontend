@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
+// import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Box } from "@material-ui/core";
+import { Box, Button } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import moment from "moment";
 
@@ -8,6 +9,7 @@ import AppContext from "../context/AppContext";
 import { CURRENT_VIEW } from "../const";
 
 export default function Message(props) {
+  // const location = useLocation();
   const [timeLeft, setTimeLeft] = useState(-1);
   const [alertMsg, setAlertMsg] = useState("");
   const { currentView, endPeriod } = useContext(AppContext);
@@ -17,19 +19,18 @@ export default function Message(props) {
     // setTimeLeft(period);
     const dt = moment();
     const endTime = moment(endPeriod);
-    const dif = endTime.diff(dt, 'minutes');
+    const dif = endTime.diff(dt, "minutes");
     setTimeLeft(dif + 1);
   }, [period, endPeriod]);
 
   useEffect(() => {
     let intervalId;
     if (endPeriod) {
-
       intervalId = setInterval(() => {
         // setTimeLeft(timeLeft - 1);
         const dt = moment();
         const endTime = moment(endPeriod);
-        const dif = endTime.diff(dt, 'minutes');
+        const dif = endTime.diff(dt, "minutes");
         setTimeLeft(dif + 1);
       }, 1000 * 60);
     }
@@ -38,15 +39,50 @@ export default function Message(props) {
       alert("終了時刻となりました");
     }
     return () => clearInterval(intervalId);
-  }, [timeLeft, currentView,endPeriod]);
+  }, [timeLeft, currentView, endPeriod]);
 
   if (severity && message) {
     setAlertMsg(<Alert severity={severity}>{message}</Alert>);
   }
+
+  function copyOverrideOnce(s) {
+    document.addEventListener(
+      "copy",
+      function (e) {
+        e.clipboardData.setData("text/plain", s);
+        e.preventDefault();
+      },
+      { once: true }
+    );
+  }
+
+  const urlCopy = () => {
+    // コピーイベントでの処理を登録する(1回のみ).
+    copyOverrideOnce(window.location.href);
+    // copyOverrideOnce(location.pathname);
+    // コピーイベントを発生させる.
+    document.execCommand("copy");
+
+    // コピーをお知らせする
+    alert("URLをコピーしました！");
+  };
+
   return (
     <Box display="flex" flexWrap="nowrap" width="50%">
       <Box width="100%">{alertMsg}</Box>
       <Box flexShrink={0}>{timeLeft > 0 ? `残り時間: ${timeLeft}分` : ""}</Box>
+      <Button
+        variant="contained"
+        onClick={() => urlCopy()}
+        style={{
+          backgroundColor: "#9fe4e2",
+          width: "2000px",
+          height: "20px",
+          margin: "2px 20px",
+        }}
+      >
+        URLCOPY
+      </Button>
     </Box>
   );
 }
