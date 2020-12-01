@@ -16,6 +16,7 @@ import getRoomInfo from "../utils/webApi";
 
 function RouletteMember() {
   const location = useLocation();
+  const event = "touchend";
   const {
     // members,
     selectedTalker,
@@ -49,6 +50,23 @@ function RouletteMember() {
   };
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
+
+  async function playAudio(audios) {
+    try {
+      await audios.play();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  document.addEventListener(event, function () {
+    // 事前に音源をロードする
+    audio.load("/tick.mp3");
+    stopAudio.load("/stop.mp3");
+
+    stopAudio.pause();
+    stopAudio.currentTime = 0;
+  });
 
   const getRoom = async (grouphash) => {
     const data = await getRoomInfo(grouphash);
@@ -104,7 +122,7 @@ function RouletteMember() {
         }
       }
       wheel.draw();
-      stopAudio.play();
+      playAudio(stopAudio);
 
       const data = {
         action: "stoproulette",
@@ -156,7 +174,7 @@ function RouletteMember() {
       audio.currentTime = 0;
 
       // Play the sound.
-      audio.play();
+      playAudio(audio);
     }
 
     const itemNumber = Object.values(members.members).length;

@@ -64,7 +64,7 @@ export default function Message(props) {
     document.execCommand("copy");
 
     // コピーをお知らせする
-    alert("URLをコピーしました！");
+    alert("URLをコピーしました！参加者にURLを通知してください！！");
   };
 
   return (
@@ -76,7 +76,7 @@ export default function Message(props) {
         onClick={() => urlCopy()}
         style={{
           backgroundColor: "#9fe4e2",
-          width: "2000px",
+          width: "100px",
           height: "20px",
           margin: "2px 20px",
         }}
