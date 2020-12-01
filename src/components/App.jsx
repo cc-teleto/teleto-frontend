@@ -11,9 +11,10 @@ import { Box, createMuiTheme, MuiThemeProvider } from "@material-ui/core";
 import Logo from "./Logo";
 import AppContext from "../context/AppContext";
 import { DEFAULT_CATEGORY, CURRENT_VIEW } from "../const";
-import Main from "./Main";
+import Result from "./Result";
 import Message from "./Message";
 import Roulette from "./Roulette";
+import StartForm from "./StartForm";
 
 const theme = createMuiTheme({
   typography: {
@@ -94,13 +95,13 @@ export default function App() {
             <Logo />
             <Switch>
               <Route path="/" exact>
-                <Main />
+                <StartForm />
               </Route>
               <Route path="/roulette/:id" exact>
                 <Roulette />
               </Route>
               <Route path="/result/:id" exact>
-                <Main />
+                <Result />
               </Route>
             </Switch>
           </Router>

@@ -9,7 +9,7 @@ import RouletteTopic from "./RouletteTopic";
 import RouletteMember from "./RouletteMember";
 import RouletteContext from "../context/RouletteContext";
 import getRoomInfo from "../utils/webApi";
-
+import Result from "./Result";
 
 export default function Roulette() {
   // const ROOM_GET_URL = getURL("/room");
@@ -41,7 +41,7 @@ export default function Roulette() {
       ws.send(JSON.stringify(data));
       console.log("send hash");
     }
-  }, [ws])
+  }, [ws]);
 
   useEffect(() => {
     setLoadingWheel(
@@ -91,6 +91,9 @@ export default function Roulette() {
     getRoom(path[2]);
   }, []);
 
+  if (rouletteMode === "RESULT") {
+    return <Result />;
+  }
   return (
     <RouletteContext.Provider
       value={{
