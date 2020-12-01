@@ -53,6 +53,7 @@ export default function RouletteTopic() {
     "#E3C188": "#B0966A",
   };
   const screenTransitionInterval = 3000;
+
   const isiPhone = navigator.userAgent.indexOf("iPhone") > 0;
   /*
   以下の文字列でユーザーエージェントを判別します
@@ -87,6 +88,7 @@ export default function RouletteTopic() {
       console.log(err);
     }
   }
+
 
   // This function is called when the sound is to be played.
   function playSound() {
@@ -152,6 +154,7 @@ export default function RouletteTopic() {
         }
       }
       wheel.draw();
+
       if (!isiPhone) {
         playAudio(stopAudio);
       }

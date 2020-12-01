@@ -133,6 +133,7 @@ function RouletteMember() {
         }
       }
       wheel.draw();
+
       if (!isiPhone) {
         playAudio(stopAudio);
       }
@@ -183,7 +184,6 @@ function RouletteMember() {
         // Stop and rewind the sound if it already happens to be playing.
         audio.pause();
         audio.currentTime = 0;
-
         // Play the sound.
         playAudio(audio);
       }
