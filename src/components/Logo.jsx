@@ -6,12 +6,9 @@ import { CURRENT_VIEW } from "../const";
 import AppContext from "../context/AppContext";
 
 export default function Logo() {
-  const {
-    setCurrentView,
-    setSelectedTalker,
-    setSelectedTopic,
-    setRouletteMode,
-  } = useContext(AppContext);
+  const { setCurrentView, setSelectedTalker, setSelectedTopic } = useContext(
+    AppContext
+  );
   const history = useHistory();
   const location = useLocation();
   const path = location.pathname.split("/")[1];
@@ -19,7 +16,6 @@ export default function Logo() {
   const onClick = () => {
     setSelectedTalker("");
     setSelectedTopic("");
-    setRouletteMode("HUMAN");
     setCurrentView(CURRENT_VIEW.START_FORM);
     history.push("/");
   };
