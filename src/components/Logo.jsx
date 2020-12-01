@@ -1,22 +1,41 @@
 import React, { useContext } from "react";
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from "react-router-dom";
 import { Box } from "@material-ui/core";
 import logoImage from "../img/logo.png";
 import { CURRENT_VIEW } from "../const";
 import AppContext from "../context/AppContext";
 
 export default function Logo() {
-  const { setCurrentView, setSelectedTalker, setSelectedTopic, setRouletteMode } = useContext(AppContext);
+  const {
+    setCurrentView,
+    setSelectedTalker,
+    setSelectedTopic,
+    setRouletteMode,
+  } = useContext(AppContext);
   const history = useHistory();
+  const location = useLocation();
+  const path = location.pathname.split("/")[1];
 
   const onClick = () => {
     setSelectedTalker("");
     setSelectedTopic("");
     setRouletteMode("HUMAN");
     setCurrentView(CURRENT_VIEW.START_FORM);
-    history.push('/');
+    history.push("/");
   };
-  return (
+  return path === "roulette" ? (
+    <Box justifyContent="center" display="flex">
+      <input
+        type="image"
+        className="logo"
+        src={logoImage}
+        alt="logo"
+        onClick={onClick}
+        onKeyDown={onClick}
+        width="50%"
+      />
+    </Box>
+  ) : (
     <Box justifyContent="center" display="flex">
       <input
         type="image"
