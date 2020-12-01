@@ -167,22 +167,13 @@ export default function RouletteTopic() {
               "Topic:topicList",
               value.topic.replace(/(?:[\w\s]{16})/g, "$&|\n")
             );
-            // const str = value.topic;
-            // console.log(str);
-            // const a = str.slice(0,6);
-            // const b = str.slice(6);
-            // const repstr = a.concat('\n',b);
-            // console.log(
-            //   "Topic:topicList2",
-            //   repstr
-            // );
+            
             const str = value.keyword.replace(/(?:[\w\s]{16})/g, "$&|\n");
             const a = str.slice(0,8);
             const b = str.slice(8);
             const repstr = a.concat('\n',b);
             return {
               fillStyle: colorList[index % colorList.length],
-              // text: value.keyword.replace(/(?:[\w\s]{16})/g, "$&|\n"),
               text: repstr,
             };
           });
