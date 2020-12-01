@@ -41,12 +41,12 @@ function RouletteMember() {
 
   const audio = new Audio("/tick.mp3");
   const stopAudio = new Audio("/stop.mp3");
-  const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
+  const colorList = ["#9FE4E2", "#E3B8B6", "#AAC7E3", "#E3C188"];
   const grayColorList = {
-    "#eae56f": "#6B6932",
-    "#89f26e": "#407334",
-    "#7de6ef": "#3A6C70",
-    "#e7706f": "#693232",
+    "#9FE4E2": "#7BB0AE",
+    "#E3B8B6": "#B08F8D",
+    "#AAC7E3": "#849BB0",
+    "#E3C188": "#B0966A",
   };
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
@@ -148,10 +148,10 @@ function RouletteMember() {
       if (value.length > 7) {
         const a = value.slice(0, 6);
         const b = value.slice(6);
-        repstr = a.concat("\n", b);
+        repstr = a.concat('\n', b);
         if (value.length > 12) {
           const c = repstr.slice(0, 12);
-          repstr = c.concat("\n", "...");
+          repstr = c.concat('\n', '...');
           fontSize = 13;
         }
       } else {
@@ -316,12 +316,12 @@ function RouletteMember() {
           </Button>
         </>
       ) : (
-        <div className="canvas_logo" width="438" height="582">
-          <canvas id="loadingRoulette" width="434" height="434">
-            {" "}
-          </canvas>
-        </div>
-      )}
+          <div className="canvas_logo" width="438" height="582">
+            <canvas id="loadingRoulette" width="434" height="434">
+              {" "}
+            </canvas>
+          </div>
+        )}
     </>
   );
 }

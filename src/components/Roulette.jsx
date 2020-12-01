@@ -14,20 +14,42 @@ import Result from "./Result";
 export default function Roulette() {
   const location = useLocation();
   const {
-    // setMembers,
     setEndPeriod,
     setCategory,
     ws,
     rouletteMode,
+    setRouletteMode,
+    setMembers,
   } = useContext(AppContext);
 
   const [loadingWheel, setLoadingWheel] = useState();
 
-  const getRoom = async (grouphash) => {
+  const setRoomBasicInfo = async (grouphash) => {
     const data = await getRoomInfo(grouphash);
-    console.log("DATA in Roulette:", data);
+    console.log("RouletteJSX DATA in Roulette:", data);
     setCategory(data.category);
     setEndPeriod(data.endPeriod);
+
+    const mappingRouletteMode = {
+      TalkerRoulette: "HUMAN",
+      TopicRoulette: "TOPIC",
+      Result: "RESULT",
+    };
+    const membersInfo = {
+      maxId: 0,
+      members: {},
+    };
+    data.members.forEach((member) => {
+      membersInfo.maxId += 1;
+      membersInfo.members[`member${member.memberorder + 1}`] =
+        member.membername;
+    });
+
+    setMembers(membersInfo);
+
+    if (rouletteMode !== mappingRouletteMode[data.onWhichScreen]) {
+      setRouletteMode(mappingRouletteMode[data.onWhichScreen]);
+    }
   };
 
   useEffect(() => {
@@ -43,6 +65,10 @@ export default function Roulette() {
   }, [ws]);
 
   useEffect(() => {
+    // 必要情報の取得
+    const path = location.pathname.split("/");
+    setRoomBasicInfo(path[2]);
+
     if (rouletteMode === "TOPIC" || rouletteMode === "HUMAN") {
       setLoadingWheel(
         new Winwheel({
@@ -85,12 +111,6 @@ export default function Roulette() {
       );
     }
   }, [rouletteMode]);
-
-  useEffect(() => {
-    // 必要情報の取得
-    const path = location.pathname.split("/");
-    getRoom(path[2]);
-  }, []);
 
   if (rouletteMode === "RESULT") {
     return <Result />;
