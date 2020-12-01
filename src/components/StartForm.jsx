@@ -70,6 +70,7 @@ export default function StartForm() {
     category,
     setCategory,
     setEndPeriod,
+    setRouletteMode,
     //    grouphash,
   } = useContext(AppContext);
   const [periodInput, setPeriodInput] = useState(DEFAULT_PERIOD);
@@ -80,6 +81,7 @@ export default function StartForm() {
   );
 
   const addMember = () => {
+    setRouletteMode("HUMAN");
     setMembersInput({
       type: "add",
     });
@@ -125,7 +127,6 @@ export default function StartForm() {
       endPeriodLocal,
       categoryInput
     );
-
 
     // URLでアクセスした場合と条件をそろえるためにMembersを初期化
     setMembers({
