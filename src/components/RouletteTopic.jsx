@@ -62,6 +62,11 @@ export default function RouletteTopic() {
     console.log("Topic:selectedTopic:", topicList);
     let resultTopic;
     topicList.forEach((topic) => {
+      console.log("topic.keyword");
+      console.log(topic.keyword);
+      console.log("indicatedSegment.textOriginal");
+      console.log(indicatedSegment.text);
+
       if (topic.keyword === indicatedSegment.text) {
         resultTopic = topic.topic;
       }
@@ -159,6 +164,7 @@ export default function RouletteTopic() {
         console.log("Topic:receiveData", e.data);
         const resData = JSON.parse(e.data);
 
+
         if (resData.action === "getmultitopics") {
           console.log("Topic:*****getmultitopics Start*****");
           setTopicList(resData.topics);
@@ -167,7 +173,6 @@ export default function RouletteTopic() {
               "Topic:topicList",
               value.topic.replace(/(?:[\w\s]{16})/g, "$&|\n")
             );
-            
             const str = value.keyword.replace(/(?:[\w\s]{16})/g, "$&|\n");
             let repstr = "";
             let fontSize = 15;
@@ -183,10 +188,16 @@ export default function RouletteTopic() {
             } else {
               repstr = str;
             }
+            resData.topics[index].keyword = repstr;
+            // console.log("keyword:")
+            // console.log(value.keyword);
+            // console.log("repstr:");
+            // console.log(repstr);
             return {
               fillStyle: colorList[index % colorList.length],
               text: repstr,
-              textFontSize: fontSize
+              textFontSize: fontSize,
+              textOriginal: str
             };
           });
 
