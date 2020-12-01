@@ -58,7 +58,6 @@ function RouletteMember() {
     setMembers(getMembers);
   };
 
-
   // for websocket
   function setMode(mode) {
     setWheel(undefined);
@@ -193,7 +192,7 @@ function RouletteMember() {
   useEffect(() => {
     const path = location.pathname.split("/");
     getRoom(path[2]);
-  }, [])
+  }, []);
 
   function handleOnClick() {
     const data = {
@@ -260,12 +259,12 @@ function RouletteMember() {
           </Button>
         </>
       ) : (
-          <div className="canvas_logo" width="438" height="582">
-            <canvas id="loadingRoulette" width="434" height="434">
-              {" "}
-            </canvas>
-          </div>
-        )}
+        <div className="canvas_logo" width="438" height="582">
+          <canvas id="loadingRoulette" width="434" height="434">
+            {" "}
+          </canvas>
+        </div>
+      )}
     </>
   );
 }
