@@ -106,7 +106,21 @@ function RouletteMember() {
       value,
       index
     ) {
-      return { fillStyle: colorList[index % colorList.length], text: value };
+      let repstr = "";
+      let fontSize = 15;
+      if (value.length > 7) {
+        const a = value.slice(0,6);
+        const b = value.slice(6);
+        repstr = a.concat('\n',b);
+        if  (value.length > 12) {
+          const c = repstr.slice(0,12);
+          repstr = c.concat ('\n','...');
+          fontSize = 13;
+        }
+      } else {
+        repstr = value;
+      }
+      return { fillStyle: colorList[index % colorList.length], text: repstr, textFontSize: fontSize };
     });
 
     console.log(segmentList);
@@ -136,6 +150,7 @@ function RouletteMember() {
         lineWidth: 1,
         // textOrientation: "vertical",
         textFontSize: 18, // Font size.\
+        textMargin: 0, // margin between the inner or outer of the wheel
         rotationAngle: -360 / itemNumber / 2, // show the default position aligned to the text
         // Definition of all the segments.
         segments: segmentList,
