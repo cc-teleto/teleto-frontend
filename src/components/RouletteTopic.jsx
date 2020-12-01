@@ -83,8 +83,6 @@ export default function RouletteTopic() {
   useEffect(() => {
     if (wheelStopped === true) {
       // Highlight the selected segmanet and gray out the others
-      console.log("Human:=====wheel stopped=====");
-      console.log(wheel);
       const winningSegmentNumber = wheel.getIndicatedSegmentNumber();
       for (let x = 1; x < wheel.segments.length; x += 1) {
         if (x !== winningSegmentNumber) {
