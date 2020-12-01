@@ -54,15 +54,17 @@ function RouletteMember() {
     const data = await getRoomInfo(grouphash);
     console.log("DATA in Member:", data);
 
-    const getMembers = {
+    const membersInfo = {
       maxId: 0,
       members: {},
     };
     data.members.forEach((member) => {
-      getMembers.maxId += 1;
-      getMembers.members[`member${member.memberorder + 1}`] = member.membername;
+      membersInfo.maxId += 1;
+      membersInfo.members[`member${member.memberorder + 1}`] =
+        member.membername;
     });
-    setMembers(getMembers);
+    console.log("membersInfo:", membersInfo);
+    setMembers(membersInfo);
   };
 
   // for websocket
@@ -125,21 +127,7 @@ function RouletteMember() {
       value,
       index
     ) {
-      let repstr = "";
-      let fontSize = 15;
-      if (value.length > 7) {
-        const a = value.slice(0,6);
-        const b = value.slice(6);
-        repstr = a.concat('\n',b);
-        if  (value.length > 12) {
-          const c = repstr.slice(0,12);
-          repstr = c.concat ('\n','...');
-          fontSize = 13;
-        }
-      } else {
-        repstr = value;
-      }
-      return { fillStyle: colorList[index % colorList.length], text: repstr, textFontSize: fontSize };
+      return { fillStyle: colorList[index % colorList.length], text: value };
     });
 
     console.log(segmentList);
@@ -169,7 +157,6 @@ function RouletteMember() {
         lineWidth: 1,
         // textOrientation: "vertical",
         textFontSize: 18, // Font size.\
-        textMargin: 0, // margin between the inner or outer of the wheel
         rotationAngle: -360 / itemNumber / 2, // show the default position aligned to the text
         // Definition of all the segments.
         segments: segmentList,
