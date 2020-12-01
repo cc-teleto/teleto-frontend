@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function RouletteTopic() {
   const location = useLocation();
+  const event = "touchend";
   const classes = useStyles();
   const {
     category,
@@ -52,9 +53,29 @@ export default function RouletteTopic() {
     "#E3C188": "#B0966A",
   };
   const screenTransitionInterval = 3000;
-  const stopAudio = new Audio("/stop.mp3");
-  const audio = new Audio("/tick.mp3");
-  const event = "touchend";
+
+  const isiPhone = navigator.userAgent.indexOf("iPhone") > 0;
+  /*
+  以下の文字列でユーザーエージェントを判別します
+  osVer = "iPhone";
+  osVer = "Android";
+  osVer = "iPod";
+  osVer = "iPad";
+  */
+  let audio;
+  let stopAudio;
+  if (!isiPhone) {
+    audio = new Audio("/tick.mp3");
+    stopAudio = new Audio("/stop.mp3");
+    document.addEventListener(event, function () {
+      // 事前に音源をロードする
+      audio.load("/tick.mp3");
+      stopAudio.load("/stop.mp3");
+
+      stopAudio.pause();
+      stopAudio.currentTime = 0;
+    });
+  }
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
 
@@ -68,23 +89,17 @@ export default function RouletteTopic() {
     }
   }
 
-  document.addEventListener(event, function () {
-    // 事前に音源をロードする
-    audio.load("/tick.mp3");
-    stopAudio.load("/stop.mp3");
-
-    stopAudio.pause();
-    stopAudio.currentTime = 0;
-  });
 
   // This function is called when the sound is to be played.
   function playSound() {
-    // Stop and rewind the sound if it already happens to be playing.
-    audio.pause();
-    audio.currentTime = 0;
+    if (!isiPhone) {
+      // Stop and rewind the sound if it already happens to be playing.
+      audio.pause();
+      audio.currentTime = 0;
 
-    // Play the sound.
-    playAudio(audio);
+      // Play the sound.
+      playAudio(audio);
+    }
   }
 
   // for websocket
@@ -139,8 +154,10 @@ export default function RouletteTopic() {
         }
       }
       wheel.draw();
-      playAudio(stopAudio);
 
+      if (!isiPhone) {
+        playAudio(stopAudio);
+      }
       const data = {
         action: "stoproulette",
         roulette: "Topic",
@@ -226,7 +243,6 @@ export default function RouletteTopic() {
         console.log("Topic:receiveData", e.data);
         const resData = JSON.parse(e.data);
 
-
         if (resData.action === "getmultitopics") {
           console.log("Topic:*****getmultitopics Start*****");
           setTopicList(resData.topics);
@@ -260,7 +276,7 @@ export default function RouletteTopic() {
               fillStyle: colorList[index % colorList.length],
               text: repstr,
               textFontSize: fontSize,
-              textOriginal: str
+              textOriginal: str,
             };
           });
 
