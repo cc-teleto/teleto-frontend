@@ -29,6 +29,7 @@ export default function Logo() {
         onClick={onClick}
         onKeyDown={onClick}
         width="50%"
+        height="50%"
       />
     </Box>
   ) : (
