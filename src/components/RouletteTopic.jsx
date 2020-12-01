@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Button } from "@material-ui/core";
+import { useLocation } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import {
   createMuiTheme,
@@ -12,6 +13,7 @@ import Winwheel from "../utils/Winwheel";
 import "../styles/styles.css";
 import { CURRENT_VIEW } from "../const";
 import RouletteContext from "../context/RouletteContext";
+import getRoomInfo from "../utils/webApi";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function RouletteTopic() {
+  const location = useLocation();
   const classes = useStyles();
   const {
     category,
@@ -33,6 +36,7 @@ export default function RouletteTopic() {
     selectedTalker,
     rouletteMode,
     setRouletteMode,
+    setSelectedTalker,
   } = useContext(AppContext);
   const { loadingWheel, setLoadingWheel } = useContext(RouletteContext);
   const [wheel, setWheel] = useState();
@@ -87,6 +91,20 @@ export default function RouletteTopic() {
     setTimeout(setNextView, screenTransitionInterval);
   }
 
+  const setSelectedTalkerInfo = async (grouphash) => {
+    const data = await getRoomInfo(grouphash);
+    console.log("DATA in Roulette:", data);
+
+    setSelectedTalker(data.selectedTalker);
+  };
+
+  useEffect(() => {
+    if (!selectedTalker) {
+      const path = location.pathname.split("/");
+      setSelectedTalkerInfo(path[2]);
+    }
+  }, []);
+
   useEffect(() => {
     if (wheelStopped === true) {
       // Highlight the selected segmanet and gray out the others
@@ -132,7 +150,7 @@ export default function RouletteTopic() {
       category,
       num: 8,
     };
-    ws.send(JSON.stringify(getTopicsParams));
+    if (ws) ws.send(JSON.stringify(getTopicsParams));
   }, [ws]);
 
   useEffect(() => {
