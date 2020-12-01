@@ -11,7 +11,6 @@ import { Box, createMuiTheme, MuiThemeProvider } from "@material-ui/core";
 import Logo from "./Logo";
 import AppContext from "../context/AppContext";
 import { DEFAULT_CATEGORY, CURRENT_VIEW } from "../const";
-import Result from "./Result";
 import Message from "./Message";
 import Roulette from "./Roulette";
 import StartForm from "./StartForm";
@@ -99,9 +98,6 @@ export default function App() {
               </Route>
               <Route path="/roulette/:id" exact>
                 <Roulette />
-              </Route>
-              <Route path="/result/:id" exact>
-                <Result />
               </Route>
             </Switch>
           </Router>

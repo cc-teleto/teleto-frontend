@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useLocation, useHistory } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Button } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -16,7 +16,6 @@ import getRoomInfo from "../utils/webApi";
 
 function RouletteMember() {
   const location = useLocation();
-  const history = useHistory();
   const {
     // members,
     selectedTalker,
@@ -58,7 +57,6 @@ function RouletteMember() {
     setMembers(getMembers);
   };
 
-
   // for websocket
   function setMode(mode) {
     setWheel(undefined);
@@ -68,13 +66,11 @@ function RouletteMember() {
   // Called when the animation has finished.
   function stopAction(indicatedSegment) {
     if (selectedTopic) {
-      const path = location.pathname.split("/");
-      const grouphash = path[2];
       console.log("detect topic already set");
       setSelectedTalker(indicatedSegment.text);
       setWheelStopped(true);
       setCurrentView(CURRENT_VIEW.RESULT);
-      history.push(`/result/${grouphash}`);
+      setRouletteMode("RESULT");
     } else {
       console.log(indicatedSegment.text);
       setSelectedTalker(indicatedSegment.text);
@@ -193,7 +189,7 @@ function RouletteMember() {
   useEffect(() => {
     const path = location.pathname.split("/");
     getRoom(path[2]);
-  }, [])
+  }, []);
 
   function handleOnClick() {
     const data = {
@@ -260,12 +256,12 @@ function RouletteMember() {
           </Button>
         </>
       ) : (
-          <div className="canvas_logo" width="438" height="582">
-            <canvas id="loadingRoulette" width="434" height="434">
-              {" "}
-            </canvas>
-          </div>
-        )}
+        <div className="canvas_logo" width="438" height="582">
+          <canvas id="loadingRoulette" width="434" height="434">
+            {" "}
+          </canvas>
+        </div>
+      )}
     </>
   );
 }

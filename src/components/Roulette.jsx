@@ -44,45 +44,47 @@ export default function Roulette() {
   }, [ws]);
 
   useEffect(() => {
-    setLoadingWheel(
-      new Winwheel({
-        canvasId: "loadingRoulette",
-        numSegments: 3, // Number of segments
-        pointerAngle: 135, // Ensure this is set correctly
-        outerRadius: 165, // The size of the wheel.
-        innerRadius: 50,
-        centerX: 217, // Used to position on the background correctly.
-        centerY: 222,
-        strokeStyle: "#ffffff",
-        lineWidth: 1,
-        textOrientation: "curved",
-        textAligment: "center",
-        textFontSize: 30, // Font size.\
-        rotationAngle: -360 / 3 / 2, // show the default position aligned to the text
-        // Definition of all the segments.
-        segments: [
-          { fillStyle: "#E3B8B6", text: "ル ー レ ッ ト" },
-          { fillStyle: "#9FE4E2", text: "読 み 込 み 中" },
-          { fillStyle: "#E3C188", text: "！ ！ ！" },
-        ],
-        // Specify pin parameters.
-        pins: {
-          number: 3,
-          outerRadius: 6,
-          margin: 3,
-          fillStyle: "#47B7C1",
-          strokeStyle: "#47B7C1",
-        },
-        animation: {
-          type: "spinOngoing",
-          duration: 1000,
-          spins: 100,
-          easing: "Linear.easeNone",
-          direction: "anti-clockwise",
-          repeat: -1,
-        },
-      })
-    );
+    if (rouletteMode === "TOPIC" || rouletteMode === "HUMAN") {
+      setLoadingWheel(
+        new Winwheel({
+          canvasId: "loadingRoulette",
+          numSegments: 3, // Number of segments
+          pointerAngle: 135, // Ensure this is set correctly
+          outerRadius: 165, // The size of the wheel.
+          innerRadius: 50,
+          centerX: 217, // Used to position on the background correctly.
+          centerY: 222,
+          strokeStyle: "#ffffff",
+          lineWidth: 1,
+          textOrientation: "curved",
+          textAligment: "center",
+          textFontSize: 30, // Font size.\
+          rotationAngle: -360 / 3 / 2, // show the default position aligned to the text
+          // Definition of all the segments.
+          segments: [
+            { fillStyle: "#E3B8B6", text: "ル ー レ ッ ト" },
+            { fillStyle: "#9FE4E2", text: "読 み 込 み 中" },
+            { fillStyle: "#E3C188", text: "！ ！ ！" },
+          ],
+          // Specify pin parameters.
+          pins: {
+            number: 3,
+            outerRadius: 6,
+            margin: 3,
+            fillStyle: "#47B7C1",
+            strokeStyle: "#47B7C1",
+          },
+          animation: {
+            type: "spinOngoing",
+            duration: 1000,
+            spins: 100,
+            easing: "Linear.easeNone",
+            direction: "anti-clockwise",
+            repeat: -1,
+          },
+        })
+      );
+    }
   }, [rouletteMode]);
 
   useEffect(() => {
