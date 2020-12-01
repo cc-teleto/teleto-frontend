@@ -68,19 +68,18 @@ export default function Message(props) {
   };
 
   return (
-    <Box display="flex" flexWrap="nowrap" width="50%">
-      
+    <Box display="flex" flexWrap="nowrap" width="75%">
       <Box width="100%">{alertMsg}</Box>
       <Box display="flex" flexWrap="nowrap" width="100%">
       <font face="arial"><Box flexShrink={0}>{timeLeft > 0 ? `残り時間: ${timeLeft}分` : ""}</Box></font>
       </Box>
-      <Box display="flex" flexWrap="nowrap" width="50%">
+      <Box display="flex" flexWrap="nowrap" width="100%" align-items="center">
       <Button
         variant="contained"
         onClick={() => urlCopy()}
         style={{
           backgroundColor: "#9fe4e2",
-          width: "2000px",
+          width: "200px",
           height: "20px",
           margin: "2px 20px",
         }}
