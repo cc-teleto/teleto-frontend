@@ -38,9 +38,29 @@ function RouletteMember() {
     },
   });
   const screenTransitionInterval = 3000;
+  const isiPhone = navigator.userAgent.indexOf("iPhone") > 0;
+  /*
+  以下の文字列でユーザーエージェントを判別します
+  osVer = "iPhone";
+  osVer = "Android";
+  osVer = "iPod";
+  osVer = "iPad";
+  */
+  let audio;
+  let stopAudio;
+  if (!isiPhone) {
+    audio = new Audio("/tick.mp3");
+    stopAudio = new Audio("/stop.mp3");
+    document.addEventListener(event, function () {
+      // 事前に音源をロードする
+      audio.load("/tick.mp3");
+      stopAudio.load("/stop.mp3");
 
-  const audio = new Audio("/tick.mp3");
-  const stopAudio = new Audio("/stop.mp3");
+      stopAudio.pause();
+      stopAudio.currentTime = 0;
+    });
+  }
+
   const colorList = ["#9FE4E2", "#E3B8B6", "#AAC7E3", "#E3C188"];
   const grayColorList = {
     "#9FE4E2": "#7BB0AE",
@@ -58,15 +78,6 @@ function RouletteMember() {
       console.log(err);
     }
   }
-
-  document.addEventListener(event, function () {
-    // 事前に音源をロードする
-    audio.load("/tick.mp3");
-    stopAudio.load("/stop.mp3");
-
-    stopAudio.pause();
-    stopAudio.currentTime = 0;
-  });
 
   const getRoom = async (grouphash) => {
     const data = await getRoomInfo(grouphash);
@@ -122,7 +133,9 @@ function RouletteMember() {
         }
       }
       wheel.draw();
-      playAudio(stopAudio);
+      if (!isiPhone) {
+        playAudio(stopAudio);
+      }
 
       const data = {
         action: "stoproulette",
@@ -169,12 +182,14 @@ function RouletteMember() {
 
     // This function is called when the sound is to be played.
     function playSound() {
-      // Stop and rewind the sound if it already happens to be playing.
-      audio.pause();
-      audio.currentTime = 0;
+      if (!isiPhone) {
+        // Stop and rewind the sound if it already happens to be playing.
+        audio.pause();
+        audio.currentTime = 0;
 
-      // Play the sound.
-      playAudio(audio);
+        // Play the sound.
+        playAudio(audio);
+      }
     }
 
     const itemNumber = Object.values(members.members).length;
