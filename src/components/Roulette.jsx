@@ -10,9 +10,7 @@ import RouletteMember from "./RouletteMember";
 import RouletteContext from "../context/RouletteContext";
 import getRoomInfo from "../utils/webApi";
 
-
 export default function Roulette() {
-  // const ROOM_GET_URL = getURL("/room");
   const location = useLocation();
   const {
     // setMembers,
@@ -41,7 +39,7 @@ export default function Roulette() {
       ws.send(JSON.stringify(data));
       console.log("send hash");
     }
-  }, [ws])
+  }, [ws]);
 
   useEffect(() => {
     setLoadingWheel(
