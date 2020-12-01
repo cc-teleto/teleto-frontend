@@ -32,6 +32,14 @@ export default function RouletteTopic() {
   const [topics, setTopics] = useState([]);
   const [topicList, setTopicList] = useState([]);
   const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
+  const grayColorList = {
+    "#eae56f": "#6B6932",
+    "#89f26e": "#407334",
+    "#7de6ef": "#3A6C70",
+    "#e7706f": "#693232",
+  };
+  const screenTransitionInterval = 3000;
+  const stopAudio = new Audio("/stop.mp3");
   const audio = new Audio("/tick.mp3");
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
@@ -69,11 +77,24 @@ export default function RouletteTopic() {
     console.log("resultTopic:", resultTopic);
     setSelectedTopic(resultTopic);
     setWheelStopped(true);
-    setTimeout(setNextView, 2000);
+    setTimeout(setNextView, screenTransitionInterval);
   }
 
   useEffect(() => {
     if (wheelStopped === true) {
+      // Highlight the selected segmanet and gray out the others
+      console.log("Human:=====wheel stopped=====");
+      console.log(wheel);
+      const winningSegmentNumber = wheel.getIndicatedSegmentNumber();
+      for (let x = 1; x < wheel.segments.length; x += 1) {
+        if (x !== winningSegmentNumber) {
+          wheel.segments[x].fillStyle =
+            grayColorList[wheel.segments[x].fillStyle];
+        }
+      }
+      wheel.draw();
+      stopAudio.play();
+
       const data = {
         action: "stoproulette",
         roulette: "Topic",
@@ -215,7 +236,6 @@ export default function RouletteTopic() {
     return false;
   }
 
-
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -239,15 +259,15 @@ export default function RouletteTopic() {
             }}
           >
             START
-        </Button>
+          </Button>
         </>
       ) : (
-          <div className="canvas_logo" width="438" height="582">
-            <canvas id="loadingRoulette" width="434" height="434">
-              {" "}
-            </canvas>
-          </div>
-        )}
+        <div className="canvas_logo" width="438" height="582">
+          <canvas id="loadingRoulette" width="434" height="434">
+            {" "}
+          </canvas>
+        </div>
+      )}
     </>
   );
 }
