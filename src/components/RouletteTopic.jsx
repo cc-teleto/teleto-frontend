@@ -40,12 +40,12 @@ export default function RouletteTopic() {
   const [wheelStopped, setWheelStopped] = useState(false);
   const [topics, setTopics] = useState([]);
   const [topicList, setTopicList] = useState([]);
-  const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
+  const colorList = ["#9FE4E2", "#E3B8B6", "#AAC7E3", "#E3C188"];
   const grayColorList = {
-    "#eae56f": "#6B6932",
-    "#89f26e": "#407334",
-    "#7de6ef": "#3A6C70",
-    "#e7706f": "#693232",
+    "#9FE4E2": "#7BB0AE",
+    "#E3B8B6": "#B08F8D",
+    "#AAC7E3": "#849BB0",
+    "#E3C188": "#B0966A",
   };
   const screenTransitionInterval = 3000;
   const stopAudio = new Audio("/stop.mp3");
