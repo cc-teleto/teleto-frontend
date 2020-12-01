@@ -79,8 +79,6 @@ export default function RouletteTopic() {
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
 
-  console.log("Rendering RouletteTopic:", topics);
-
   async function playAudio(audios) {
     try {
       await audios.play();
@@ -88,7 +86,6 @@ export default function RouletteTopic() {
       console.log(err);
     }
   }
-
 
   // This function is called when the sound is to be played.
   function playSound() {
@@ -111,19 +108,12 @@ export default function RouletteTopic() {
 
   // Called when the animation has finished.
   function stopAction(indicatedSegment) {
-    console.log("Topic:selectedTopic:", topicList);
     let resultTopic;
     topicList.forEach((topic) => {
-      console.log("topic.keyword");
-      console.log(topic.keyword);
-      console.log("indicatedSegment.textOriginal");
-      console.log(indicatedSegment.text);
-
       if (topic.keyword === indicatedSegment.text) {
         resultTopic = topic.topic;
       }
     });
-    console.log("resultTopic:", resultTopic);
     setSelectedTopic(resultTopic);
     setWheelStopped(true);
     setTimeout(setNextView, screenTransitionInterval);
@@ -131,7 +121,6 @@ export default function RouletteTopic() {
 
   const setSelectedTalkerInfo = async (grouphash) => {
     const data = await getRoomInfo(grouphash);
-    console.log("DATA in Roulette:", data);
 
     setSelectedTalker(data.selectedTalker);
   };
@@ -163,17 +152,13 @@ export default function RouletteTopic() {
         roulette: "Topic",
         selectedTopic,
       };
-      console.log("Topic:stop roulette");
       ws.send(JSON.stringify(data));
     }
   }, [wheelStopped]);
 
   useEffect(() => {
-    console.log("Topic:=====wheelSpinning-useEffect Start=====");
     if (wheelSpinning === true) {
-      console.log("Topic:*****wheelSpinning true*****");
       // Begin the spin animation by calling startAnimation on the wheel object.
-      console.log(wheel);
       wheel.startAnimation();
 
       // Set to true so that power can't be changed and spin button re-enabled during
@@ -184,7 +169,6 @@ export default function RouletteTopic() {
 
   // ルーレット生成のためのトピックを取得し、ルーレット生成
   useEffect(() => {
-    console.log("Topic:=====useEffect Start=====");
     const getTopicsParams = {
       action: "getmultitopics",
       category,
@@ -233,25 +217,14 @@ export default function RouletteTopic() {
   }, [topics.length, topics]);
 
   useEffect(() => {
-    console.log("Topic:=====ws-useEffect Start=====");
-    console.log("Topic:ws", wheel);
-    console.log("Topic:ws", ws);
     if (!ws) return;
-    console.log("Topic:ws return済:");
     if (rouletteMode === "TOPIC") {
       ws.onmessage = (e) => {
-        console.log("Topic:receiveData", e.data);
         const resData = JSON.parse(e.data);
 
         if (resData.action === "getmultitopics") {
-          console.log("Topic:*****getmultitopics Start*****");
           setTopicList(resData.topics);
           const segmentList = resData.topics.map(function (value, index) {
-            console.log(
-              "Topic:topicList",
-              value.topic.replace(/(?:[\w\s]{16})/g, "$&|\n")
-            );
-
             const str = value.keyword.replace(/(?:[\w\s]{16})/g, "$&|\n");
             let repstr = "";
             let fontSize = 15;
@@ -268,10 +241,7 @@ export default function RouletteTopic() {
               repstr = str;
             }
             resData.topics[index].keyword = repstr;
-            // console.log("keyword:")
-            // console.log(value.keyword);
-            // console.log("repstr:");
-            // console.log(repstr);
+
             return {
               fillStyle: colorList[index % colorList.length],
               text: repstr,
@@ -280,8 +250,6 @@ export default function RouletteTopic() {
             };
           });
 
-          console.log("Topic:*****segmentList*****");
-          console.log(segmentList);
           // setTopics([]);
           setTopics(segmentList);
         }
@@ -301,12 +269,11 @@ export default function RouletteTopic() {
       action: "startroulette",
       roulette: "Topic",
     };
-    console.log("Topic:start roulette");
+
     ws.send(JSON.stringify(data));
   }
 
   useEffect(() => {
-    console.log("loadingWheel start");
     if (loadingWheel) loadingWheel.startAnimation();
   }, [loadingWheel]);
 

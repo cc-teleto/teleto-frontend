@@ -20,7 +20,6 @@ export default function RandomGenerateMember() {
         action: "changeresult",
         roulette: "Talker",
       };
-      console.log("ws changeresult Talker");
       ws.send(JSON.stringify(data));
     }
   }

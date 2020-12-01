@@ -37,7 +37,6 @@ export default function Result() {
 
   const setBasicInfo = async (grouphash) => {
     const data = await getRoomInfo(grouphash);
-    console.log("DATA in Roulette:", data);
 
     setSelectedTopic(data.selectedTopic);
     setSelectedTalker(data.selectedTalker);
@@ -74,7 +73,6 @@ export default function Result() {
   useEffect(() => {
     if (ws) {
       ws.onmessage = (e) => {
-        console.log("changeresult data:", e.data);
         const resData = JSON.parse(e.data);
         const grouphash = path[2];
 
@@ -104,7 +102,6 @@ export default function Result() {
         action: "changeresult",
         roulette: "Both",
       };
-      console.log("ws changeresult Both");
       ws.send(JSON.stringify(data));
     }
   }

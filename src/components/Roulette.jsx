@@ -26,7 +26,6 @@ export default function Roulette() {
 
   const setRoomBasicInfo = async (grouphash) => {
     const data = await getRoomInfo(grouphash);
-    console.log("RouletteJSX DATA in Roulette:", data);
     setCategory(data.category);
     setEndPeriod(data.endPeriod);
 
@@ -59,7 +58,6 @@ export default function Roulette() {
         grouphash: path[2],
       };
       ws.send(JSON.stringify(data));
-      console.log("send hash");
     }
   }, [ws]);
 

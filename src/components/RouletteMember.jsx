@@ -81,7 +81,6 @@ function RouletteMember() {
 
   const getRoom = async (grouphash) => {
     const data = await getRoomInfo(grouphash);
-    console.log("DATA in Member:", data);
 
     const membersInfo = {
       maxId: 0,
@@ -91,7 +90,6 @@ function RouletteMember() {
       membersInfo.maxId += 1;
       membersInfo.members[`member${index + 1}`] = member.membername;
     });
-    console.log("membersInfo:", membersInfo);
     setMembers(membersInfo);
   };
 
@@ -105,25 +103,20 @@ function RouletteMember() {
   function stopAction(indicatedSegment) {
     // Set the result and move to next screen
     if (selectedTopic) {
-      console.log("detect topic already set");
       setSelectedTalker(indicatedSegment.textOriginal);
       setWheelStopped(true);
       setTimeout(setCurrentView, screenTransitionInterval, CURRENT_VIEW.RESULT);
       setTimeout(setRouletteMode, screenTransitionInterval, "RESULT");
     } else {
-      console.log(indicatedSegment.text);
       setSelectedTalker(indicatedSegment.textOriginal);
       setWheelStopped(true);
       setTimeout(setMode, screenTransitionInterval, "TOPIC");
-      console.log(setRouletteMode);
     }
   }
 
   useEffect(() => {
     if (wheelStopped === true) {
       // Highlight the selected segmanet and gray out the others
-      console.log("Human:=====wheel stopped=====");
-      console.log(wheel);
       const winningSegmentNumber = wheel.getIndicatedSegmentNumber();
       for (let x = 1; x < wheel.segments.length; x += 1) {
         if (x !== winningSegmentNumber) {
@@ -143,13 +136,11 @@ function RouletteMember() {
         roulette: "Talker",
         selectedTalker,
       };
-      console.log("stop roulette");
       ws.send(JSON.stringify(data));
     }
   }, [wheelStopped]);
 
   useEffect(() => {
-    console.log("loadingWheel start");
     if (loadingWheel) loadingWheel.startAnimation();
   }, [loadingWheel]);
 
@@ -172,11 +163,13 @@ function RouletteMember() {
       } else {
         repstr = value;
       }
-      return { fillStyle: colorList[index % colorList.length], text: repstr, textFontSize: fontSize, textOriginal: value };
-
+      return {
+        fillStyle: colorList[index % colorList.length],
+        text: repstr,
+        textFontSize: fontSize,
+        textOriginal: value,
+      };
     });
-
-    console.log(segmentList);
 
     // This function is called when the sound is to be played.
     function playSound() {
@@ -230,7 +223,6 @@ function RouletteMember() {
   useEffect(() => {
     if (wheelSpinning === true) {
       // Begin the spin animation by calling startAnimation on the wheel object.
-      console.log(wheel);
       wheel.startAnimation();
 
       // Set to true so that power can't be changed and spin button re-enabled during
@@ -241,11 +233,8 @@ function RouletteMember() {
 
   useEffect(() => {
     if (!ws) return;
-    console.log("Human:ws return済:");
-    console.log("Human:rouletteMode", rouletteMode);
     if (rouletteMode === "HUMAN") {
       ws.onmessage = (e) => {
-        console.log("Human:receiveData", e.data);
         const resData = JSON.parse(e.data);
 
         if (resData.action === "startroulette") {
@@ -268,7 +257,6 @@ function RouletteMember() {
       action: "startroulette",
       roulette: "Talker",
     };
-    console.log("start roulette");
     ws.send(JSON.stringify(data));
   }
 
@@ -285,10 +273,6 @@ function RouletteMember() {
       Object.entries(initialMembers).sort()
     );
     const currentMembersJson = JSON.stringify(Object.entries(members).sort());
-
-    console.log(initialMembersJson);
-    console.log(currentMembersJson);
-    console.log("check:", initialMembersJson !== currentMembersJson);
 
     if (initialMembersJson !== currentMembersJson) {
       if (loadingWheel) {
