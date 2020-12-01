@@ -5,6 +5,7 @@ import {
   createMuiTheme,
   responsiveFontSizes,
   ThemeProvider,
+  makeStyles,
 } from "@material-ui/core/styles";
 import AppContext from "../context/AppContext";
 import Winwheel from "../utils/Winwheel";
@@ -12,7 +13,17 @@ import "../styles/styles.css";
 import { CURRENT_VIEW } from "../const";
 import RouletteContext from "../context/RouletteContext";
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    [theme.breakpoints.only("xs")]: {
+      width: "70%",
+      height: "auto !important",
+    },
+  },
+}));
+
 export default function RouletteTopic() {
+  const classes = useStyles();
   const {
     category,
     ws,
@@ -182,17 +193,17 @@ export default function RouletteTopic() {
               "Topic:topicList",
               value.topic.replace(/(?:[\w\s]{16})/g, "$&|\n")
             );
-            
+
             const str = value.keyword.replace(/(?:[\w\s]{16})/g, "$&|\n");
             let repstr = "";
             let fontSize = 15;
             if (str.length > 7) {
-              const a = str.slice(0,6);
+              const a = str.slice(0, 6);
               const b = str.slice(6);
-              repstr = a.concat('\n',b);
-              if  (repstr.length > 13) {
-                const c = repstr.slice(0,13);
-                repstr = c.concat ('\n','...');
+              repstr = a.concat("\n", b);
+              if (repstr.length > 13) {
+                const c = repstr.slice(0, 13);
+                repstr = c.concat("\n", "...");
                 fontSize = 13;
               }
             } else {
@@ -201,7 +212,7 @@ export default function RouletteTopic() {
             return {
               fillStyle: colorList[index % colorList.length],
               text: repstr,
-              textFontSize: fontSize
+              textFontSize: fontSize,
             };
           });
 
@@ -251,7 +262,7 @@ export default function RouletteTopic() {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <Typography variant="h4" align="center">
+        <Typography variant="h4" align="center" className={classes.root}>
           {selectedTalker}さんが話すお題は・・・
         </Typography>
       </ThemeProvider>
