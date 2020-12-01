@@ -16,6 +16,7 @@ import getRoomInfo from "../utils/webApi";
 
 function RouletteMember() {
   const location = useLocation();
+  const event = "touchend";
   const {
     // members,
     selectedTalker,
@@ -37,32 +38,61 @@ function RouletteMember() {
     },
   });
   const screenTransitionInterval = 3000;
+  const isiPhone = navigator.userAgent.indexOf("iPhone") > 0;
+  /*
+  以下の文字列でユーザーエージェントを判別します
+  osVer = "iPhone";
+  osVer = "Android";
+  osVer = "iPod";
+  osVer = "iPad";
+  */
+  let audio;
+  let stopAudio;
+  if (!isiPhone) {
+    audio = new Audio("/tick.mp3");
+    stopAudio = new Audio("/stop.mp3");
+    document.addEventListener(event, function () {
+      // 事前に音源をロードする
+      audio.load("/tick.mp3");
+      stopAudio.load("/stop.mp3");
 
-  const audio = new Audio("/tick.mp3");
-  const stopAudio = new Audio("/stop.mp3");
-  const colorList = ["#eae56f", "#89f26e", "#7de6ef", "#e7706f"];
+      stopAudio.pause();
+      stopAudio.currentTime = 0;
+    });
+  }
+
+  const colorList = ["#9FE4E2", "#E3B8B6", "#AAC7E3", "#E3C188"];
   const grayColorList = {
-    "#eae56f": "#6B6932",
-    "#89f26e": "#407334",
-    "#7de6ef": "#3A6C70",
-    "#e7706f": "#693232",
+    "#9FE4E2": "#7BB0AE",
+    "#E3B8B6": "#B08F8D",
+    "#AAC7E3": "#849BB0",
+    "#E3C188": "#B0966A",
   };
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
+
+  async function playAudio(audios) {
+    try {
+      await audios.play();
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const getRoom = async (grouphash) => {
     const data = await getRoomInfo(grouphash);
     console.log("DATA in Member:", data);
 
-    const getMembers = {
+    const membersInfo = {
       maxId: 0,
       members: {},
     };
-    data.members.forEach((member) => {
-      getMembers.maxId += 1;
-      getMembers.members[`member${member.memberorder + 1}`] = member.membername;
+    data.members.forEach((member, index) => {
+      membersInfo.maxId += 1;
+      membersInfo.members[`member${index + 1}`] = member.membername;
     });
-    setMembers(getMembers);
+    console.log("membersInfo:", membersInfo);
+    setMembers(membersInfo);
   };
 
   // for websocket
@@ -76,13 +106,13 @@ function RouletteMember() {
     // Set the result and move to next screen
     if (selectedTopic) {
       console.log("detect topic already set");
-      setSelectedTalker(indicatedSegment.text);
+      setSelectedTalker(indicatedSegment.textOriginal);
       setWheelStopped(true);
       setTimeout(setCurrentView, screenTransitionInterval, CURRENT_VIEW.RESULT);
       setTimeout(setRouletteMode, screenTransitionInterval, "RESULT");
     } else {
       console.log(indicatedSegment.text);
-      setSelectedTalker(indicatedSegment.text);
+      setSelectedTalker(indicatedSegment.textOriginal);
       setWheelStopped(true);
       setTimeout(setMode, screenTransitionInterval, "TOPIC");
       console.log(setRouletteMode);
@@ -103,7 +133,9 @@ function RouletteMember() {
         }
       }
       wheel.draw();
-      stopAudio.play();
+      if (!isiPhone) {
+        playAudio(stopAudio);
+      }
 
       const data = {
         action: "stoproulette",
@@ -128,30 +160,33 @@ function RouletteMember() {
       let repstr = "";
       let fontSize = 15;
       if (value.length > 7) {
-        const a = value.slice(0,6);
+        const a = value.slice(0, 6);
         const b = value.slice(6);
-        repstr = a.concat('\n',b);
-        if  (value.length > 12) {
-          const c = repstr.slice(0,12);
-          repstr = c.concat ('\n','...');
+        repstr = a.concat("\n", b);
+        if (value.length > 12) {
+          const c = repstr.slice(0, 12);
+          repstr = c.concat("\n", "...");
           fontSize = 13;
         }
       } else {
         repstr = value;
       }
-      return { fillStyle: colorList[index % colorList.length], text: repstr, textFontSize: fontSize };
+      return { fillStyle: colorList[index % colorList.length], text: repstr, textFontSize: fontSize, textOriginal: value };
+
     });
 
     console.log(segmentList);
 
     // This function is called when the sound is to be played.
     function playSound() {
-      // Stop and rewind the sound if it already happens to be playing.
-      audio.pause();
-      audio.currentTime = 0;
+      if (!isiPhone) {
+        // Stop and rewind the sound if it already happens to be playing.
+        audio.pause();
+        audio.currentTime = 0;
 
-      // Play the sound.
-      audio.play();
+        // Play the sound.
+        playAudio(audio);
+      }
     }
 
     const itemNumber = Object.values(members.members).length;
@@ -169,7 +204,6 @@ function RouletteMember() {
         lineWidth: 1,
         // textOrientation: "vertical",
         textFontSize: 18, // Font size.\
-        textMargin: 0, // margin between the inner or outer of the wheel
         rotationAngle: -360 / itemNumber / 2, // show the default position aligned to the text
         // Definition of all the segments.
         segments: segmentList,

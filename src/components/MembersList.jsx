@@ -166,7 +166,7 @@ export default function MembersList(props) {
           参加者リスト
         </Typography>
       </Box>
-      {items}
+      <font face="arial">{items}</font>
       <Box key="addBox" display="flex" width="100%" className={classes.root}>
         <TextField
           name="add"
