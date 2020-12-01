@@ -6,16 +6,27 @@ import { CURRENT_VIEW } from "../const";
 import AppContext from "../context/AppContext";
 
 export default function Logo() {
-  const { setCurrentView, setSelectedTalker, setSelectedTopic } = useContext(
-    AppContext
-  );
+  const {
+    setCurrentView,
+    setSelectedTalker,
+    setSelectedTopic,
+    setMembers,
+  } = useContext(AppContext);
   const history = useHistory();
   const location = useLocation();
   const path = location.pathname.split("/")[1];
 
+  const initialMembers = {
+    maxId: 1,
+    members: {
+      member1: "",
+    },
+  };
+
   const onClick = () => {
     setSelectedTalker("");
     setSelectedTopic("");
+    setMembers(initialMembers);
     setCurrentView(CURRENT_VIEW.START_FORM);
     history.push("/");
   };
@@ -29,6 +40,7 @@ export default function Logo() {
         onClick={onClick}
         onKeyDown={onClick}
         width="50%"
+        height="50%"
       />
     </Box>
   ) : (

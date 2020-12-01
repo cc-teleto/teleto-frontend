@@ -8,6 +8,7 @@ import RandomGenerateTopic from "./RandomGenerateTopic";
 import RandomGenerateMember from "./RandomGenerateMember";
 import MembersList from "./MembersList";
 import LogoWithText from "./LogoWithText";
+import getRoomInfo from "../utils/webApi";
 
 export default function Result() {
   const location = useLocation();
@@ -21,6 +22,7 @@ export default function Result() {
     setSelectedTopic,
     setCurrentView,
     setRouletteMode,
+    setSelectedTalker,
     ws,
   } = useContext(AppContext);
   const [topicFetchURL, setTopicFetchURL] = useState("");
@@ -30,6 +32,19 @@ export default function Result() {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  const setBasicInfo = async (grouphash) => {
+    const data = await getRoomInfo(grouphash);
+    console.log("DATA in Roulette:", data);
+
+    setSelectedTopic(data.selectedTopic);
+    setSelectedTalker(data.selectedTalker);
+  };
+
+  useEffect(() => {
+    const path = location.pathname.split("/");
+    setBasicInfo(path[2]);
+  }, []);
 
   useEffect(() => {
     let newTopicFetchURL = getURL("/topics", "/?random=true");
