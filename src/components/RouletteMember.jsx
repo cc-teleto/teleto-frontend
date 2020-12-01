@@ -106,13 +106,13 @@ function RouletteMember() {
     // Set the result and move to next screen
     if (selectedTopic) {
       console.log("detect topic already set");
-      setSelectedTalker(indicatedSegment.text);
+      setSelectedTalker(indicatedSegment.textOriginal);
       setWheelStopped(true);
       setTimeout(setCurrentView, screenTransitionInterval, CURRENT_VIEW.RESULT);
       setTimeout(setRouletteMode, screenTransitionInterval, "RESULT");
     } else {
       console.log(indicatedSegment.text);
-      setSelectedTalker(indicatedSegment.text);
+      setSelectedTalker(indicatedSegment.textOriginal);
       setWheelStopped(true);
       setTimeout(setMode, screenTransitionInterval, "TOPIC");
       console.log(setRouletteMode);
@@ -171,11 +171,8 @@ function RouletteMember() {
       } else {
         repstr = value;
       }
-      return {
-        fillStyle: colorList[index % colorList.length],
-        text: repstr,
-        textFontSize: fontSize,
-      };
+      return { fillStyle: colorList[index % colorList.length], text: repstr, textFontSize: fontSize, textOriginal: value };
+
     });
 
     console.log(segmentList);
