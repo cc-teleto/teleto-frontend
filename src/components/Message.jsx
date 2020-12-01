@@ -64,27 +64,46 @@ export default function Message(props) {
     document.execCommand("copy");
 
     // コピーをお知らせする
-    alert("URLをコピーしました！");
+    alert("URLをコピーしました！参加者にURLを通知してください！！");
   };
 
-  return (
-    <Box display="flex" flexWrap="nowrap" width="50%">
-      <Box width="100%">{alertMsg}</Box>
-      <Box flexShrink={0}>{timeLeft > 0 ? `残り時間: ${timeLeft}分` : ""}</Box>
-      <Button
-        variant="contained"
-        onClick={() => urlCopy()}
-        style={{
-          backgroundColor: "#9fe4e2",
-          width: "2000px",
-          height: "20px",
-          margin: "2px 20px",
-        }}
-      >
-        URLCOPY
-      </Button>
-    </Box>
-  );
+  if (
+    currentView === CURRENT_VIEW.RANDOM_GENERATE ||
+    CURRENT_VIEW.ROULETTE ||
+    CURRENT_VIEW.RESULT
+  ) {
+    return (
+      <Box display="flex" flexWrap="nowrap" width="50%">
+        <Box width="100%">{alertMsg}</Box>
+        <Box flexShrink={0}>
+          {timeLeft > 0 ? `残り時間: ${timeLeft}分` : ""}
+        </Box>
+        <Button
+          variant="contained"
+          onClick={() => urlCopy()}
+          style={{
+            backgroundColor: "#9fe4e2",
+            width: "100px",
+            height: "20px",
+            margin: "2px 20px",
+          }}
+        >
+          URLCOPY
+        </Button>
+      </Box>
+    );
+  }
+
+  if (currentView === CURRENT_VIEW.START_FORM) {
+    return (
+      <Box display="flex" flexWrap="nowrap" width="50%">
+        <Box width="100%">{alertMsg}</Box>
+        <Box flexShrink={0}>
+          {timeLeft > 0 ? `残り時間: ${timeLeft}分` : ""}
+        </Box>
+      </Box>
+    );
+  }
 }
 
 Message.propTypes = {

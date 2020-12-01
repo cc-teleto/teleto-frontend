@@ -39,10 +39,28 @@ export default function RouletteTopic() {
   const screenTransitionInterval = 3000;
   const stopAudio = new Audio("/stop.mp3");
   const audio = new Audio("/tick.mp3");
+  const event = "touchend";
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
 
   console.log("Rendering RouletteTopic:", topics);
+
+  async function playAudio(audios) {
+    try {
+      await audios.play();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  document.addEventListener(event, function () {
+    // 事前に音源をロードする
+    audio.load("/tick.mp3");
+    stopAudio.load("/stop.mp3");
+
+    stopAudio.pause();
+    stopAudio.currentTime = 0;
+  });
 
   // This function is called when the sound is to be played.
   function playSound() {
@@ -51,7 +69,7 @@ export default function RouletteTopic() {
     audio.currentTime = 0;
 
     // Play the sound.
-    audio.play();
+    playAudio(audio);
   }
 
   // for websocket
@@ -87,7 +105,7 @@ export default function RouletteTopic() {
         }
       }
       wheel.draw();
-      stopAudio.play();
+      playAudio(stopAudio);
 
       const data = {
         action: "stoproulette",
@@ -182,17 +200,17 @@ export default function RouletteTopic() {
               "Topic:topicList",
               value.topic.replace(/(?:[\w\s]{16})/g, "$&|\n")
             );
-            
+
             const str = value.keyword.replace(/(?:[\w\s]{16})/g, "$&|\n");
             let repstr = "";
             let fontSize = 15;
             if (str.length > 7) {
-              const a = str.slice(0,6);
+              const a = str.slice(0, 6);
               const b = str.slice(6);
-              repstr = a.concat('\n',b);
-              if  (repstr.length > 13) {
-                const c = repstr.slice(0,13);
-                repstr = c.concat ('\n','...');
+              repstr = a.concat("\n", b);
+              if (repstr.length > 13) {
+                const c = repstr.slice(0, 13);
+                repstr = c.concat("\n", "...");
                 fontSize = 13;
               }
             } else {
@@ -201,7 +219,7 @@ export default function RouletteTopic() {
             return {
               fillStyle: colorList[index % colorList.length],
               text: repstr,
-              textFontSize: fontSize
+              textFontSize: fontSize,
             };
           });
 

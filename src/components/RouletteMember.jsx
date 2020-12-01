@@ -16,6 +16,7 @@ import getRoomInfo from "../utils/webApi";
 
 function RouletteMember() {
   const location = useLocation();
+  const event = "touchend";
   const {
     // members,
     selectedTalker,
@@ -49,6 +50,23 @@ function RouletteMember() {
   };
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
+
+  async function playAudio(audios) {
+    try {
+      await audios.play();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  document.addEventListener(event, function () {
+    // 事前に音源をロードする
+    audio.load("/tick.mp3");
+    stopAudio.load("/stop.mp3");
+
+    stopAudio.pause();
+    stopAudio.currentTime = 0;
+  });
 
   const getRoom = async (grouphash) => {
     const data = await getRoomInfo(grouphash);
@@ -103,7 +121,7 @@ function RouletteMember() {
         }
       }
       wheel.draw();
-      stopAudio.play();
+      playAudio(stopAudio);
 
       const data = {
         action: "stoproulette",
@@ -128,18 +146,22 @@ function RouletteMember() {
       let repstr = "";
       let fontSize = 15;
       if (value.length > 7) {
-        const a = value.slice(0,6);
+        const a = value.slice(0, 6);
         const b = value.slice(6);
-        repstr = a.concat('\n',b);
-        if  (value.length > 12) {
-          const c = repstr.slice(0,12);
-          repstr = c.concat ('\n','...');
+        repstr = a.concat("\n", b);
+        if (value.length > 12) {
+          const c = repstr.slice(0, 12);
+          repstr = c.concat("\n", "...");
           fontSize = 13;
         }
       } else {
         repstr = value;
       }
-      return { fillStyle: colorList[index % colorList.length], text: repstr, textFontSize: fontSize };
+      return {
+        fillStyle: colorList[index % colorList.length],
+        text: repstr,
+        textFontSize: fontSize,
+      };
     });
 
     console.log(segmentList);
@@ -151,7 +173,7 @@ function RouletteMember() {
       audio.currentTime = 0;
 
       // Play the sound.
-      audio.play();
+      playAudio(audio);
     }
 
     const itemNumber = Object.values(members.members).length;
