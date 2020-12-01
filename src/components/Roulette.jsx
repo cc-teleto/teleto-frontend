@@ -39,10 +39,9 @@ export default function Roulette() {
       maxId: 0,
       members: {},
     };
-    data.members.forEach((member) => {
+    data.members.forEach((member, index) => {
       membersInfo.maxId += 1;
-      membersInfo.members[`member${member.memberorder + 1}`] =
-        member.membername;
+      membersInfo.members[`member${index + 1}`] = member.membername;
     });
 
     setMembers(membersInfo);
