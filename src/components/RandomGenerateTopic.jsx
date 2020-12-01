@@ -7,9 +7,7 @@ import {
   makeStyles,
 } from "@material-ui/core/styles";
 import React, { useContext } from "react";
-import { useLocation, useHistory } from "react-router-dom";
 import AppContext from "../context/AppContext";
-import { CURRENT_VIEW } from "../const";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,17 +34,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function RandomGenerateTopic() {
-  const location = useLocation();
   const classes = useStyles();
-  const history = useHistory();
   let theme = createMuiTheme();
   theme = responsiveFontSizes(theme);
-  const {
-    selectedTopic,
-    setSelectedTopic,
-    setCurrentView,
-    setRouletteMode,
-  } = useContext(AppContext);
+  const { selectedTopic, setSelectedTopic, ws } = useContext(AppContext);
 
   if (String(selectedTopic).slice(0, 11) === "Twitterトレンド") {
     const array = String(selectedTopic).split(/『|』/);
@@ -63,12 +54,16 @@ export default function RandomGenerateTopic() {
       </>
     );
     setSelectedTopic(content);
-  }  function handleOnClick() {
-    const path = location.pathname.split("/");
-    const grouphash = path[2];
-    setCurrentView(CURRENT_VIEW.ROULETTE);
-    setRouletteMode("TOPIC");
-    history.push(`/roulette/${grouphash}`);
+  }
+  function handleOnClick() {
+    if (ws) {
+      const data = {
+        action: "changeresult",
+        roulette: "Topic",
+      };
+      console.log("ws changeresult Topic");
+      ws.send(JSON.stringify(data));
+    }
   }
   return (
     <Box

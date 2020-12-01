@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import { useLocation, useHistory } from "react-router-dom";
 import { Box, Drawer, Button } from "@material-ui/core";
 import PeopleIcon from "@material-ui/icons/People";
 import { CURRENT_VIEW, DEFAULT_CATEGORY, getURL } from "../const";
@@ -10,12 +11,18 @@ import MembersList from "./MembersList";
 import LogoWithText from "./LogoWithText";
 
 export default function Main() {
+  const location = useLocation();
+  const history = useHistory();
   const {
     groupHash,
     currentView,
     category,
     mobileOpen,
     setMobileOpen,
+    setSelectedTopic,
+    setCurrentView,
+    setRouletteMode,
+    ws,
   } = useContext(AppContext);
   const [topicFetchURL, setTopicFetchURL] = useState("");
   const [memberFetchURL, setMemberFetchURL] = useState("");
@@ -49,6 +56,45 @@ export default function Main() {
     });
   }, [groupHash, category]);
 
+  useEffect(() => {
+    if (ws) {
+      ws.onmessage = (e) => {
+        console.log("changeresult data:", e.data);
+        const resData = JSON.parse(e.data);
+        const path = location.pathname.split("/");
+        const grouphash = path[2];
+
+        if (resData.action === "changeresult") {
+          if (resData.roulette === "Talker") {
+            setCurrentView(CURRENT_VIEW.ROULETTE);
+            setRouletteMode("HUMAN");
+            history.push(`/roulette/${grouphash}`);
+          } else if (resData.roulette === "Topic") {
+            setCurrentView(CURRENT_VIEW.ROULETTE);
+            setRouletteMode("TOPIC");
+            history.push(`/roulette/${grouphash}`);
+          } else if (resData.roulette === "Both") {
+            setCurrentView(CURRENT_VIEW.ROULETTE);
+            setRouletteMode("HUMAN");
+            setSelectedTopic("");
+            history.push(`/roulette/${grouphash}`);
+          }
+        }
+      };
+    }
+  }, [ws, currentView]);
+
+  function handlerOnClickForBothChange() {
+    if (ws) {
+      const data = {
+        action: "changeresult",
+        roulette: "Both",
+      };
+      console.log("ws changeresult Both");
+      ws.send(JSON.stringify(data));
+    }
+  }
+
   if (currentView === CURRENT_VIEW.START_FORM) {
     return <StartForm />;
   }
@@ -60,7 +106,32 @@ export default function Main() {
           <RandomGenerateMember fetchURL={memberFetchURL} />
           <RandomGenerateTopic fetchURL={topicFetchURL} />
         </Box>
-        <Box>
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          m={3}
+        >
+          <Button
+            variant="contained"
+            startIcon={<PeopleIcon />}
+            onClick={handlerOnClickForBothChange}
+            style={{
+              backgroundColor: "#E3C188",
+              fontSize: "15px",
+            }}
+          >
+            両方チェンジ！
+          </Button>
+        </Box>
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          m={5}
+        >
           <Button
             variant="contained"
             startIcon={<PeopleIcon />}
