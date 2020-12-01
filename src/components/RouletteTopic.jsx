@@ -138,7 +138,8 @@ export default function RouletteTopic() {
         strokeStyle: "#ffffff",
         lineWidth: 1,
         // textOrientation: "vertical",
-        textFontSize: 18, // Font size.\
+        textFontSize: 15, // Font size.\
+        textMargin: 0, // margin between the inner or outer of the wheel
         rotationAngle: -360 / itemNumber / 2, // show the default position aligned to the text
         // Definition of all the segments.
         segments: topics,
@@ -181,9 +182,26 @@ export default function RouletteTopic() {
               "Topic:topicList",
               value.topic.replace(/(?:[\w\s]{16})/g, "$&|\n")
             );
+            
+            const str = value.keyword.replace(/(?:[\w\s]{16})/g, "$&|\n");
+            let repstr = "";
+            let fontSize = 15;
+            if (str.length > 7) {
+              const a = str.slice(0,6);
+              const b = str.slice(6);
+              repstr = a.concat('\n',b);
+              if  (repstr.length > 13) {
+                const c = repstr.slice(0,13);
+                repstr = c.concat ('\n','...');
+                fontSize = 13;
+              }
+            } else {
+              repstr = str;
+            }
             return {
               fillStyle: colorList[index % colorList.length],
-              text: value.keyword.replace(/(?:[\w\s]{16})/g, "$&|\n"),
+              text: repstr,
+              textFontSize: fontSize
             };
           });
 

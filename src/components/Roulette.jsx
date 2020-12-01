@@ -12,7 +12,6 @@ import getRoomInfo from "../utils/webApi";
 import Result from "./Result";
 
 export default function Roulette() {
-  // const ROOM_GET_URL = getURL("/room");
   const location = useLocation();
   const {
     // setMembers,
