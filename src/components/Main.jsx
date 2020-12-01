@@ -84,6 +84,17 @@ export default function Main() {
     }
   }, [ws, currentView]);
 
+  function handlerOnClickForBothChange() {
+    if (ws) {
+      const data = {
+        action: "changeresult",
+        roulette: "Both",
+      };
+      console.log("ws changeresult Both");
+      ws.send(JSON.stringify(data));
+    }
+  }
+
   if (currentView === CURRENT_VIEW.START_FORM) {
     return <StartForm />;
   }
@@ -95,7 +106,32 @@ export default function Main() {
           <RandomGenerateMember fetchURL={memberFetchURL} />
           <RandomGenerateTopic fetchURL={topicFetchURL} />
         </Box>
-        <Box>
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          m={3}
+        >
+          <Button
+            variant="contained"
+            startIcon={<PeopleIcon />}
+            onClick={handlerOnClickForBothChange}
+            style={{
+              backgroundColor: "#E3C188",
+              fontSize: "15px",
+            }}
+          >
+            両方チェンジ！
+          </Button>
+        </Box>
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          m={5}
+        >
           <Button
             variant="contained"
             startIcon={<PeopleIcon />}
