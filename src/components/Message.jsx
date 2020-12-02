@@ -72,7 +72,7 @@ export default function Message(props) {
       <Box width="0%">{alertMsg}</Box>
       <Grid container spacing={0}>
         <Grid item xs={0} sm={3} ><></></Grid>
-        <Grid item xs={8} sm={5}>
+        <Grid item xs={9} sm={5}>
           <Box display="flex" flexWrap="nowrap" width="100%">
             <font face="arial">
               <Box flexShrink={0}>
@@ -81,7 +81,7 @@ export default function Message(props) {
             </font>
           </Box>
         </Grid>
-        <Grid item xs={4} sm={1}>
+        <Grid item xs={3} sm={1}>
           <Box display="flex" flexWrap="nowrap" width="100%" align-items="flex-end">
             <Button
               align-items="flex-end"
