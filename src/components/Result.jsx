@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useLocation, useHistory } from "react-router-dom";
-import { Box, Drawer, Button } from "@material-ui/core";
+import { Box, SwipeableDrawer, Button } from "@material-ui/core";
 import PeopleIcon from "@material-ui/icons/People";
 import { CURRENT_VIEW, DEFAULT_CATEGORY, getURL } from "../const";
 import AppContext from "../context/AppContext";
 import RandomGenerateTopic from "./RandomGenerateTopic";
 import RandomGenerateMember from "./RandomGenerateMember";
 import MembersList from "./MembersList";
-import LogoWithText from "./LogoWithText";
 import getRoomInfo from "../utils/webApi";
 
 export default function Result() {
@@ -149,7 +148,7 @@ export default function Result() {
         >
           参加者を変える
         </Button>
-        <Drawer
+        <SwipeableDrawer
           variant="temporary"
           anchor="left"
           open={mobileOpen}
@@ -158,9 +157,8 @@ export default function Result() {
             keepMounted: true,
           }}
         >
-          <LogoWithText />
           <MembersList fetchURL={allMemberFetchURL} />
-        </Drawer>
+        </SwipeableDrawer>
       </Box>
     </>
   );
