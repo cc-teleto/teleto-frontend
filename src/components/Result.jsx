@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useLocation, useHistory } from "react-router-dom";
-import { Box, SwipeableDrawer, Button } from "@material-ui/core";
+import { Box, Drawer, Button } from "@material-ui/core";
 import PeopleIcon from "@material-ui/icons/People";
 import { CURRENT_VIEW, DEFAULT_CATEGORY, getURL } from "../const";
 import AppContext from "../context/AppContext";
@@ -148,7 +148,7 @@ export default function Result() {
         >
           参加者を変える
         </Button>
-        <SwipeableDrawer
+        <Drawer
           variant="temporary"
           anchor="left"
           open={mobileOpen}
@@ -158,7 +158,7 @@ export default function Result() {
           }}
         >
           <MembersList fetchURL={allMemberFetchURL} />
-        </SwipeableDrawer>
+        </Drawer>
       </Box>
     </>
   );
