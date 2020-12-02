@@ -7,7 +7,6 @@ import AppContext from "../context/AppContext";
 import RandomGenerateTopic from "./RandomGenerateTopic";
 import RandomGenerateMember from "./RandomGenerateMember";
 import MembersList from "./MembersList";
-import LogoWithText from "./LogoWithText";
 import getRoomInfo from "../utils/webApi";
 
 export default function Result() {
@@ -158,7 +157,6 @@ export default function Result() {
             keepMounted: true,
           }}
         >
-          <LogoWithText />
           <MembersList fetchURL={allMemberFetchURL} />
         </Drawer>
       </Box>

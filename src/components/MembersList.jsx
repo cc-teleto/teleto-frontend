@@ -12,6 +12,7 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import PropTypes from "prop-types";
 import { getURL } from "../const";
 import AppContext from "../context/AppContext";
+import LogoWithText from "./LogoWithText";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -157,18 +158,34 @@ export default function MembersList(props) {
   return (
     <Box
       className="box1"
-      display="flex"
+      // display="flex"
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
       style={{ margin: 10, padding: 10 }}
     >
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <LogoWithText />
+      </Box>
+
       <Box display="flex" flexDirection="column" width="100%">
         <Typography variant="h5" align="left">
           参加者リスト
         </Typography>
       </Box>
-      <font face="arial">{items}</font>
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <font face="arial">{items}</font>
+      </Box>
       <Box key="addBox" display="flex" width="100%" className={classes.root}>
         <TextField
           name="add"
