@@ -183,7 +183,7 @@ export default function RouletteTopic() {
       new Winwheel({
         canvasId: "topicRoulette",
         numSegments: itemNumber, // Number of segments
-        pointerAngle: 135, // Ensure this is set correctly
+        pointerAngle: 131, // Ensure this is set correctly
         outerRadius: 165, // The size of the wheel.
         innerRadius: 50,
         centerX: 217, // Used to position on the background correctly.
